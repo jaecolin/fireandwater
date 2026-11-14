@@ -2838,12 +2838,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         S.queue = back.concat(arr);
         const future = Object.keys(S.arr).some(d => +d > S.chDay && S.arr[d].length);
         if (!S.queue.length && !future) return chapterEnd();          // 這一章的病人都結案了
-        /* 回音：上一章的抉擇，在這一章的第一天浮現 */
-        const echoes = [];
-        if (S.chDay === 1) {
-            S.echo.filter(e => e.ch <= S.ch).forEach(e => { if (ECHOES[e.id]) echoes.push(ECHOES[e.id](e)); });
-            S.echo = S.echo.filter(e => e.ch > S.ch);
-        }
+        /* 回音：上一章的抉擇，在這一章的第一天浮現。後果在 startChapter 已經結算（有場景的也演過了），這裡只把文字列出來 */
+        if (S.chDay !== 1) S.echoNote = [];
+        const echoes = S.echoNote || [];
         hud();
         showVeil(`${chOf().name}　第${CN[S.chDay] || S.chDay}個門診日`, S.queue.length ? `候診 ${S.queue.length} 位` : '今天沒有病人上門');
         const li = S.queue.map(p => `<li><div class="face" style="background-image:url('${IMG}${p.c.img}')"></div>
@@ -2852,11 +2849,11 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const news = S.news.map(t => `<div class="down small" style="margin-top:6px">${t}</div>`).join('');
         const warn = S.spirit < 20 ? '<div class="down small" style="margin-top:6px">心神不足二十。今天每一診能問的都會少一項。</div>' : '';
         panel(`<h3>${chOf().name}　第 ${S.chDay} 個門診日 <span>候診 <span class="px">${S.queue.length}</span> 位</span></h3>
-            ${echoes.map(t => `<div class="note small" style="margin:0 0 8px"><b class="hint">回音</b>　${t}</div>`).join('')}
+            ${echoes.map(e => `<div class="note small" style="margin:0 0 8px"><b class="hint">回音</b>　${e.t}</div>`).join('')}
             ${S.queue.length ? `<ul class="plist">${li}</ul>` : '<div class="dim">今天沒有病人上門。</div>'}${news}${warn}
-            <div class="small dim" style="margin-top:8px">新病人耗精力 10，還要從頭問診，耗心神較多。回診每位耗精力 3、心神 ${S.app.on ? '1（學徒幫忙記錄）' : '2'}。</div>
+            <div class="small dim" style="margin-top:8px">新病人耗精力 10，還要從頭問診，耗心神較多。回診每位耗精力 3、心神 ${S.app.on ? '1（小滿幫忙記錄）' : '2'}。</div>
             <div class="foot"><button class="btn go px" id="next">${S.queue.length ? '開始看診' : '過這一天'}</button></div>`);
-        const lines = echoes.map(narr);
+        const lines = echoes.filter(e => !e.seen).map(e => narr(e.t));
         if (S.news.length) lines.push(narr(S.news[0]));
         else lines.push(narr(S.queue.some(p => p.status === 'waiting') ? '候診的人裡，有幾張熟面孔。' : '新的一個門診日。'));
         if (S.spirit < 20 && isEasy()) lines.push(S.ch === 0 ? { who: SHM, text: '你臉色不好。醫者自己心神不寧，是看不清病人的。' } : narr('我想起師父說過：醫者自己心神不寧，是看不清病人的。'));
@@ -3170,6 +3167,17 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         apprentice: () => { S.fame += 4; return '小滿那張方子，病人吃了見效。他如今看診，敢說自己的想法了。'; },
         office: () => { addSpirit(-8); return '位子高了，我看的公文比病人多。有一天我發現，自己已經叫不出候診病人的名字。'; }
     };
+    /* 其中幾個回音不只一句話：章首多演一小段，讓後果有人、有畫面。沒有列在這裡的，維持一句旁白 */
+    const ECHO_SCENE = {
+        promise: (e) => { const p = P[e.pid];
+            return p && GOOD4.includes(p.outcome)
+                ? [{ text: '我拍過胸脯的那一家人提著謝禮上門，後頭還跟著兩位鄰居。' }, { text: '鄰居開口的第一句話是：大夫，聽說你敢保證。我這個病，你也給我保證一個。' }]
+                : [{ text: '我保證過會治好的那位病人沒有好。他的家人站在診間門口，沒有進來。' }, { text: '他只說了一句：大夫，那天你說一定會好的。說完就走了。街上的人都聽見了。' }]; },
+        collapse: () => [{ text: '那一夜之後，我病了一場。來看我的是母親。' }, { text: '她把藥碗端到我手上，說：你給別人開了那麼多方子，自己的身子倒不會看。' }],
+        refuse: () => [{ text: '門外來了一群人，褲腳上都是泥。帶頭的那位我認得，是那天在門外排隊的人。' }, { text: '他說：大夫，我把村裡走得動的都帶來了。我跟他們說，這位大夫不看錢。' }],
+        silence: () => [{ text: '候診的人裡，有幾位我在那位老大夫的診間外見過。他們坐得很靠邊，像是怕被人認出來。' }, { text: '我沒有多問，照樣一位一位看。' }],
+        apprentice: () => [{ who: APP, text: '師父，上回那位病人回來了。他說吃了我的方子，夜裡能睡了。' }, { who: '我', text: '嗯。是你的方子。' }, { text: '從那天起，小滿看診，敢說自己的想法了。' }]
+    };
     const signed = (n) => `${n > 0 ? '+' : '−'}${Math.abs(n)}`;
     function dilemma(force) {
         V = null; hud();
@@ -3215,6 +3223,16 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         give: ['我拿出一些錢，替幾位付不起藥錢的人抓了藥。他們道謝的時候，我反而有些不好意思。', '我把幾帖藥包好，託人送去城外。那幾戶人家，我記得他們的灶是冷的。']
     };
     const night = (k) => NIGHT[k][S.day % NIGHT[k].length];
+    /* 沒有治療中的病人時，「探望」改成去看看身邊的人：習醫章是師父，之後是母親，晚年是老陳或師父的舊居 */
+    function kin() {
+        const pick = (arr) => arr[S.day % arr.length];
+        if (S.ch === 0) return { who: '師父', text: pick(['我去師父房裡坐了一會。他在抄書，頭也沒抬，只把一盞茶推到我這邊。', '師父在院子裡曬藥。我蹲下來幫著翻，他說：翻藥和看病一樣，急不得。']) };
+        if (S.ch <= 2) return { who: '母親', text: pick(['我回家吃了一頓飯。母親沒問診間的事，只問我瘦了沒有。', '母親在門口剝豆子。我坐在旁邊幫著剝，誰也沒說話。', '母親把我當年背她求醫的事又說了一遍。她說，那一路上，她其實是醒著的。']) };
+        if (S.ch === 3) return { who: '母親', text: pick(['母親的眼睛也看不清了。我替她看了看，她說：你看別人看了大半輩子，總算輪到我。', '我陪母親在門口坐到天黑。她的手很輕，我握了很久。']) };
+        if (S.flags.friend === '老陳' && S.dil.includes('terminal')) return { who: '老陳的田', text: '我到老陳的田邊站了一會。田有人接著種了，是他的孫子。' };
+        if (chenOf()) return { who: '老陳', text: pick(['我去看了老陳。他坐在田埂上曬太陽，說：大夫，你也老了。', '老陳留我吃飯。桌上那盤雞蛋，和許多年前他提來診間的一樣。']) };
+        return { who: '師父的舊居', text: '我又去了一趟師父的舊居，在那張凳子上坐了一會。' };
+    }
     function freeAction() {
         V = null; hud();
         const waiting = Object.values(P).filter(p => p.status === 'waiting');
@@ -3224,9 +3242,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                 <button class="octw" data-act="rest"><span class="oct"><b>休養</b></span><span class="sub">${heart ? '心悸失眠，歇不安穩。精力 +9，心神 +2' : '早睡，讓身體歇著。精力 +18，心神 +5'}</span></button>
                 <button class="octw" data-act="sit"><span class="oct"><b>靜坐</b></span><span class="sub">關上門，坐一個時辰。心神 +14，修為 +2</span></button>
                 <button class="octw" data-act="study" ${eye ? 'disabled' : ''}><span class="oct"><b>研讀</b></span><span class="sub">${eye ? '精力不足 30：眼壓飆高，視物模糊，讀不下書' : '讀《傷寒論》與《目經大成》。精力 −4，醫術 +1，下個門診日每位新病人可多問一項'}</span></button>
-                <button class="octw" data-act="visit" ${waiting.length ? '' : 'disabled'}><span class="oct"><b>探望</b></span><span class="sub">${waiting.length ? '去看看治療中最讓我放不下的那一位。精力 −4，信任 +8' : '目前沒有治療中的病人'}</span></button>
+                <button class="octw" data-act="visit"><span class="oct"><b>探望</b></span><span class="sub">${waiting.length ? '去看看治療中最讓我放不下的那一位。精力 −4，信任 +8' : `沒有治療中的病人。去看看${kin().who}。精力 −2，心神 +8，修為 +1`}</span></button>
                 <button class="octw" data-act="give" ${S.money >= 15 ? '' : 'disabled'}><span class="oct"><b>施藥</b></span><span class="sub">${S.money >= 15 ? '拿出金錢 15，替付不起藥錢的人抓藥。聲望 +3，修為 +2' : '需金錢 15：手頭不寬裕'}</span></button>
-                ${S.app.on && !S.app.done ? `<button class="octw" data-act="teach"><span class="oct"><b>帶徒</b></span><span class="sub">把今天的病人一位一位講給小滿聽。精力 −3，醫術 +1，聲望 +1。學徒歷練 ${S.app.exp}/3</span></button>` : ''}
+                ${S.app.on && !S.app.done ? `<button class="octw" data-act="teach"><span class="oct"><b>帶徒</b></span><span class="sub">把今天的病人一位一位講給小滿聽。精力 −3，醫術 +1，聲望 +1。小滿的歷練 ${S.app.exp}/3</span></button>` : ''}
             </div>
             <div class="small dim" style="text-align:center">精力 ${S.energy}　心神 ${S.spirit}。兩者都在五成以上且相差不大，就是既濟。</div>`);
         chapterTrack();
@@ -3249,6 +3267,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                     dayEnd('我把今天的病人講完，小滿忽然說出了我正要說的下一句話。我知道，他可以自己坐診了。', [pk, '小滿出師了。聲望 +4'].filter(Boolean).join('　'));
                 } else dayEnd('我把今天的病人一位一位講給小滿聽。有幾處他問得我答不上來，我才發現自己原來也沒想透。', pk);
             }
+            else if (!waiting.length) { addEnergy(-2); addSpirit(8); const pk = addPeace(1); dayEnd(kin().text, pk); }
             else {
                 const p = waiting.slice().sort((x, y) => x.trust - y.trust)[0];
                 addEnergy(-4);
@@ -3305,7 +3324,17 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             S.app.parent = pick ? pick.id : ''; S.app.why = pick ? (bad.length ? 'bad' : (ref.length ? 'ref' : 'good')) : '';
         }
         chapterTrack();
-        story(`第${CN[S.ch + 1]}章　${chOf().name}`, CHAPTERS[S.ch].heart ? '心結　' + CHAPTERS[S.ch].heart : '', linesOf(CHAPTERS[S.ch].lines), dayStart);
+        /* 上一章留下的回音在這裡結算。有場景的接在章首後面演，其餘留到第一個門診日開始時用一句話交代 */
+        const scenes = [];
+        S.echoNote = [];
+        S.echo.filter(e => e.ch <= S.ch).forEach(e => {
+            if (!ECHOES[e.id]) return;
+            const t = ECHOES[e.id](e), sc = ECHO_SCENE[e.id];
+            if (sc) scenes.push(...sc(e));
+            S.echoNote.push({ t, seen: !!sc });
+        });
+        S.echo = S.echo.filter(e => e.ch > S.ch);
+        story(`第${CN[S.ch + 1]}章　${chOf().name}`, CHAPTERS[S.ch].heart ? '心結　' + CHAPTERS[S.ch].heart : '', linesOf(CHAPTERS[S.ch].lines).concat(scenes), dayStart);
     }
     function chapterEnd() {
         V = null; hud();
@@ -3477,7 +3506,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                 <div class="stats4"><span>醫術 <span class="name px">${S.skill}</span></span><span>修為 <span class="name px">${S.peace}</span>　${tierOf()}</span>
                     <span>聲望 <span class="name px">${S.fame}</span></span><span>金錢 <span class="name px">${S.money}</span></span></div>
                 <div class="stats4 small"><span>既濟 <span class="px">${S.jiji}</span> 天</span><span>透支 <span class="px">${S.over}</span> 次</span>
-                    ${S.app.on ? `<span>學徒：${S.app.done ? '已出師' : `歷練 ${S.app.exp}/3`}</span>` : ''}</div>
+                    ${S.app.on ? `<span>小滿：${S.app.done ? '已出師' : `歷練 ${S.app.exp}/3`}</span>` : ''}</div>
                 <div class="desc">身心：${bal}<br>肉身警訊：${warn.length ? '<span class="down">' + warn.join('<br>　　　　　') + '</span>' : '無。'}</div>`;
         } else if (mSel === 1) {
             R.innerHTML = `<h3>病歷簿</h3>${bookHTML()}`;
