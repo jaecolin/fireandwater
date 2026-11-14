@@ -1,0 +1,3904 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 試玩階段不給搜尋引擎收錄；內容審定、正式上架時再拿掉這一行 -->
+<meta name="robots" content="noindex">
+<title>水火既濟：杏林問診</title>
+<meta name="description" content="扮演初入杏林的弟子，跟著師父望聞問切、辨證開方。方子開出去，要等病人回診才知道對不對。林佑彥醫師製作的中醫看診遊戲，試玩版。">
+<meta name="theme-color" content="#070a16">
+<meta name="format-detection" content="telephone=no">
+<!-- 分享到 LINE、臉書時的預覽 -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="林佑彥中醫師數位診間">
+<meta property="og:title" content="水火既濟：杏林問診（試玩版）">
+<meta property="og:description" content="跟著師父望聞問切、辨證開方。方子開出去，要等病人回診才知道對不對。">
+<meta property="og:url" content="https://yylin.tw/xinglin">
+<meta property="og:image" content="https://yylin.thothcdn.com/images/yylin.tw/upload_file/ab8fdfe7-fb59-4655-843a-35fe9ae6ba5b.png">
+<meta property="og:locale" content="zh_TW">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="https://yylin.tw/images/yylin.tw/favicon.png">
+<link rel="apple-touch-icon" href="https://yylin.thothcdn.com/images/yylin.tw/upload_file/e19069d3-0b05-41fd-9280-0763bcdfbcde.png">
+<link rel="preload" as="image" href="https://yylin.tw/images/yylin.tw/upload_file/ab8fdfe7-fb59-4655-843a-35fe9ae6ba5b.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&display=swap" rel="stylesheet">
+<!-- 標題用的毛筆字，只載入用到的四個字 -->
+<link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&text=%E6%9D%8F%E6%9E%97%E5%95%8F%E8%A8%BA&display=swap" rel="stylesheet">
+<style>
+/* 俐方體 11 號（Cubic 11），SIL OFL 授權。只用在指令、數值等點綴處。 */
+@font-face {
+    font-family: 'Cubic 11';
+    src: url('https://cdn.jsdelivr.net/gh/ACh-K/Cubic-11@main/fonts/web/Cubic_11.woff2') format('woff2');
+    font-display: swap;
+}
+:root {
+    --gold: #e8c56a; --gold-hi: #fff0b8; --gold-dark: #5a3d0c;
+    --navy-1: rgba(34, 52, 132, 0.95); --navy-2: rgba(9, 16, 56, 0.97);
+    --name: #ffe066; --hint: #9fd8ff; --up: #8dff9a; --down: #ff9a8a; --dim: #8791b8;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #070a16; color: #fff; overscroll-behavior: none; }   /* 手機上不要下拉就重新整理 */
+body { min-height: 100dvh; display: flex; align-items: center; justify-content: center; }   /* 螢幕比遊戲畫面高時置中 */
+.stage, .stage button { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }   /* 連點不放大、不閃灰底 */
+.stage button, .oct, .list li { -webkit-user-select: none; user-select: none; }
+body { font-family: 'Noto Serif TC', serif; font-weight: 500; font-size: 16px; line-height: 1.65; }
+button { font-family: inherit; font-size: inherit; font-weight: inherit; color: inherit; }
+.px { font-family: 'Cubic 11', 'Noto Serif TC', serif; font-weight: 400; }
+
+.stage {
+    position: relative; width: min(960px, 100%); height: min(100dvh, 700px); margin: 0 auto;
+    overflow: hidden; background: #111 center / cover no-repeat;
+}
+.stage::before { content: ''; position: absolute; inset: 0; background: rgba(6, 10, 34, 0.45); }
+.ui { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 9px; padding: 11px; }
+
+.win {
+    position: relative; text-shadow: 1px 1px 0 #000, 0 0 2px #000;
+    background: linear-gradient(180deg, var(--navy-1), var(--navy-2));
+    border: 2px solid var(--gold); border-radius: 5px;
+    box-shadow: 0 0 0 2px var(--gold-dark), inset 0 0 0 2px #0a1238, inset 0 0 0 3px rgba(232, 197, 106, 0.4), 0 6px 16px rgba(0, 0, 0, 0.55);
+    padding: 10px 14px;
+}
+.win::before {
+    content: ''; position: absolute; inset: -5px; pointer-events: none;
+    background:
+        radial-gradient(circle at 4px 4px, var(--gold-hi) 0 2.5px, var(--gold-dark) 3px 4px, transparent 4.5px) left top / 9px 9px no-repeat,
+        radial-gradient(circle at 5px 4px, var(--gold-hi) 0 2.5px, var(--gold-dark) 3px 4px, transparent 4.5px) right top / 9px 9px no-repeat,
+        radial-gradient(circle at 4px 5px, var(--gold-hi) 0 2.5px, var(--gold-dark) 3px 4px, transparent 4.5px) left bottom / 9px 9px no-repeat,
+        radial-gradient(circle at 5px 5px, var(--gold-hi) 0 2.5px, var(--gold-dark) 3px 4px, transparent 4.5px) right bottom / 9px 9px no-repeat;
+}
+.name { color: var(--name); } .hint { color: var(--hint); } .dim { color: var(--dim); }
+.up { color: var(--up); } .down { color: var(--down); }
+.small { font-size: 0.86em; }
+.hidden { display: none !important; }
+
+/* 上方：病人與自己 */
+.top { display: flex; gap: 9px; flex: none; }
+.top .win { flex: 1; min-width: 0; display: flex; gap: 10px; align-items: center; padding: 8px 12px; }
+.face { flex: none; width: 58px; height: 58px; border: 2px solid var(--gold); box-shadow: 0 0 0 1px var(--gold-dark); background: #1a2350 center top / cover no-repeat; overflow: hidden; }
+.face svg { width: 100%; height: 100%; display: block; }
+.rows { flex: 1; min-width: 0; }
+.row { display: flex; align-items: center; gap: 7px; }
+.row .k { flex: none; width: 2.6em; color: var(--hint); }
+.gauge { flex: 1; height: 9px; background: #050a26; border: 1px solid var(--gold-dark); position: relative; }
+.gauge i { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(180deg, #ffd27a, #c8862a); transition: width 0.4s; }
+.gauge.sp i { background: linear-gradient(180deg, #9fe3ff, #3a8fd0); }
+.gauge.tr i { background: linear-gradient(180deg, #b6ffb0, #3fa85a); }
+.row .v { flex: none; width: 2.2em; text-align: right; }
+
+/* 中間：工作區 */
+.panel { flex: 1; min-height: 0; display: flex; padding: 0; }
+.scroll { flex: 1; min-width: 0; overflow-y: auto; padding: 10px 14px; }
+.panel h3 { margin: 0 0 8px; font-size: 1.05em; font-weight: 700; color: var(--name); border-bottom: 1px solid rgba(232, 197, 106, 0.35); padding-bottom: 5px; display: flex; justify-content: space-between; gap: 8px; }
+.panel h3 span { font-weight: 500; color: var(--hint); font-size: 0.86em; }
+.btn {
+    cursor: pointer; background: rgba(255, 255, 255, 0.06); border: 1px solid var(--gold); border-radius: 3px;
+    padding: 6px 12px; text-shadow: 1px 1px 0 #000; text-align: left;
+}
+.btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.16); color: var(--name); }
+.btn:disabled { color: var(--dim); border-color: #6c5f38; cursor: default; }
+.btn.on { background: rgba(232, 197, 106, 0.28); color: var(--name); border-color: var(--gold-hi); }
+.btn.go { background: linear-gradient(180deg, #b78a2a, #7a5410); border-color: var(--gold-hi); font-weight: 700; text-align: center; padding: 8px 18px; }
+.btn.go:disabled { background: rgba(255, 255, 255, 0.05); font-weight: 500; }
+.grid { display: flex; flex-wrap: wrap; gap: 7px; }
+.grid .btn { flex: 1 1 150px; }
+.askg { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 7px; }
+.askg > b { flex: none; width: 1.3em; padding-top: 6px; color: var(--name); font-weight: 700; }
+.askg .grid { flex: 1; }
+.askg .grid .btn { flex: 0 1 auto; }
+.grp { margin-bottom: 9px; }
+.grp > b { color: var(--name); font-weight: 700; margin-right: 6px; }
+.ans { margin: 0; padding: 0; list-style: none; }
+.ans li { padding: 2px 0; border-bottom: 1px dashed rgba(255, 255, 255, 0.12); }
+.ans li b { color: var(--name); margin-right: 8px; }
+.foot { display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.axis { display: flex; align-items: center; gap: 7px; margin: 7px 0; }
+.axis .lbl { width: 3.2em; color: var(--hint); flex: none; }
+.axis .btn { flex: 1; text-align: center; }
+
+/* 處方 */
+.slots { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 9px; }
+.slot { flex: 1 1 110px; border: 1px dashed var(--gold); border-radius: 3px; padding: 5px 8px; min-height: 58px; cursor: pointer; }
+.slot.cur { border-style: solid; background: rgba(232, 197, 106, 0.16); }
+.slot .t { color: var(--hint); font-size: 0.82em; }
+.slot .h { color: var(--name); }
+.herbs { display: flex; flex-wrap: wrap; gap: 7px; }
+.herb { flex: 1 1 170px; cursor: pointer; border: 1px solid rgba(232, 197, 106, 0.6); border-radius: 3px; padding: 5px 9px; background: rgba(255, 255, 255, 0.05); text-align: left; text-shadow: 1px 1px 0 #000; }
+.herb:hover { background: rgba(255, 255, 255, 0.14); }
+.herb.used { opacity: 0.45; }
+.herb .n { font-weight: 700; }
+.herb .q { display: inline-block; font-size: 0.78em; padding: 0 6px; border-radius: 9px; margin-left: 6px; text-shadow: none; color: #10142e; font-weight: 700; }
+.q.hot { background: #ff9d7a; } .q.cold { background: #8fc8ff; } .q.even { background: #e4dcb8; }
+.herb .d { display: block; font-size: 0.8em; color: var(--hint); line-height: 1.45; }
+
+/* 醫案 */
+.rec { width: 100%; border-collapse: collapse; }
+.rec td { padding: 4px 6px; border-bottom: 1px dashed rgba(255, 255, 255, 0.14); vertical-align: top; }
+.rec td:first-child { color: var(--hint); white-space: nowrap; width: 5.4em; }
+.quote { margin: 9px 0 0; padding: 7px 11px; border-left: 3px solid var(--gold); background: rgba(255, 255, 255, 0.05); }
+
+/* 下方：對話橫帶。整條貼齊畫面下緣，說話的人在右側露出半身 */
+.dlg {
+    flex: none; position: relative; cursor: pointer; margin: 0 -11px -11px; min-height: 150px;
+    padding: 22px 196px 24px 7%;
+    background: linear-gradient(180deg, rgba(58, 62, 150, 0.8), rgba(24, 27, 88, 0.92));
+    text-shadow: 1px 1px 0 #000, 0 0 3px #000;
+}
+.dlg::before, .dlg::after {
+    content: ''; position: absolute; left: 0; right: 0; height: 9px; pointer-events: none;
+    background:
+        linear-gradient(rgba(232, 197, 106, 0.55), rgba(232, 197, 106, 0.55)) left top / 100% 1px no-repeat,
+        linear-gradient(rgba(232, 197, 106, 0.55), rgba(232, 197, 106, 0.55)) left bottom / 100% 1px no-repeat,
+        repeating-linear-gradient(90deg, transparent 0 7px, rgba(232, 197, 106, 0.42) 7px 9px, transparent 9px 12px, rgba(232, 197, 106, 0.42) 12px 13px) left center / 100% 3px no-repeat;
+}
+.dlg::before { top: 5px; }
+.dlg::after { bottom: 5px; }
+.dlg .body { font-size: 1.16em; line-height: 1.6; }
+.dlg .name { display: block; color: #ffab3d; font-weight: 700; }
+.dlg .name:empty { display: none; }
+.dlg .more { position: absolute; right: 204px; bottom: 16px; color: var(--gold-hi); animation: blink 0.9s steps(2) infinite; }
+.bust {
+    position: absolute; right: 18px; bottom: 0; width: 160px; height: 172px; pointer-events: none;
+    background: center top / cover no-repeat;
+    -webkit-mask-image: radial-gradient(ellipse 64% 72% at 50% 44%, #000 60%, transparent 100%);
+    mask-image: radial-gradient(ellipse 64% 72% at 50% 44%, #000 60%, transparent 100%);
+}
+.bust.fig { -webkit-mask-image: none; mask-image: none; }
+.bust svg { width: 100%; height: 100%; display: block; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* 開場 */
+.title {
+    position: absolute; inset: 0; display: flex; padding: 14px; overflow-y: auto;
+    background: radial-gradient(ellipse 72% 62% at 50% 40%, rgba(34, 22, 10, 0.42), rgba(6, 4, 3, 0.96) 78%);
+}
+.title .win { width: min(560px, 100%); margin: auto; }
+.title h1 { margin: 0 0 2px; font-size: 1.5em; color: var(--name); text-align: center; letter-spacing: 0.15em; }
+.title .sub { text-align: center; color: var(--hint); margin-bottom: 12px; }
+.title h2 { margin: 12px 0 6px; font-size: 1em; color: var(--hint); font-weight: 500; }
+.opt { display: flex; gap: 8px; flex-wrap: wrap; }
+.opt .btn { flex: 1 1 200px; }
+.opt .btn small { display: block; color: var(--hint); font-size: 0.82em; line-height: 1.45; }
+.disclaimer { font-size: 0.8em; color: var(--dim); margin-top: 12px; line-height: 1.55; }
+
+@media (max-width: 640px) {
+    body { font-size: 15px; }
+    .stage { height: 100dvh; }
+    .ui { padding: 9px; gap: 8px; }
+    .face { width: 46px; height: 46px; }
+    .top .win { padding: 6px 9px; gap: 8px; }
+    .row .k { width: 2.4em; }
+    .dlg { margin: 0 -9px -9px; min-height: 126px; padding: 18px 108px 20px 14px; }
+    .dlg .body { font-size: 1.05em; }
+    .dlg .more { right: 112px; bottom: 13px; }
+    .bust { right: 4px; width: 100px; height: 130px; }
+    .grid .btn { flex: 1 1 130px; }
+    .herb { flex: 1 1 140px; }
+}
+@media (prefers-reduced-motion: reduce) { .dlg .more { animation: none; } }
+
+/* 察目 */
+.eyebox { max-width: 340px; margin: 8px auto 4px; }
+.eyebox svg { width: 100%; height: auto; display: block; }
+.zone { cursor: pointer; transition: filter 0.15s; }
+.zone:hover { filter: brightness(1.12); }
+.zone.sel { stroke: #ffe066; stroke-width: 8; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 6px; color: var(--hint); }
+.legend b { color: var(--name); font-weight: 700; margin-right: 4px; }
+.see { padding: 7px 11px; border-left: 3px solid var(--gold); background: rgba(255, 255, 255, 0.05); }
+.grid .btn .sub { display: block; color: var(--hint); font-size: 0.84em; line-height: 1.45; }
+.note { margin: 8px 0 0; padding: 6px 11px; border-left: 3px solid #6fb0e0; background: rgba(120, 180, 230, 0.08); }
+
+/* 門診日 */
+.plist { list-style: none; margin: 8px 0 0; padding: 0; }
+.plist li { display: flex; gap: 10px; align-items: center; padding: 6px 0; border-bottom: 1px dashed rgba(255, 255, 255, 0.14); }
+.plist .face { width: 40px; height: 40px; }
+.plist .who { flex: 1; min-width: 0; }
+.tag { display: inline-block; font-size: 0.8em; padding: 0 8px; border-radius: 10px; border: 1px solid var(--gold); color: var(--name); white-space: nowrap; }
+.tag.back { border-color: #7fd08a; color: var(--up); }
+.tag.done { border-color: #8791b8; color: #c9d0ee; }
+.tag.lost { border-color: #c98a7a; color: var(--down); }
+.bookbtn { flex: none; align-self: center; padding: 3px 10px; font-size: 0.86em; }
+.narrow { display: none; }
+@media (max-width: 640px) {
+    #me-face { display: none; }
+    .wide { display: none; }
+    .narrow { display: inline-block; white-space: nowrap; }
+    .bookbtn { padding: 3px 7px; }
+}
+.book { position: absolute; inset: 0; z-index: 5; background: rgba(4, 7, 24, 0.78); display: flex; padding: 14px; }
+.book .win { margin: auto; width: min(640px, 100%); max-height: 100%; display: flex; flex-direction: column; padding: 0; }
+.book .scroll { padding: 12px 16px; }
+.book h3 { margin: 0 0 8px; font-size: 1.05em; color: var(--name); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(232, 197, 106, 0.35); padding-bottom: 6px; }
+.bk { padding: 8px 0; border-bottom: 1px dashed rgba(255, 255, 255, 0.16); }
+.bk ul { margin: 4px 0 0; padding-left: 1.2em; color: #d6dcf5; }
+
+/* ===== 致敬早年的國產角色扮演遊戲：八角指令、標題畫面、換日過場 ===== */
+.row .v { width: 4.4em; }
+.row .v small { font-size: 0.82em; opacity: 0.75; }
+#v-tr { color: #ffb48e; }
+#v-sp { color: #8fd0ff; }
+
+/* 八角指令鈕：用在「要做哪一件事」的抉擇 */
+.octs { display: flex; flex-wrap: wrap; gap: 16px 26px; justify-content: center; margin: 16px 0 6px; }
+.octw { width: 168px; display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 0; background: none; border: 0; cursor: pointer; text-align: center; text-shadow: 1px 1px 0 #000; }
+.oct {
+    position: relative; width: 88px; height: 88px; display: grid; place-items: center; transition: transform 0.15s, filter 0.15s;
+    clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
+    background: linear-gradient(145deg, var(--gold-hi), #b8892e 45%, var(--gold-dark));
+}
+.oct::before {
+    content: ''; position: absolute; inset: 4px;
+    clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
+    background: radial-gradient(circle at 50% 32%, #2f409a, #0a1036 78%);
+}
+.oct b { position: relative; font-family: 'Cubic 11', 'Noto Serif TC', serif; font-weight: 400; font-size: 1.3em; line-height: 1.2; color: var(--name); }
+.octw .sub { color: var(--hint); font-size: 0.84em; line-height: 1.45; }
+.octw:hover:not(:disabled) .oct, .octw:focus-visible .oct { transform: scale(1.07); filter: brightness(1.25); }
+.octw:disabled { cursor: default; }
+.octw:disabled .oct { filter: grayscale(1) brightness(0.6); }
+.octw:disabled .sub { color: var(--dim); }
+
+/* 診間：借用回合制戰鬥的構圖。病人在左，我與師父在右，中間是四個指令。
+   對手是病，不是病人，所以沒有攻擊與血條，只有「下一步要做什麼」。 */
+.scene { flex: 1; min-height: 0; position: relative; }
+.fig { position: absolute; pointer-events: none; }
+.fig > div { position: absolute; inset: 0; background: center bottom / contain no-repeat; }
+.fig > div svg { width: 100%; height: 100%; display: block; }
+.fig > i { position: absolute; left: 10%; right: 10%; bottom: -8px; height: 20px; border-radius: 50%; background: radial-gradient(ellipse, rgba(0, 0, 0, 0.6), transparent 70%); }
+/* 病人立繪只到腰，所以貼齊下緣，讓對話橫帶蓋住切口，底部再淡出 */
+.fig.pt { left: 2%; bottom: -9px; width: 35%; height: 88%; }
+.fig.pt > div { -webkit-mask-image: linear-gradient(#000 84%, transparent 100%); mask-image: linear-gradient(#000 84%, transparent 100%); }
+.fig.pt > i { display: none; }
+.fig.me { right: 5%; bottom: 3%; width: 15%; height: 62%; }
+.fig.mt { right: 21%; bottom: 26%; width: 10%; height: 42%; opacity: 0.88; }
+.cmds { position: absolute; left: 52%; top: 47%; transform: translate(-50%, -50%); display: grid; grid-template-columns: repeat(2, 132px); gap: 14px 8px; }
+.cmds .octw { width: auto; min-width: 0; }
+.cmds .sub { padding: 0 7px; border-radius: 9px; background: rgba(6, 10, 34, 0.62); text-shadow: 1px 1px 0 #000; }
+.octw.cur { animation: glow 1.4s ease-in-out infinite; }
+@keyframes glow { 0%, 100% { filter: drop-shadow(0 0 3px rgba(255, 224, 102, 0.45)); } 50% { filter: drop-shadow(0 0 13px rgba(255, 224, 102, 0.95)); } }
+.octw.done .sub { color: var(--up); }
+.octw.done .sub::before { content: '✓ '; }
+.scinfo { position: absolute; left: 34%; right: 30%; bottom: 0; text-align: center; text-shadow: 1px 1px 0 #000, 0 0 3px #000; }
+@media (max-width: 640px) {
+    .fig.pt { left: -2%; top: 0; bottom: auto; width: 56%; height: 60%; }
+    .fig.me { right: 3%; top: 30%; bottom: auto; width: 24%; height: 40%; }
+    .fig.mt { right: 27%; top: 22%; bottom: auto; width: 17%; height: 30%; }
+    .cmds { left: 0; right: 0; top: auto; bottom: 2px; transform: none; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+    .cmds .oct { width: 64px; height: 64px; }
+    .cmds .oct b { font-size: 1.08em; }
+    .cmds .sub { font-size: 0.78em; padding: 0 4px; }
+    .scinfo { left: 50%; right: 0; top: 0; bottom: auto; text-align: right; }
+}
+@media (prefers-reduced-motion: reduce) { .octw.cur { animation: none; filter: drop-shadow(0 0 8px rgba(255, 224, 102, 0.8)); } }
+
+.how { margin: 0; padding-left: 1.2em; color: #d6dcf5; line-height: 1.6; }
+/* 杏林札記 */
+.notes { list-style: none; margin: 0; padding: 0; line-height: 1.7; }
+.notes li { padding: 1px 0; border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+.notes.two { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; }
+#t-notes h2 span { color: var(--name); }
+@media (max-width: 640px) { .notes.two { grid-template-columns: 1fr; } }
+
+/* 困境：上方是插圖，下方是抉擇 */
+.dwrap { display: flex; gap: 12px; align-items: stretch; }
+.dwrap .see { flex: 1; min-width: 0; }
+.dimg { flex: 0 0 290px; min-height: 174px; border: 1px solid var(--gold); border-radius: 3px; background: #f1ece2 center / contain no-repeat; }
+.octw .sub b { color: #fff; font-weight: 700; }
+@media (max-width: 640px) {
+    .dwrap { flex-direction: column; gap: 8px; }
+    .dimg { flex: none; height: 168px; min-height: 0; }
+}
+
+/* 劇情段落（開場、換章、後記）：收起狀態牌，只留場景與對話 */
+.stat { color: var(--hint); line-height: 1.3; }
+.stat b { color: #fff; font-weight: 400; margin-right: 2px; }
+#v-en { color: #ffd27a; }
+.tag.bal { font-size: 0.78em; padding: 0 6px; margin-left: 2px; border-color: #7fd08a; color: var(--up); }
+.tag.bal.off { border-color: #c98a7a; color: var(--down); }
+.scene.bare > * { display: none; }
+.ui.story .top { visibility: hidden; }
+.skip { display: none; position: absolute; right: 14px; top: 12px; z-index: 2; padding: 3px 12px; font-size: 0.86em; }
+.ui.story .skip { display: block; }
+
+/* 標題畫面 */
+.tscreen { margin: auto; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 5vh; text-align: center; padding: 2vh 0; }
+.tlogo .tsmall { color: #cdb98a; letter-spacing: 0.4em; padding-left: 0.4em; }
+.tlogo h1 {
+    margin: 8px 0 0; font-family: 'Yuji Syuku', 'Noto Serif TC', serif; font-weight: 400; font-size: clamp(3.2rem, 13vw, 6.2rem);
+    line-height: 1.1; letter-spacing: 0.1em; padding-left: 0.1em; color: #f4e6bd; text-align: center;
+    text-shadow: 0 0 22px rgba(150, 80, 14, 0.85), 3px 3px 0 #1a0f05;
+}
+.seal { display: inline-block; vertical-align: top; margin: 0.5em 0 0 0.1em; padding: 0.35em 0.2em; font-family: 'Noto Serif TC', serif; font-size: 0.17em; font-weight: 700; letter-spacing: 0.12em; line-height: 1.1; writing-mode: vertical-rl; background: #a8281e; color: #f6e7c8; border-radius: 3px; text-shadow: none; }
+.tmenu { display: flex; flex-direction: column; gap: 12px; }
+.tmenu button { position: relative; background: none; border: 0; cursor: pointer; font-size: 1.45em; font-weight: 700; letter-spacing: 0.35em; padding: 4px 1.7em 4px 2.05em; color: #f1dfb2; text-shadow: 2px 2px 0 #1a0f05, 0 0 10px #000; }
+.tmenu button small { display: block; font-size: 0.5em; font-weight: 500; letter-spacing: 0.1em; color: #a99a78; }
+.tmenu button:hover:not(:disabled), .tmenu button:focus-visible { color: #fff6d6; outline: none; }
+.tmenu button:hover:not(:disabled)::before, .tmenu button:focus-visible::before { content: '◆'; position: absolute; left: 0.5em; top: 0.75em; font-size: 0.55em; letter-spacing: 0; color: var(--gold); }
+.tmenu button:disabled { color: #6f6552; cursor: default; }
+.tver { color: #7d745f; font-size: 0.8em; line-height: 1.6; }
+
+/* 換日過場：黑底題字，淡出後露出候診室 */
+.veil { position: absolute; inset: 0; z-index: 6; background: #05060d; display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; animation: veil 1.7s ease forwards; }
+@keyframes veil { 0%, 68% { opacity: 1; } 100% { opacity: 0; } }
+.veil .vbig { font-size: 2em; font-weight: 700; letter-spacing: 0.3em; padding-left: 0.3em; color: #f1dfb2; }
+.veil .vsub { margin-top: 10px; letter-spacing: 0.2em; color: #a99a78; }
+@media (max-width: 640px) {
+    .row .v { width: 2.2em; }
+    .row .v small { display: none; }
+    .octs { gap: 12px 8px; }
+    .octw { width: 31%; min-width: 96px; }
+    .oct { width: 74px; height: 74px; }
+    .veil .vbig { font-size: 1.6em; }
+}
+@media (prefers-reduced-motion: reduce) { .veil { animation: none; } .oct { transition: none; } }
+
+/* =====================================================================
+   仙劍風操作介面（2026-11-14）：所有操作都用同一套語彙。
+   選項是視窗裡的文字選單，左邊有金色游標；確認是兩端收尖的金框牌；
+   八綱與君臣佐使是八角格；藥材是物品清單。可以用方向鍵移動游標、Enter 確認、Esc 返回。
+   ===================================================================== */
+/* 文字選單與游標 */
+.btn {
+    position: relative; background: none; border: 0; border-radius: 0; padding: 5px 12px 5px 26px;
+    color: #fff; text-align: left; text-shadow: 1px 1px 0 #000, 0 0 3px #000; outline: none;
+}
+.btn::before {
+    content: ''; position: absolute; left: 7px; top: 50%; margin-top: -6px; width: 0; height: 0;
+    border: 6px solid transparent; border-left: 9px solid var(--gold-hi); opacity: 0;
+    filter: drop-shadow(1px 1px 0 #000);
+}
+.btn:hover:not(:disabled), .btn:focus-visible { background: linear-gradient(90deg, rgba(232, 197, 106, 0.28), rgba(232, 197, 106, 0)); color: var(--name); }
+.btn:hover:not(:disabled)::before, .btn:focus-visible::before { opacity: 1; animation: nudge 0.55s ease-in-out infinite alternate; }
+.btn.on { background: linear-gradient(90deg, rgba(232, 197, 106, 0.34), rgba(232, 197, 106, 0.03)); color: var(--name); }
+.btn.on::before { opacity: 1; }
+.btn:disabled { color: var(--dim); background: none; cursor: default; }
+.btn.on:disabled { color: #c9bf9a; }
+.btn.on:disabled::before { content: '✓'; border: 0; width: auto; height: auto; left: 6px; margin-top: -0.85em; color: var(--up); opacity: 1; filter: none; animation: none; }
+@keyframes nudge { to { transform: translateX(3px); } }
+.grid { gap: 0 16px; }
+.grid .btn { flex: 1 1 210px; border-bottom: 1px dashed rgba(255, 255, 255, 0.14); }
+.askg .grid .btn { flex: 1 1 150px; }
+.opt .btn { border-bottom: 1px dashed rgba(255, 255, 255, 0.14); }
+
+/* 確認：兩端收尖的金框牌 */
+.btn.go {
+    isolation: isolate; padding: 8px 30px; text-align: center; color: var(--name); font-weight: 400;
+    background: linear-gradient(180deg, var(--gold-hi), #b8892e 50%, var(--gold-dark));
+    clip-path: polygon(13px 0, calc(100% - 13px) 0, 100% 50%, calc(100% - 13px) 100%, 13px 100%, 0 50%);
+    transition: filter 0.15s;
+}
+.btn.go::before {
+    content: ''; inset: 2px; left: 2px; top: 2px; margin: 0; width: auto; height: auto; border: 0; opacity: 1; z-index: -1; filter: none; animation: none;
+    clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0 50%);
+    background: radial-gradient(ellipse at 50% 20%, #33459f, #0a1036 80%);
+}
+.btn.go:hover:not(:disabled), .btn.go:focus-visible { filter: brightness(1.3); color: #fff6d6; }
+.btn.go:hover:not(:disabled)::before, .btn.go:focus-visible::before { animation: none; }
+.btn.go:disabled { filter: grayscale(1) brightness(0.62); color: var(--dim); background: linear-gradient(180deg, var(--gold-hi), #b8892e 50%, var(--gold-dark)); }
+
+/* 小按鈕：病歷簿、聲音、跳過、合上 */
+.bookbtn, .skip, .snd, #book-x {
+    padding: 3px 11px; border: 1px solid var(--gold); background: linear-gradient(180deg, rgba(47, 64, 154, 0.9), rgba(10, 16, 54, 0.92));
+    box-shadow: 0 0 0 1px var(--gold-dark); color: var(--name);
+}
+.bookbtn::before, .skip::before, .snd::before, #book-x::before { display: none; }
+.bookbtn:hover, .skip:hover, .snd:hover, #book-x:hover { background: linear-gradient(180deg, rgba(70, 90, 190, 0.95), rgba(20, 30, 90, 0.95)); }
+
+/* 八綱：每一綱是一對八角鈕 */
+.axis { gap: 14px; margin: 10px 0; justify-content: center; }
+.axis .lbl { width: 3.4em; text-align: right; }
+.axis .btn {
+    flex: none; isolation: isolate; width: 66px; height: 66px; padding: 0; text-align: center;
+    font-family: 'Cubic 11', 'Noto Serif TC', serif; font-size: 1.35em; color: #c9d0ee;
+    clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
+    background: linear-gradient(145deg, #9a8a5a, #6c5f38 45%, #3a2a0c); transition: transform 0.15s, filter 0.15s;
+}
+.axis .btn::before {
+    content: ''; inset: 4px; left: 4px; top: 4px; margin: 0; width: auto; height: auto; border: 0; opacity: 1; z-index: -1; filter: none; animation: none;
+    clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
+    background: radial-gradient(circle at 50% 32%, #1c2664, #070b28 78%);
+}
+.axis .btn:hover:not(:disabled), .axis .btn:focus-visible { background: linear-gradient(145deg, var(--gold-hi), #b8892e 45%, var(--gold-dark)); color: var(--name); transform: scale(1.06); }
+.axis .btn:hover:not(:disabled)::before, .axis .btn:focus-visible::before { animation: none; }
+.axis .btn.on { background: linear-gradient(145deg, var(--gold-hi), #b8892e 45%, var(--gold-dark)); color: #fff6d6; filter: drop-shadow(0 0 6px rgba(255, 224, 102, 0.8)); }
+.axis .btn.on::before { background: radial-gradient(circle at 50% 32%, #4a5fc4, #16206a 78%); }
+
+/* 君臣佐使：四個八角藥格 */
+.slots { justify-content: center; gap: 12px; margin: 10px 0 12px; }
+.slot {
+    position: relative; isolation: isolate; flex: none; width: 124px; height: 96px; min-height: 0; border: 0; border-radius: 0; padding: 6px 10px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; line-height: 1.35;
+    clip-path: polygon(22% 0, 78% 0, 100% 28%, 100% 72%, 78% 100%, 22% 100%, 0 72%, 0 28%);
+    background: linear-gradient(145deg, #9a8a5a, #6c5f38 45%, #3a2a0c); transition: filter 0.15s;
+}
+.slot::before {
+    content: ''; position: absolute; inset: 4px; z-index: -1;
+    clip-path: polygon(22% 0, 78% 0, 100% 28%, 100% 72%, 78% 100%, 22% 100%, 0 72%, 0 28%);
+    background: radial-gradient(ellipse at 50% 28%, #1c2664, #070b28 80%);
+}
+.slot.cur { background: linear-gradient(145deg, var(--gold-hi), #b8892e 45%, var(--gold-dark)); filter: drop-shadow(0 0 6px rgba(255, 224, 102, 0.75)); }
+.slot.cur::before { background: radial-gradient(ellipse at 50% 28%, #3c4fb0, #121a58 80%); }
+.slot .t { font-family: 'Cubic 11', 'Noto Serif TC', serif; font-size: 0.86em; color: var(--hint); }
+.slot .h { font-size: 0.95em; }
+.slot .h .dim { font-size: 0.82em; }
+
+/* 藥材：物品清單 */
+.herbs { gap: 0 16px; }
+.herb {
+    position: relative; flex: 1 1 250px; border: 0; border-bottom: 1px dashed rgba(255, 255, 255, 0.14); border-radius: 0;
+    background: none; padding: 5px 8px 5px 26px; color: #fff; outline: none;
+}
+.herb::before {
+    content: ''; position: absolute; left: 7px; top: 14px; width: 0; height: 0;
+    border: 6px solid transparent; border-left: 9px solid var(--gold-hi); opacity: 0; filter: drop-shadow(1px 1px 0 #000);
+}
+.herb:hover, .herb:focus-visible { background: linear-gradient(90deg, rgba(232, 197, 106, 0.28), rgba(232, 197, 106, 0)); }
+.herb:hover::before, .herb:focus-visible::before { opacity: 1; animation: nudge 0.55s ease-in-out infinite alternate; }
+.herb.used { opacity: 1; background: linear-gradient(90deg, rgba(232, 197, 106, 0.2), rgba(232, 197, 106, 0)); }
+.herb.used .n { color: var(--name); }
+.herb.used::before { content: '✓'; border: 0; width: auto; height: auto; left: 6px; top: 4px; color: var(--up); opacity: 1; filter: none; animation: none; }
+
+/* 標題選單的游標也換成同一個 */
+.tmenu button:hover:not(:disabled)::before, .tmenu button:focus-visible::before {
+    content: ''; left: 0.75em; top: 0.72em; width: 0; height: 0; font-size: 1em;
+    border: 0.26em solid transparent; border-left: 0.4em solid var(--gold-hi); animation: nudge 0.55s ease-in-out infinite alternate;
+}
+@media (max-width: 640px) {
+    .grid .btn { flex: 1 1 100%; }
+    .askg .grid .btn { flex: 1 1 44%; }
+    .axis { gap: 10px; }
+    .axis .btn { width: 58px; height: 58px; }
+    .slots { gap: 6px; }
+    .slot { width: 23.5%; min-width: 78px; height: 84px; padding: 4px 4px; }
+    .slot .h { font-size: 0.86em; }
+    .herb { flex: 1 1 100%; }
+}
+@media (prefers-reduced-motion: reduce) { .btn::before, .herb::before, .tmenu button::before { animation: none !important; } }
+
+/* =====================================================================
+   照「樣張-仙劍風介面」重排的兩個畫面（2026-11-14）
+   一、看診畫面：診間裡有病人時（#ui.clinic），上方是訊息窗，左下是十字指令，
+       右下是我的狀態窗，各步驟的內容在中間彈出。
+   二、系統選單：左邊是選單列與金錢，右邊是內容窗。
+   ===================================================================== */
+.v-en { color: #ffd27a; } .v-sp { color: #8fd0ff; }
+.ui.clinic { display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.ui.clinic .top { display: none; }
+.ui.clinic .dlg {
+    grid-row: 1; margin: 0; min-height: 4.9em; padding: 0.55em 1em 0.75em; border: 2px solid var(--gold); border-radius: 5px;
+    background: linear-gradient(180deg, var(--navy-1), var(--navy-2));
+    box-shadow: 0 0 0 2px var(--gold-dark), inset 0 0 0 2px #0a1238, inset 0 0 0 3px rgba(232, 197, 106, 0.4), 0 6px 16px rgba(0, 0, 0, 0.55);
+}
+.ui.clinic .dlg::before, .ui.clinic .dlg::after, .ui.clinic .bust { display: none; }
+.ui.clinic .dlg .body { font-size: 1em; }
+.ui.clinic .dlg .name { display: inline; color: var(--name); }
+.ui.clinic .dlg .more { right: 12px; bottom: 3px; }
+.ui.clinic #scene, .ui.clinic #panel-win { grid-area: 2 / 1; min-height: 0; }
+.ui.clinic #scene.hidden { display: block !important; }
+.ui.clinic #panel-win { z-index: 2; justify-self: end; align-self: start; width: 71%; height: calc(100% - 12.4em); }
+.ui.clinic #panel-win:not(.hidden) ~ #scene .cmds, .ui.clinic #panel-win:not(.hidden) ~ #scene .cmdinfo { opacity: 0.45; pointer-events: none; }
+.cstat, .ptag, .cmdinfo { display: none; }
+.ui.clinic .cstat { display: flex; position: absolute; right: 0; bottom: 0; width: 46%; gap: 10px; align-items: center; padding: 8px 12px; }
+.ui.clinic .cstat .rows { flex: 1; min-width: 0; }
+.ui.clinic .ptag {
+    display: block; position: absolute; left: 0; top: -1.9em; z-index: 1; white-space: nowrap;
+    background: rgba(9, 16, 56, 0.88); border: 1px solid var(--gold); padding: 0 0.6em; font-size: 0.86em; text-shadow: 1px 1px 0 #000;
+}
+.ui.clinic .fig.pt { left: 3%; bottom: 12.6em; top: auto; width: 25%; height: auto; aspect-ratio: 1; }
+.ui.clinic .fig.me { right: 7%; bottom: 8.4em; width: 11%; height: 40%; }
+.ui.clinic .fig.mt { right: 21%; bottom: 10.6em; width: 8%; height: 30%; }
+/* 十字指令：上是第一步，左、右是第二、三步，下是最後一步 */
+.ui.clinic .cmds { display: block; left: 4px; right: auto; top: auto; bottom: 0; transform: none; width: 11.6em; height: 11.6em; }
+.ui.clinic .cmds .octw { position: absolute; width: 4em; }
+.ui.clinic .cmds .octw:nth-child(1) { left: 3.8em; top: 0; }
+.ui.clinic .cmds .octw:nth-child(2) { left: 0; top: 3.8em; }
+.ui.clinic .cmds .octw:nth-child(3) { right: 0; top: 3.8em; }
+.ui.clinic .cmds .octw:nth-child(4) { left: 3.8em; bottom: 0; }
+.ui.clinic .cmds .oct { width: 4em; height: 4em; }
+.ui.clinic .cmds .oct b { font-size: 1.06em; }
+.ui.clinic .cmds .sub { display: none; }
+.ui.clinic .cmdinfo {
+    display: block; position: absolute; left: 15.2em; bottom: 6px; right: 48%; margin: 0; padding: 4px 10px; list-style: none; line-height: 1.55;
+    background: rgba(6, 10, 34, 0.62); border: 1px solid rgba(232, 197, 106, 0.4); border-radius: 4px; text-shadow: 1px 1px 0 #000;
+}
+.cmdinfo li.done { color: var(--up); }
+.cmdinfo li.cur { color: var(--name); }
+.cmdinfo li.off { color: var(--dim); }
+/* 數值變動時飄起來的字 */
+.float { position: absolute; z-index: 4; font-size: 1.25em; text-shadow: 2px 2px 0 #000, 0 0 4px #000; pointer-events: none; animation: rise 1.3s ease-out forwards; white-space: nowrap; }
+@keyframes rise { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-2.6em); opacity: 0; } }
+
+/* 系統選單 */
+.sysmenu { position: absolute; inset: 0; z-index: 5; background: rgba(6, 10, 34, 0.74); }
+.sysmenu .win { position: absolute; }
+.m-left { left: 3%; top: 4%; width: 24%; display: flex; flex-direction: column; gap: 6px; }
+.m-money { left: 3%; bottom: 4%; width: 24%; text-align: center; }
+.m-right { left: 30%; right: 3%; top: 4%; bottom: 4%; padding: 0; display: flex; }
+.m-right .scroll { padding: 12px 16px; }
+.m-right h3 { margin: 0 0 0.5em; font-size: 1.05em; color: var(--name); font-weight: 700; border-bottom: 1px solid rgba(232, 197, 106, 0.35); padding-bottom: 0.3em; }
+.list { list-style: none; margin: 0; padding: 0; }
+.list li { position: relative; padding: 0.24em 0.4em 0.24em 1.6em; cursor: pointer; border-radius: 3px; }
+.list li.sel { color: var(--name); background: rgba(255, 255, 255, 0.08); }
+.list li.sel::before { content: '▶'; position: absolute; left: 0.3em; color: var(--gold-hi); font-size: 0.8em; top: 0.45em; animation: nudge 0.55s ease-in-out infinite alternate; }
+.list li.off { color: var(--dim); }
+.list .qty { float: right; }
+.st-top { display: flex; gap: 14px; align-items: center; margin-bottom: 10px; }
+.st-top .face { width: 76px; height: 76px; }
+.stats4 { display: flex; flex-wrap: wrap; gap: 3px 24px; margin-top: 8px; }
+.desc { margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(232, 197, 106, 0.35); color: var(--hint); font-size: 0.9em; min-height: 3em; line-height: 1.6; }
+@media (max-width: 640px) {
+    .ui.clinic #panel-win { width: 100%; height: calc(100% - 11em); }
+    .ui.clinic .fig.pt { left: 1%; bottom: 16.5em; width: 44%; }
+    .ui.clinic .fig.me { right: 6%; bottom: 13em; width: 22%; height: 28%; }
+    .ui.clinic .fig.mt { right: 31%; bottom: 15.5em; width: 15%; height: 20%; }
+    .ui.clinic .cmds { width: 10.2em; height: 10.2em; }
+    .ui.clinic .cmds .octw { width: 3.5em; }
+    .ui.clinic .cmds .octw:nth-child(1), .ui.clinic .cmds .octw:nth-child(4) { left: 3.35em; }
+    .ui.clinic .cmds .octw:nth-child(2), .ui.clinic .cmds .octw:nth-child(3) { top: 3.35em; }
+    .ui.clinic .cmds .oct { width: 3.5em; height: 3.5em; }
+    .ui.clinic .cstat { width: 56%; padding: 6px 8px; }
+    .ui.clinic .cstat .face { display: none; }
+    .ui.clinic .cmdinfo { left: 2px; right: auto; bottom: 10.8em; width: 46%; background: rgba(6, 10, 34, 0.55); padding: 2px 6px; border-radius: 4px; }
+    .m-left { width: 31%; top: 2.5%; } .m-money { width: 31%; bottom: 2.5%; }
+    .m-right { left: 36%; right: 2%; top: 2.5%; bottom: 2.5%; }
+    .m-right .scroll { padding: 10px 10px; }
+    .st-top { flex-direction: column; align-items: flex-start; gap: 6px; }
+}
+@media (prefers-reduced-motion: reduce) { .float { animation-duration: 0.01s; } }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+    <div class="ui hidden" id="ui">
+        <div class="top">
+            <div class="win">
+                <div class="face" id="pt-face"></div>
+                <div class="rows">
+                    <div><span class="name" id="pt-name"></span> <span class="small hint" id="pt-type"></span></div>
+                    <div class="row small" id="tr-row"><span class="k">信任</span><span class="gauge tr"><i id="g-tr"></i></span><span class="v px" id="v-tr"></span></div>
+                </div>
+            </div>
+            <div class="win">
+                <div class="face" id="me-face"></div>
+                <div class="rows">
+                    <div><span class="name" id="me-name">我（弟子）</span> <span class="small hint" id="me-diff"></span></div>
+                    <div class="row small"><span class="k">精力</span><span class="gauge"><i class="g-en"></i></span><span class="v px v-en"></span></div>
+                    <div class="row small"><span class="k">心神</span><span class="gauge sp"><i class="g-sp"></i></span><span class="v px v-sp"></span></div>
+                    <div class="small stat"><span class="wide">醫術 <b class="px s-sk"></b>　修為 <b class="px s-pc"></b>　聲望 <b class="px s-fm"></b>　金錢 <b class="px s-mn"></b></span><span class="narrow">醫<b class="px s-sk"></b> 修<b class="px s-pc"></b> 望<b class="px s-fm"></b> 錢<b class="px s-mn"></b></span> <span class="tag bal hidden v-bal"></span></div>
+                </div>
+                <button class="btn bookbtn menubtn">選單</button>
+            </div>
+        </div>
+        <div class="win panel" id="panel-win"><div class="scroll" id="panel"></div></div>
+        <!-- 診間：看診時的畫面。上方是訊息窗（對話框移到上面），左下是十字指令，右下是我的狀態，中間彈出各步驟的視窗 -->
+        <div class="scene hidden" id="scene">
+            <div class="fig pt"><span class="ptag" id="sc-tag"></span><i></i><div id="sc-pt"></div></div>
+            <div class="fig mt"><i></i><div id="sc-mt"></div></div>
+            <div class="fig me"><i></i><div id="sc-me"></div></div>
+            <div class="cmds" id="sc-cmds"></div>
+            <ul class="cmdinfo small" id="sc-steps"></ul>
+            <div class="win cstat" id="sc-stat">
+                <div class="face" id="cs-face"></div>
+                <div class="rows">
+                    <div class="row small"><span class="k">精力</span><span class="gauge"><i class="g-en"></i></span><span class="v px v-en"></span></div>
+                    <div class="row small"><span class="k">心神</span><span class="gauge sp"><i class="g-sp"></i></span><span class="v px v-sp"></span></div>
+                    <div class="small stat"><span class="wide">醫術 <b class="px s-sk"></b>　修為 <b class="px s-pc"></b>　聲望 <b class="px s-fm"></b>　金錢 <b class="px s-mn"></b></span><span class="narrow">醫<b class="px s-sk"></b> 修<b class="px s-pc"></b> 望<b class="px s-fm"></b> 錢<b class="px s-mn"></b></span> <span class="tag bal hidden v-bal"></span></div>
+                </div>
+                <button class="btn bookbtn menubtn">選單</button>
+            </div>
+        </div>
+        <button class="btn skip" id="skip">跳過</button>
+        <div class="dlg" id="dlg">
+            <div class="body"><span class="name" id="dlg-name"></span><span id="dlg-text"></span></div>
+            <span class="more hidden" id="dlg-more">▼</span>
+            <div class="bust hidden" id="dlg-face"></div>
+        </div>
+    </div>
+
+    <!-- 系統選單：左邊是選單列與金錢，右邊是內容 -->
+    <div class="sysmenu hidden" id="book">
+        <div class="win m-left"><ul class="list" id="m-list"></ul><button class="btn" id="book-x">返回</button></div>
+        <div class="win m-money">金 <span class="name px" id="m-money"></span></div>
+        <div class="win m-right"><div class="scroll" id="m-right"></div></div>
+    </div>
+
+    <div class="veil hidden" id="veil"><div><div class="vbig" id="veil-big"></div><div class="vsub small" id="veil-sub"></div></div></div>
+
+    <div class="title" id="title">
+        <div class="tscreen" id="t-main">
+            <div class="tlogo">
+                <div class="tsmall small">水火既濟</div>
+                <h1>杏林問診<span class="seal">醫道</span></h1>
+            </div>
+            <div class="tmenu">
+                <button id="t-go-new">初入杏林</button>
+                <button id="t-load" disabled>重溫舊夢<small id="t-load-info">還沒有紀錄</small></button>
+                <button id="t-notes-btn">杏林札記<small id="t-notes-info"></small></button>
+            </div>
+            <button class="btn snd" style="font-size:0.86em;padding:3px 12px">聲音：開</button>
+            <div class="tver">試玩版 0.7　向早年的國產角色扮演遊戲致意<br>內容僅供體驗玩法，不能作為診療依據。病人皆為虛構。</div>
+        </div>
+        <div class="win hidden" id="t-notes">
+            <h1>杏林札記</h1>
+            <div id="t-notes-body"></div>
+            <div class="foot"><button class="btn" id="t-notes-back">返回</button></div>
+        </div>
+        <div class="win hidden" id="t-new">
+            <h1>初入杏林</h1>
+            <div class="sub small">業師：張仲景　書中師：黃庭鏡</div>
+            <div class="small">從拜師開始，走過習醫、立業、盛年、傳承、晚年五章，最後把一生的醫案寫成書。一輪大約三十到四十分鐘。每一章有幾位病人上門：方子開出去，要等他下個門診日回來，才知道對不對。</div>
+            <h2>怎麼玩</h2>
+            <ul class="small how">
+                <li>每個門診日：先看診，再做一件門診後的事，然後天亮。</li>
+                <li>看診在診間進行，依序選指令。能問的項數有限，問得越多越耗心神。</li>
+                <li>方子開出去，病人下個門診日回來才知道結果。選單裡的病歷簿隨時可翻。</li>
+                <li>精力是身體，心神是腦力。兩者都在五成以上且相差不大，就是「既濟」，身心會自己回復，修為也會增長。</li>
+                <li>看診有診金，每天要付生計。連續幾天付不出來，診間就開不下去。</li>
+                <li>每一章會遇到一次困境。同一個選擇，在有餘力與已透支時，結果不同。</li>
+                <li>每個門診日開始時自動存檔，從標題的「重溫舊夢」接著玩。</li>
+            </ul>
+            <div class="small down hidden" id="t-warn" style="margin-top:6px">已經有一份紀錄。重新開始後，舊的紀錄會被蓋掉。</div>
+
+            <h2>難度</h2>
+            <div class="opt" id="opt-diff">
+                <button class="btn on" data-diff="easy">入門<small>問診項數較多，師父會提點，看得到藥材功效，可套用成方。</small></button>
+                <button class="btn" data-diff="hard">專業<small>問診項數較少，沒有提點，方子自己配，對錯到醫案才揭曉。</small></button>
+            </div>
+
+            <div class="foot"><button class="btn" id="t-back">返回</button><button class="btn go px" id="start">開始坐診</button></div>
+            <div class="disclaimer">內容經過大幅簡化，僅供體驗玩法，不能作為診療依據；藥材份數並非真實劑量。病人皆為虛構。證型、方藥、病名對照與原文引用皆待中醫師審定。</div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    const $ = (s) => document.querySelector(s);
+    const $$ = (s) => [...document.querySelectorAll(s)];
+    const IMG = 'https://yylin.tw/images/yylin.tw/upload_file/';
+    $('#stage').style.backgroundImage = `url('${IMG}ab8fdfe7-fb59-4655-843a-35fe9ae6ba5b.png')`;
+    const HERO_SVG = '<svg viewBox="34 20 52 52" xmlns="http://www.w3.org/2000/svg"><rect x="34" y="20" width="52" height="52" fill="#22306e"/><path d="M40 157 L44 78 Q60 66 76 78 L80 157 Z" fill="#2C4F3E"/><circle cx="60" cy="50" r="19" fill="#DFC8A0"/><path d="M42 46 Q60 26 78 46 Q78 34 60 31 Q42 34 42 46 Z" fill="#3a3a3a"/><circle cx="60" cy="28" r="6" fill="#3a3a3a"/><path d="M50 52 Q54 55 58 52" stroke="#3a3a3a" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M62 52 Q66 55 70 52" stroke="#3a3a3a" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>';
+    /* 書中師：黃庭鏡 */
+    const MENTOR_SVG = '<svg viewBox="34 20 52 52" xmlns="http://www.w3.org/2000/svg"><rect x="34" y="20" width="52" height="52" fill="#3a2f55"/><path d="M40 157 L44 78 Q60 66 76 78 L80 157 Z" fill="#5b4a2f"/><circle cx="60" cy="47" r="17" fill="#DFC8A0"/><rect x="44" y="23" width="32" height="12" rx="3" fill="#1f1f1f"/><path d="M47 56 Q60 84 73 56 Q60 64 47 56 Z" fill="#eeeeee"/><path d="M50 47 h7 M63 47 h7" stroke="#3a3a3a" stroke-width="1.8" stroke-linecap="round"/><path d="M49 42 h8 M63 42 h8" stroke="#dddddd" stroke-width="2" stroke-linecap="round"/></svg>';
+    /* 業師：張仲景 */
+    const MASTER_SVG = '<svg viewBox="34 20 52 52" xmlns="http://www.w3.org/2000/svg"><rect x="34" y="20" width="52" height="52" fill="#4a2a22"/><path d="M40 157 L44 78 Q60 66 76 78 L80 157 Z" fill="#7a2f24"/><circle cx="60" cy="47" r="17" fill="#DFC8A0"/><path d="M43 40 Q60 18 77 40 Q60 30 43 40 Z" fill="#2a2a2a"/><rect x="55" y="18" width="10" height="9" rx="2" fill="#2a2a2a"/><path d="M48 57 Q60 78 72 57 Q60 63 48 57 Z" fill="#3a3a3a"/><path d="M50 47 h7 M63 47 h7" stroke="#3a3a3a" stroke-width="1.8" stroke-linecap="round"/></svg>';
+
+    /* <<DATA 這一段由 tools/build-data.js 依「內容/data.json」產生，請勿手改 */
+    const SH = {
+     "SLOT_NAMES": {
+      "jun": "君",
+      "chen": "臣",
+      "zuo": "佐",
+      "shi": "使"
+     },
+     "SLOT_MAX": {
+      "jun": 1,
+      "chen": 1,
+      "zuo": 2,
+      "shi": 1
+     },
+     "QUESTIONS": [
+      {
+       "id": "look",
+       "g": "望",
+       "q": "看面色與舌象"
+      },
+      {
+       "id": "listen",
+       "g": "聞",
+       "q": "聽聲音與呼吸"
+      },
+      {
+       "id": "chill",
+       "g": "問",
+       "q": "怕冷還是怕熱"
+      },
+      {
+       "id": "sweat",
+       "g": "問",
+       "q": "有沒有出汗"
+      },
+      {
+       "id": "pain",
+       "g": "問",
+       "q": "頭身哪裡不舒服"
+      },
+      {
+       "id": "thirst",
+       "g": "問",
+       "q": "口渴不渴"
+      },
+      {
+       "id": "diet",
+       "g": "問",
+       "q": "飲食與二便"
+      },
+      {
+       "id": "sleep",
+       "g": "問",
+       "q": "睡得如何"
+      },
+      {
+       "id": "pulse",
+       "g": "切",
+       "q": "診脈"
+      }
+     ],
+     "HERBS": {
+      "mahuang": {
+       "name": "麻黃",
+       "q": "溫",
+       "flavor": "辛、微苦",
+       "meridian": "肺、膀胱",
+       "use": "發汗解表，宣肺平喘"
+      },
+      "guizhi": {
+       "name": "桂枝",
+       "q": "溫",
+       "flavor": "辛、甘",
+       "meridian": "心、肺、膀胱",
+       "use": "發汗解肌，溫通經脈"
+      },
+      "xingren": {
+       "name": "杏仁",
+       "q": "微溫",
+       "flavor": "苦",
+       "meridian": "肺、大腸",
+       "use": "止咳平喘"
+      },
+      "gancao": {
+       "name": "炙甘草",
+       "q": "平",
+       "flavor": "甘",
+       "meridian": "心、肺、脾、胃",
+       "use": "補脾益氣，調和諸藥"
+      },
+      "shaoyao": {
+       "name": "芍藥",
+       "q": "微寒",
+       "flavor": "苦、酸",
+       "meridian": "肝、脾",
+       "use": "養血斂陰，和營"
+      },
+      "shengjiang": {
+       "name": "生薑",
+       "q": "微溫",
+       "flavor": "辛",
+       "meridian": "肺、脾、胃",
+       "use": "解表散寒，溫中止嘔"
+      },
+      "dazao": {
+       "name": "大棗",
+       "q": "溫",
+       "flavor": "甘",
+       "meridian": "脾、胃",
+       "use": "補中益氣，養血"
+      },
+      "shigao": {
+       "name": "石膏",
+       "q": "大寒",
+       "flavor": "辛、甘",
+       "meridian": "肺、胃",
+       "use": "清熱瀉火，除煩止渴"
+      },
+      "zhimu": {
+       "name": "知母",
+       "q": "寒",
+       "flavor": "苦、甘",
+       "meridian": "肺、胃、腎",
+       "use": "清熱瀉火，滋陰潤燥"
+      },
+      "dahuang": {
+       "name": "大黃",
+       "q": "寒",
+       "flavor": "苦",
+       "meridian": "脾、胃、大腸、肝、心包",
+       "use": "瀉下攻積，清熱瀉火"
+      },
+      "mangxiao": {
+       "name": "芒硝",
+       "q": "寒",
+       "flavor": "鹹、苦",
+       "meridian": "胃、大腸",
+       "use": "瀉下通便，潤燥軟堅"
+      },
+      "zhishi": {
+       "name": "枳實",
+       "q": "微寒",
+       "flavor": "苦、辛、酸",
+       "meridian": "脾、胃",
+       "use": "破氣消積，化痰散痞"
+      },
+      "houpo": {
+       "name": "厚朴",
+       "q": "溫",
+       "flavor": "苦、辛",
+       "meridian": "脾、胃、肺、大腸",
+       "use": "行氣消積，燥濕除滿"
+      },
+      "ganjiang": {
+       "name": "乾薑",
+       "q": "熱",
+       "flavor": "辛",
+       "meridian": "脾、胃、腎、心、肺",
+       "use": "溫中散寒，回陽通脈"
+      },
+      "renshen": {
+       "name": "人參",
+       "q": "微溫",
+       "flavor": "甘、微苦",
+       "meridian": "脾、肺、心",
+       "use": "大補元氣，補脾益肺"
+      },
+      "baizhu": {
+       "name": "白朮",
+       "q": "溫",
+       "flavor": "苦、甘",
+       "meridian": "脾、胃",
+       "use": "健脾益氣，燥濕利水"
+      }
+     },
+     "FORMULAS": {
+      "mahuang": {
+       "name": "麻黃湯",
+       "slots": {
+        "jun": [
+         "mahuang"
+        ],
+        "chen": [
+         "guizhi"
+        ],
+        "zuo": [
+         "xingren"
+        ],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "發汗峻劑，專治無汗的表實。"
+      },
+      "guizhi": {
+       "name": "桂枝湯",
+       "slots": {
+        "jun": [
+         "guizhi"
+        ],
+        "chen": [
+         "shaoyao"
+        ],
+        "zuo": [
+         "shengjiang",
+         "dazao"
+        ],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "解肌和營衛，治有汗的表虛。"
+      },
+      "baihu": {
+       "name": "白虎湯",
+       "slots": {
+        "jun": [
+         "shigao"
+        ],
+        "chen": [
+         "zhimu"
+        ],
+        "zuo": [],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "清陽明氣分大熱。原方尚有粳米，此處從略。"
+      },
+      "chengqi": {
+       "name": "大承氣湯",
+       "slots": {
+        "jun": [
+         "dahuang"
+        ],
+        "chen": [
+         "mangxiao"
+        ],
+        "zuo": [
+         "zhishi",
+         "houpo"
+        ],
+        "shi": []
+       },
+       "note": "峻下熱結，治腹滿硬痛、大便不通的腑實。"
+      },
+      "lizhong": {
+       "name": "理中湯",
+       "slots": {
+        "jun": [
+         "ganjiang"
+        ],
+        "chen": [
+         "renshen"
+        ],
+        "zuo": [
+         "baizhu"
+        ],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "溫中祛寒，補氣健脾。原為理中丸，此處作湯。"
+      }
+     },
+     "PATTERNS": {
+      "shi": {
+       "name": "太陽傷寒",
+       "alias": "風寒表實",
+       "bagang": [
+        "表",
+        "寒",
+        "實"
+       ],
+       "law": "辛溫發汗",
+       "formula": "mahuang"
+      },
+      "xu": {
+       "name": "太陽中風",
+       "alias": "風寒表虛",
+       "bagang": [
+        "表",
+        "寒",
+        "虛"
+       ],
+       "law": "解肌發表，調和營衛",
+       "formula": "guizhi"
+      },
+      "yang": {
+       "name": "陽明熱盛",
+       "alias": "裡熱熾盛",
+       "bagang": [
+        "裡",
+        "熱",
+        "實"
+       ],
+       "law": "清熱生津",
+       "formula": "baihu"
+      },
+      "fu": {
+       "name": "陽明腑實",
+       "alias": "燥屎內結",
+       "bagang": [
+        "裡",
+        "熱",
+        "實"
+       ],
+       "law": "峻下熱結",
+       "formula": "chengqi"
+      },
+      "yin": {
+       "name": "太陰病",
+       "alias": "脾陽虛寒",
+       "bagang": [
+        "裡",
+        "寒",
+        "虛"
+       ],
+       "law": "溫中祛寒，補氣健脾",
+       "formula": "lizhong"
+      }
+     },
+     "OUTCOME": {
+      "shi": {
+       "mahuang": {
+        "r": "cured",
+        "t": "服藥後蓋被靜臥，遍身微微汗出，惡寒、身痛一夜之間都退了。"
+       },
+       "guizhi": {
+        "r": "none",
+        "t": "汗始終發不出來，惡寒身痛如故。",
+        "q": "桂枝本為解肌，若其人脈浮緊、發熱汗不出者，不可與之也。"
+       },
+       "baihu": {
+        "r": "worse",
+        "t": "寒邪還閉在肌表，又被大寒之藥遏住。寒戰更甚，胃口全無。",
+        "q": "傷寒脈浮，發熱無汗，其表不解，不可與白虎湯。"
+       },
+       "chengqi": {
+        "r": "worse",
+        "t": "表邪還沒解就用了攻下，邪氣乘虛內陷。惡寒未退，又添了腹瀉，心下痞硬。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，不見起色，惡寒身痛依舊。"
+       }
+      },
+      "xu": {
+       "guizhi": {
+        "r": "cured",
+        "t": "服藥後喝了一碗熱粥，遍身微汗，惡風發熱都退了。"
+       },
+       "mahuang": {
+        "r": "worse",
+        "t": "本就汗出，又被峻劑一發，大汗淋漓不止，心悸，手足微微拘急。",
+        "q": "太陽病，發汗，遂漏不止。"
+       },
+       "baihu": {
+        "r": "worse",
+        "t": "表邪未解，寒涼又傷了胃氣。惡風依舊，還添了腹中冷痛。"
+       },
+       "chengqi": {
+        "r": "worse",
+        "t": "表邪未解而誤用攻下，本就不足的正氣更傷。汗出惡風依舊，又瀉了好幾回，人軟得站不住。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，汗出惡風如故。"
+       }
+      },
+      "yang": {
+       "baihu": {
+        "r": "cured",
+        "t": "服藥後熱勢漸退，口渴止了，汗收，脈也靜了下來。"
+       },
+       "mahuang": {
+        "r": "worse",
+        "t": "裡熱正盛，再投辛溫，如火上添油。高熱更熾，煩躁不安，夜裡說起胡話。",
+        "q": "桂枝下咽，陽盛則斃。"
+       },
+       "guizhi": {
+        "r": "worse",
+        "t": "裡熱正盛，再投辛溫，如火上添油。高熱更熾，煩躁不安。",
+        "q": "桂枝下咽，陽盛則斃。"
+       },
+       "chengqi": {
+        "r": "none",
+        "t": "裡頭只有熱，沒有結住的燥屎可攻。瀉了幾回，熱勢稍退又起，人卻乏了，口更渴。"
+       },
+       "lizhong": {
+        "r": "worse",
+        "t": "裡熱正盛，再投辛熱溫補，如火上添油。高熱更熾，煩渴得坐立不安。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，高熱大渴依舊。"
+       }
+      },
+      "fu": {
+       "chengqi": {
+        "r": "cured",
+        "t": "服藥後瀉下幾枚乾硬的燥屎，腹脹頓時消了。當夜熱退身涼，神志也清楚了。"
+       },
+       "baihu": {
+        "r": "none",
+        "t": "熱勢稍退，午後又起。清熱的藥去不了結在腸中的燥屎，肚子依舊脹痛，大便不通。"
+       },
+       "mahuang": {
+        "r": "worse",
+        "t": "裡頭燥熱內結，再用辛溫發汗，津液更傷。熱勢更高，胡話說個不停。"
+       },
+       "guizhi": {
+        "r": "worse",
+        "t": "裡頭燥熱內結，再用辛溫，津液更傷。熱勢更高，胡話說個不停。"
+       },
+       "lizhong": {
+        "r": "worse",
+        "t": "燥熱內結，又投辛熱溫補，如火上添油。腹脹如鼓，神志更加昏亂。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，午後發熱、腹脹、便秘依舊。"
+       }
+      },
+      "yin": {
+       "lizhong": {
+        "r": "cured",
+        "t": "服藥後腹中漸漸暖了，下利止住，也想吃東西了。"
+       },
+       "chengqi": {
+        "r": "worse",
+        "t": "本是虛寒，又用苦寒攻下。下利不止，手腳冰冷，人幾乎虛脫。"
+       },
+       "baihu": {
+        "r": "worse",
+        "t": "大寒之藥再傷脾陽。腹中更冷更痛，下利更甚。"
+       },
+       "mahuang": {
+        "r": "worse",
+        "t": "他的病不在肌表。發汗耗了陽氣，人更怕冷，更沒力氣。"
+       },
+       "guizhi": {
+        "r": "none",
+        "t": "桂枝稍能溫通，卻補不了中焦的虛。腹痛略減，下利未止。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，腹脹、下利依舊。"
+       }
+      }
+     },
+     "CASES": [
+      {
+       "id": "chen",
+       "pattern": "shi",
+       "name": "老陳",
+       "type": "佃農　窮苦",
+       "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "trust": 50,
+       "lv": 1,
+       "ord": 1,
+       "keyQ": [
+        "sweat",
+        "pulse",
+        "chill"
+       ],
+       "intro": "老陳昨日冒著寒風搶收，今早被家人攙進門來，裹著兩件襖子還在發抖。",
+       "a": {
+        "look": "面色青白，舌苔薄白。",
+        "listen": "鼻塞聲重，呼吸有些喘促。",
+        "chill": "怕冷得厲害，添了衣被仍覺得寒，身上摸著發熱。",
+        "sweat": "一滴汗也沒有，皮膚乾而緊。",
+        "pain": "頭痛，脖子後面僵硬，全身骨節都疼，腰像要斷了。",
+        "thirst": "不怎麼渴。",
+        "diet": "胃口稍差，二便尚可。",
+        "sleep": "痛得睡不安穩。",
+        "pulse": "脈浮而緊。"
+       },
+       "thanks": "老陳帶著半籃雞蛋來，說田裡的活又能幹了。",
+       "angry": "老陳的兒子上門，說爹的病越治越重，話說得很難聽。",
+       "_review": "草稿",
+       "_note": ""
+      },
+      {
+       "id": "wen",
+       "pattern": "xu",
+       "name": "文遠",
+       "type": "書吏　順從",
+       "img": "49fc1c80-551e-4cdd-9fb7-e6925a598c71.png",
+       "trust": 60,
+       "lv": 1,
+       "ord": 3,
+       "keyQ": [
+        "sweat",
+        "pulse",
+        "chill"
+       ],
+       "intro": "郡府的書吏文遠素來體弱。前日吹了些風，今日來時額上還掛著細汗。",
+       "a": {
+        "look": "面色略白，舌苔薄白。",
+        "listen": "鼻息有聲，偶爾乾嘔。",
+        "chill": "吹到風就不舒服，身上微微發熱。",
+        "sweat": "一直在出汗，衣領都是濕的。",
+        "pain": "頭有些痛，身上倒不太疼。",
+        "thirst": "不渴。",
+        "diet": "胃口差，偶有乾嘔，二便如常。",
+        "sleep": "尚可。",
+        "pulse": "脈浮而緩。"
+       },
+       "thanks": "文遠親手抄了一卷書送來，字跡工整。",
+       "angry": "文遠沒有抱怨，只是之後改去別家看診了。",
+       "_review": "草稿",
+       "_note": ""
+      },
+      {
+       "id": "bo",
+       "pattern": "yang",
+       "name": "伯高",
+       "type": "郡守之弟　權貴",
+       "img": "f21ec345-fe48-44bd-ba09-d2064ba919b1.png",
+       "trust": 35,
+       "lv": 2,
+       "keyQ": [
+        "sweat",
+        "pulse",
+        "chill"
+       ],
+       "intro": "郡守的弟弟伯高被僕從抬進來，掀開衣襟直喊熱，開口就要我今日之內把病治好。",
+       "a": {
+        "look": "滿面通紅，舌紅，苔黃而乾。",
+        "listen": "聲高氣粗，呼吸灼熱。",
+        "chill": "一點也不怕冷，只怕熱，恨不得坐進井裡。",
+        "sweat": "大汗淋漓，擦了又出。",
+        "pain": "頭脹，身上不疼，只覺得煩。",
+        "thirst": "渴得厲害，連喝幾碗涼水還想再喝。",
+        "diet": "不想吃，小便黃。",
+        "sleep": "煩躁難眠。",
+        "pulse": "脈洪大有力。"
+       },
+       "thanks": "伯高遣人送來重禮，還要為我引薦太守。",
+       "angry": "伯高揚言要拆了我的招牌。",
+       "_review": "草稿",
+       "_note": ""
+      },
+      {
+       "id": "hu",
+       "pattern": "fu",
+       "name": "胡帳房",
+       "type": "糧行帳房　固執",
+       "img": "f21ec345-fe48-44bd-ba09-d2064ba919b1.png",
+       "trust": 45,
+       "lv": 3,
+       "keyQ": [
+        "diet",
+        "pain",
+        "pulse"
+       ],
+       "tip": "熱了好幾天的病，不要只盯著寒熱。問問他的肚子和大便。",
+       "intro": "糧行的胡帳房被兩個兒子抬進來。他發熱已經六七天，每到午後就熱得更厲害，嘴裡喃喃唸著沒人聽得懂的帳目。",
+       "a": {
+        "look": "面色潮紅。舌苔黃厚而乾，中間焦黃起刺。",
+        "listen": "語聲重濁，時而胡言亂語，口氣穢臭。",
+        "chill": "不怕冷，只怕熱。每到午後熱勢就漲上來，像潮水一樣準時。",
+        "sweat": "手心腳心不停地出汗。",
+        "pain": "肚子脹得像鼓，按下去又硬又痛，他會伸手把我推開。",
+        "thirst": "口乾舌燥，想喝水。",
+        "diet": "吃不下東西。已經六天沒有解大便，小便又少又黃。",
+        "sleep": "夜裡煩躁不安，說胡話。",
+        "pulse": "脈沉實有力。"
+       },
+       "thanks": "胡帳房親自送來一本謄得工工整整的帳冊，說是替我這小診間記的。",
+       "angry": "胡帳房的兒子說，爹的肚子越脹越硬，他們要另請高明。",
+       "_review": "草稿",
+       "_note": ""
+      },
+      {
+       "id": "shui",
+       "pattern": "yin",
+       "name": "阿水",
+       "type": "擺渡船夫　老實",
+       "img": "4e97f3aa-3216-4b4b-a68b-df7624c77c9c.png",
+       "trust": 55,
+       "lv": 4,
+       "keyQ": [
+        "diet",
+        "pain",
+        "pulse"
+       ],
+       "tip": "不發熱的病人，一樣要辨寒熱虛實。看他喜冷還是喜暖，喜按還是拒按。",
+       "intro": "擺渡的阿水捂著肚子進門。入秋以來他天天在船上喝冷水、吃冷飯，這幾天拉肚子拉得腿都軟了。",
+       "a": {
+        "look": "面色萎黃。舌淡，苔白滑。",
+        "listen": "說話有氣無力。",
+        "chill": "身上不發熱。手腳偏涼，肚子怕冷，總想用手捂著。",
+        "sweat": "沒有特別出汗。",
+        "pain": "肚子脹，一陣一陣隱隱作痛。用手按著，或拿熱的東西敷著，就舒服一些。",
+        "thirst": "不渴，也不想喝水。",
+        "diet": "吃不下，吃了想吐。一天拉四五回，稀得像水，沒什麼氣味。",
+        "sleep": "人很倦，只想躺著。",
+        "pulse": "脈沉遲無力。"
+       },
+       "thanks": "阿水送來一簍剛撈上來的魚，還特地說，他現在都帶熱飯上船了。",
+       "angry": "阿水沒再來。聽說他瘦了一大圈，槳都划不動了。",
+       "_review": "草稿",
+       "_note": ""
+      }
+     ]
+    };
+    const EY = {
+     "WHEELS": {
+      "rou": {
+       "name": "肉輪",
+       "part": "胞瞼",
+       "plain": "上下眼皮",
+       "organ": "脾"
+      },
+      "xue": {
+       "name": "血輪",
+       "part": "兩眥",
+       "plain": "內外眼角",
+       "organ": "心"
+      },
+      "qi": {
+       "name": "氣輪",
+       "part": "白睛",
+       "plain": "眼白",
+       "organ": "肺"
+      },
+      "feng": {
+       "name": "風輪",
+       "part": "黑睛",
+       "plain": "黑眼珠",
+       "organ": "肝"
+      },
+      "shui": {
+       "name": "水輪",
+       "part": "瞳神",
+       "plain": "瞳孔",
+       "organ": "腎"
+      }
+     },
+     "QUESTIONS": [
+      {
+       "id": "gunk",
+       "q": "眼屎與眼淚"
+      },
+      {
+       "id": "pain",
+       "q": "痛、癢、怕不怕光"
+      },
+      {
+       "id": "vision",
+       "q": "看東西有什麼變化"
+      },
+      {
+       "id": "onset",
+       "q": "怎麼開始的、身邊有無同病"
+      },
+      {
+       "id": "habit",
+       "q": "作息與用眼"
+      },
+      {
+       "id": "diet",
+       "q": "飲食與二便"
+      },
+      {
+       "id": "mood",
+       "q": "近來的心情"
+      },
+      {
+       "id": "tongue",
+       "q": "看舌、診脈",
+       "narr": true
+      }
+     ],
+     "PATTERNS": {
+      "fengre": {
+       "name": "風熱外襲",
+       "alias": "外來的風熱疫氣，起病急，紅腫眵多"
+      },
+      "laosun": {
+       "name": "肝腎勞損",
+       "alias": "久視久勞，精血暗耗，眼睛失養"
+      },
+      "fenghuo": {
+       "name": "肝膽風火上攻",
+       "alias": "氣火暴升，閉塞目中，來勢急重"
+      },
+      "qixu": {
+       "name": "脾虛氣弱",
+       "alias": "清陽不升，倦怠乏力，眼睛無神"
+      },
+      "weire": {
+       "name": "脾胃內熱",
+       "alias": "炙烤辛辣吃多了，胃火上衝，胞瞼紅腫"
+      }
+     },
+     "PLANS": {
+      "feng": {
+       "name": "疏風清熱",
+       "sub": "辛涼輕散，如桑葉、菊花、薄荷之類"
+      },
+      "bu": {
+       "name": "補腎養肝",
+       "sub": "慢慢滋養，如六味地黃丸之類"
+      },
+      "xie": {
+       "name": "清肝瀉火",
+       "sub": "苦寒直折，如龍膽草、夏枯草之類"
+      },
+      "qi": {
+       "name": "益氣升清",
+       "sub": "補氣上提，如益氣聰明湯之類"
+      },
+      "san": {
+       "name": "清胃散結",
+       "sub": "清脾胃之熱，化痰消腫，不用大苦大寒"
+      },
+      "refer": {
+       "name": "急送專科",
+       "sub": "這不是湯藥來得及的病，立刻送給專治眼病的大夫"
+      }
+     },
+     "CASES": [
+      {
+       "id": "c1",
+       "name": "阿順",
+       "type": "賣餅攤販　勤快",
+       "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "trust": 50,
+       "lv": 1,
+       "ord": 2,
+       "disease": "天行赤眼",
+       "modern": "流行性結膜炎",
+       "pattern": "fengre",
+       "right": "feng",
+       "wheel": "qi",
+       "keyQ": [
+        "onset",
+        "gunk",
+        "tongue"
+       ],
+       "intro": "市集賣餅的阿順摀著眼睛進門，兩眼通紅，淚流不止。他說這幾天街坊好幾個人都這樣。",
+       "eye": {
+        "red": 2,
+        "gunk": true,
+        "haze": false,
+        "pupil": "normal",
+        "green": false
+       },
+       "eyeText": "白睛紅赤，血絲滿布，眼角堆著黃黏的眼屎。黑睛清澈，瞳神圓而靈動。",
+       "eyeRight": "不錯。紅在白睛，白睛是氣輪，屬肺。外來的風熱先犯肺，所以紅得快、眵淚多。",
+       "eyeWrong": "再看一次。紅赤和血絲都在白睛上，黑睛與瞳神是清的。白睛是氣輪，屬肺。",
+       "a": {
+        "gunk": "眼屎又黃又黏，早上黏得睜不開。眼淚是熱的，一直流。",
+        "pain": "又刺又癢，像進了沙子，見光就想閉眼。",
+        "vision": "看東西還清楚，只是淚多，糊糊的。",
+        "onset": "前天開始的。先是右眼，隔天左眼也紅了。隔壁攤的和我家小兒也都紅了眼。",
+        "habit": "天天早起擺攤，沒什麼特別。",
+        "diet": "口有點乾，小便偏黃，大便如常。",
+        "mood": "攤子擺不成，心裡著急。",
+        "tongue": "舌尖紅，苔薄黃。脈浮數。"
+       },
+       "out": {
+        "feng": {
+         "r": "cured",
+         "t": "服藥三日，紅退眵減。到第五天，雙眼已清爽如初。"
+        },
+        "bu": {
+         "r": "worse",
+         "t": "滋膩的藥把邪熱留在裡面。眼屎更稠，紅腫更甚，連眼皮都腫了起來。"
+        },
+        "xie": {
+         "r": "better",
+         "t": "紅腫退了大半，但苦寒的藥傷了胃氣，這幾天吃不下飯，眼睛也還有些澀。"
+        },
+        "qi": {
+         "r": "worse",
+         "t": "升提溫補，助了火勢。白睛紅得像要滴血，刺痛難忍。"
+        },
+        "san": {
+         "r": "none",
+         "t": "病在肺衛，不在脾胃。清胃的藥搆不到，紅腫眵淚沒有退。"
+        }
+       },
+       "keep": "減了藥量再服幾帖，眼睛好了。只是胃口過了半個月才恢復。",
+       "refer": {
+        "r": "unneeded",
+        "trust": -5,
+        "t": "專科大夫看了一眼，開了疏風清熱的方子，幾日便好了。阿順後來說，早知道這麼尋常，就不必多跑一趟。"
+       },
+       "late": {
+        "trust": 5,
+        "t": "我請阿順改找專治眼病的大夫。那位大夫開了疏風清熱的方子，幾日便好了。"
+       },
+       "thanks": "阿順提著一包剛出爐的餅來，說攤子又開張了。",
+       "angry": "阿順沒再來。聽說他家裡三口人都紅了眼。",
+       "quote": {
+        "src": "張從正《儒門事親》",
+        "text": "目不因火則不病。……氣輪變赤，火乘肺也。"
+       },
+       "advice": "盡量不要用手揉眼睛。菊花、薄荷、桑葉茶可以酌量飲用，菊花一次六朵以內，過量反而有反效果。",
+       "cmt": {
+        "best": "看得準，問得準。外來的風熱，輕輕疏散就夠了，不必用重藥。",
+        "lucky": "這次對了，但關鍵的幾問沒有問到。是辨出來的，還是碰上的，自己心裡要明白。",
+        "refer": "謹慎不是壞事。但尋常的外障若都往外送，病人就學不會信你，你也學不會看病。",
+        "xie": "火是清了，胃也傷了。病在表淺，藥卻下得太重。治病不是比誰的藥猛。",
+        "fail": "這一案走了彎路。紅腫眵多、起病急、鄰里同病，這是外來的風熱，補不得，升不得。"
+       },
+       "_review": "草稿",
+       "_note": ""
+      },
+      {
+       "id": "c2",
+       "name": "仲安",
+       "type": "抄書吏　多慮",
+       "img": "49fc1c80-551e-4cdd-9fb7-e6925a598c71.png",
+       "trust": 55,
+       "lv": 2,
+       "disease": "雲霧移睛",
+       "modern": "飛蚊症",
+       "pattern": "laosun",
+       "right": "bu",
+       "wheel": "shui",
+       "keyQ": [
+        "vision",
+        "habit",
+        "tongue"
+       ],
+       "intro": "郡府的抄書吏仲安進門時不停眨眼，又伸手在眼前揮了揮，像要趕走什麼。他的眼睛從外面看，一點毛病也沒有。",
+       "eye": {
+        "red": 0,
+        "gunk": false,
+        "haze": false,
+        "pupil": "normal",
+        "green": false
+       },
+       "eyeText": "不紅不腫。白睛潔淨，黑睛清澈，瞳神圓正。從外面什麼也看不出來，病人卻說眼前有影子在飄。",
+       "eyeRight": "對。外面沒有形色可察，病就在瞳神之內。瞳神是水輪，屬腎。",
+       "eyeWrong": "白睛不紅，黑睛不濁，胞瞼不腫。外面沒有形色可察的時候，病在瞳神之內。瞳神是水輪，屬腎。",
+       "a": {
+        "gunk": "沒有眼屎，眼睛倒是乾澀得很。",
+        "pain": "不痛不癢，就是酸澀，看久了發脹。",
+        "vision": "眼前有幾點透明的影子，像小圈，像蝌蚪，看白牆時最明顯。眼睛一轉，它們也跟著飄。沒有閃光，也沒有哪一角看不見。",
+        "onset": "半年多了，慢慢多起來的。身邊沒有人像我這樣。",
+        "habit": "白天在郡府抄錄文書，夜裡還在燈下替人抄書貼補家用，常抄到三更。",
+        "diet": "胃口尚可，口咽偏乾，大便略乾。",
+        "mood": "我怕會瞎。越怕，就越忍不住盯著那些影子看。",
+        "tongue": "舌偏紅，少苔。脈細。"
+       },
+       "out": {
+        "feng": {
+         "r": "none",
+         "t": "外面沒有風熱可疏，藥像隔靴搔癢。乾澀和影子都是老樣子。"
+        },
+        "bu": {
+         "r": "chain",
+         "t": "服藥十來天，仲安說眼睛沒那麼乾了。這是個要慢慢走的病，接下來看的是回診。"
+        },
+        "xie": {
+         "r": "worse",
+         "t": "苦寒的藥傷了本就不足的陰血。眼睛更乾澀，影子一點也沒少。"
+        },
+        "qi": {
+         "r": "none",
+         "t": "精神好了一點，乾澀與影子依舊。"
+        },
+        "san": {
+         "r": "none",
+         "t": "他沒有胃熱可清。藥吃了幾帖，乾澀與影子依舊。"
+        }
+       },
+       "refer": {
+        "back": true,
+        "r": "checked",
+        "t": "專科大夫細看了眼底，說瞳神之內並無破損，不是險症，囑他回來慢慢調養。",
+        "m": "先確認沒有險象，是穩當的做法。現在可以安心立法了。"
+       },
+       "late": {
+        "trust": 5,
+        "t": "我向仲安說明，這個病我目前沒有把握，為他寫了一封引薦信。"
+       },
+       "thanks": "仲安送來一卷親手抄的書。他說現在抄一段就歇一會，字反而寫得更好。",
+       "angry": "仲安沒有抱怨，只是之後不再來了。",
+       "chain": [
+        {
+         "title": "半個月後",
+         "see": "眼睛看起來比上回潤澤，眨眼少了。仲安說酸澀減了，看書比以前亮。影子的數目沒有增加，沒有閃光，視野也沒有缺角。只是那幾點影子，邊緣比從前清楚。",
+         "say": "大夫，那些影子反而看得更清楚了！是不是越治越糟？",
+         "hint": "先別慌。分辨好轉還是惡化，看的是整體：眼睛潤了沒有，亮了沒有，影子有沒有暴增，有沒有閃光，視野缺了沒有。",
+         "opts": [
+          {
+           "name": "守方不變",
+           "sub": "這是好轉的現象，原方續服",
+           "right": true,
+           "trust": 8,
+           "spirit": 0,
+           "t": "我向仲安解釋：眼睛亮了，原本模糊的影子自然顯得清楚，這是好轉的過程。他半信半疑地回去了。",
+           "m": "看得準。影子變清楚而整體變亮，是眼睛得了滋養。"
+          },
+          {
+           "name": "換方加重",
+           "sub": "改用清肝瀉火，把影子打掉",
+           "right": false,
+           "trust": -10,
+           "spirit": 0,
+           "t": "苦寒的藥折損了剛養起來的陰血。幾天後乾澀又回來了，影子一點也沒少。",
+           "m": "病人一慌，你也跟著慌了。方子沒有錯，錯在沒看出這是好轉。"
+          },
+          {
+           "name": "急送專科細查",
+           "sub": "怕有萬一，請專科看過眼底",
+           "right": false,
+           "neutral": true,
+           "trust": 0,
+           "spirit": -3,
+           "t": "專科細看了眼底，並無破損，囑他回來照原方調養。仲安白跑一趟，倒也安了心。",
+           "m": "穩當，不算錯。但你要學會分辨：暴增、閃光、黑幕遮眼才是險象，這回一樣也沒有。"
+          }
+         ]
+        },
+        {
+         "title": "一個半月後",
+         "see": "眼睛又乾了，眼眶下泛著青。仲安說，前陣子趕一批文書，接連熬了幾夜，影子又多了兩點。沒有閃光，視野無缺。",
+         "say": "大夫，藥是不是不夠力了？",
+         "hint": "藥沒有變，變的是他這半個月怎麼過。",
+         "opts": [
+          {
+           "name": "囑咐作息，原方續服",
+           "sub": "藥不必動。請他三更前歇筆，抄一段歇一會",
+           "right": true,
+           "trust": 6,
+           "spirit": 0,
+           "t": "我沒有改方，只和他約定：三更之前一定歇筆，每抄一段就閉目片刻。他苦笑著答應了。",
+           "m": "孫思邈早把「夜讀細書」列進喪明之本。這種病，囑咐比藥重要。"
+          },
+          {
+           "name": "加重藥量",
+           "sub": "補得不夠，再加幾味滋補藥",
+           "right": false,
+           "trust": -4,
+           "spirit": 0,
+           "t": "藥加重了，他照舊夜夜抄到天明。半個月後，影子沒少，胃口倒被滋膩的藥壓壞了。",
+           "m": "藥補得再多，也補不上夜夜的消耗。"
+          },
+          {
+           "name": "另換一方",
+           "sub": "這張方子看來不靈，換個方向",
+           "right": false,
+           "trust": -8,
+           "spirit": 0,
+           "t": "換了方子，一切從頭來過。先前養起來的那一點潤澤也沒了。",
+           "m": "病情反覆，先找原因，不要先怪方子。"
+          }
+         ]
+        },
+        {
+         "title": "三個多月後",
+         "see": "仲安氣色好了許多。影子淡了，也少了，多半飄到視野邊上，不再擋在正中。還剩兩三點，對著白牆時仍看得見。",
+         "say": "大夫，能不能讓它一點都不剩？",
+         "hint": "這一問，問的不只是他的眼睛，也是你的心。",
+         "opts": [
+          {
+           "name": "老實說明",
+           "sub": "多半會再淡，未必全消。學著不去盯它",
+           "right": true,
+           "trust": 10,
+           "spirit": 5,
+           "t": "我告訴他：這幾點也許會再淡，也許就這樣留著。越是盯著它、怕著它，身子越緊，反而不容易好。他沉默片刻，點了點頭。",
+           "m": "說實話比許願難。你做到了。"
+          },
+          {
+           "name": "一定治到全消",
+           "sub": "答應他，繼續加藥，直到一點不剩",
+           "right": false,
+           "trust": 4,
+           "spirit": -10,
+           "flag": "promise",
+           "t": "我拍著胸脯答應了。仲安很高興。回去的路上，我卻開始算著還要用多少藥，才對得起這句話。",
+           "m": "你許下了自己未必做得到的事。那一點求全的心，比他眼裡的影子更難消。"
+          }
+         ]
+        }
+       ],
+       "chainEnd": {
+        "well": "三個多月下來，仲安的眼睛潤了、亮了，影子淡到不礙事。",
+        "better": "三個多月下來，影子淡了一些。中間走了點彎路，但方向還在。",
+        "wobble": "這幾個月時好時壞。仲安還在來，但彼此都有些疲憊。"
+       },
+       "quote": {
+        "src": "孫思邈《備急千金要方》",
+        "text": "夜讀細書……上十六件並是喪明之本。"
+       },
+       "advice": "過度焦慮擔心會讓身體緊繃，反而加重飛蚊。飛蚊若突然增加，合併閃光或視野缺損，一定要散瞳檢查。",
+       "cmt": {
+        "best": "慢性的病，功夫在回診。你分得出好轉與惡化，守得住方，也說了實話。",
+        "done": "長路走完了。回頭看看哪一次回診是被病人的焦急牽著走的，下次就穩得住。",
+        "referred": "知道自己的極限在哪裡，也是醫道的一部分。只是下一次，要比這一次多看清一分。",
+        "promise": "你答應了自己未必做得到的事。病人的影子也許不會全消，你心裡那一點求全，倒是該先放下。",
+        "fail": "這一案沒有走上正路。不紅不痛、慢慢來的影子，多是久視久勞傷了精血，要養，急不得。"
+       },
+       "_review": "草稿",
+       "_note": ""
+      },
+      {
+       "id": "c3",
+       "name": "萬掌櫃",
+       "type": "綢緞行東家　急躁",
+       "img": "f21ec345-fe48-44bd-ba09-d2064ba919b1.png",
+       "trust": 40,
+       "lv": 3,
+       "disease": "綠風內障",
+       "modern": "急性隅角閉鎖青光眼",
+       "pattern": "fenghuo",
+       "right": "refer",
+       "wheel": "shui",
+       "keyQ": [
+        "pain",
+        "vision",
+        "onset"
+       ],
+       "intro": "綢緞行的萬掌櫃被兩個夥計架進來，一手按著右眼，一手扶著頭，臉色鐵青，在門口還吐了一回。",
+       "eye": {
+        "red": 1,
+        "gunk": false,
+        "haze": true,
+        "pupil": "dilated",
+        "green": true
+       },
+       "eyeText": "白睛混赤，黑睛像蒙了一層霧氣。瞳神散大，隱隱透著淡綠色，對光不收。輕按眼珠，脹硬如石。",
+       "eyeRight": "看得準。瞳神散大不收，色帶淡綠，這是水輪的急症。黑睛的霧、白睛的紅，都是跟著來的。",
+       "eyeWrong": "紅和霧都是跟著來的。最要緊的是瞳神：散大、淡綠、對光不收。瞳神是水輪。",
+       "a": {
+        "gunk": "眼淚燙得像熱湯，眼屎倒沒有。",
+        "pain": "眼珠脹得像要掉出來，連著這半邊頭痛得像被劈開。想吐，剛才吐了兩回。",
+        "vision": "一夜之間就看不清了，只認得出人影。看燈火，外頭有一圈虹暈。",
+        "onset": "昨晚為了分家產，和兄弟大吵一架。夜半突然痛起來。",
+        "habit": "這陣子為了官司，沒睡過一個整覺。",
+        "diet": "口苦。大便好幾天沒解了。",
+        "mood": "我這脾氣，一點就著。",
+        "tongue": "舌紅，苔黃。脈弦數。"
+       },
+       "out": {
+        "feng": {
+         "r": "worse",
+         "t": "輕散的藥擋不住這樣的來勢。三日後，右眼只剩光影。"
+        },
+        "bu": {
+         "r": "worse",
+         "t": "滋補緩不濟急。三日後，右眼只剩光影。"
+        },
+        "xie": {
+         "r": "worse",
+         "t": "方向沒有錯，可是湯藥還在爐上，病已經走在前頭。三日後，萬掌櫃的瞳神散而不收，右眼只剩光影。"
+        },
+        "qi": {
+         "r": "worse",
+         "t": "益氣升提，氣火更往上衝，眼珠脹硬如石，當夜痛到昏厥。三日後，右眼只剩光影。"
+        },
+        "san": {
+         "r": "worse",
+         "t": "清胃的藥擋不住這樣的急症。三日後，右眼只剩光影。"
+        }
+       },
+       "refer": {
+        "r": "saved",
+        "trust": 20,
+        "t": "專科大夫連夜施治，針藥並用。三日後，萬掌櫃被夥計攙著來道謝：痛止了，右眼的視力保住了六七成。"
+       },
+       "late": {
+        "trust": -10,
+        "t": "我立刻把萬掌櫃送到專科大夫那裡。遲了三日，大夫盡了力，只保住一點光感。"
+       },
+       "onlyLate": true,
+       "thanks": "萬掌櫃說，那天要是在我這裡等藥煎好，這隻眼睛就沒了。",
+       "angry": "萬掌櫃的夥計說，東家再也不提我的名字。",
+       "say": {
+        "worse": "大夫……我這隻眼睛，看不見了。"
+       },
+       "quote": {
+        "src": "黃庭鏡《目經大成》自序",
+        "text": "理通太元者莫如醫，而醫責十全者尤在目。"
+       },
+       "advice": "疾病快速進展時，應先以現代醫學的手段搶救視力，再輔以中醫調養。急性青光眼常伴隨頭痛、嘔吐、視力模糊、看見光暈。",
+       "modernNote": "現代對照：急性隅角閉鎖青光眼是眼科急症，應立即就醫降眼壓。",
+       "cmt": {
+        "best": "知道什麼病不該由自己硬治，是醫者最難學的一課。你今天救的是一隻眼睛。",
+        "xie": "證辨得再準，也要先問這個病等不等得起。往後見到暴痛、嘔吐、視物驟降，先送再說。",
+        "fail": "這一案要原原本本記下來。暴痛、嘔吐、瞳神散大、視物驟降，是急症，不是哪一張方子的事。"
+       },
+       "_review": "草稿",
+       "_note": ""
+      },
+      {
+       "id": "c4",
+       "name": "阿魁",
+       "type": "炙肉攤主　豪爽",
+       "img": "4e97f3aa-3216-4b4b-a68b-df7624c77c9c.png",
+       "trust": 50,
+       "lv": 2,
+       "disease": "針眼",
+       "modern": "麥粒腫",
+       "pattern": "weire",
+       "right": "san",
+       "wheel": "rou",
+       "keyQ": [
+        "diet",
+        "habit",
+        "onset"
+       ],
+       "intro": "夜市賣炙肉的阿魁瞇著右眼進門，上眼皮腫了一塊。他說這已經是今年第三回了。",
+       "eye": {
+        "red": 1,
+        "gunk": false,
+        "haze": false,
+        "pupil": "normal",
+        "green": false,
+        "stye": true
+       },
+       "eyeText": "右眼上胞瞼近睫毛處紅腫一塊，中央鼓起一個小尖頭，像麥粒，一按就痛。白睛微紅，黑睛與瞳神清澈。",
+       "eyeRight": "對。腫在胞瞼，胞瞼是肉輪，屬脾。脾胃的事，要問他吃什麼、幾時睡。",
+       "eyeWrong": "白睛只是被牽連得微紅。紅腫的尖頭長在胞瞼上，胞瞼是肉輪，屬脾。",
+       "a": {
+        "gunk": "眼屎不多。腫的地方有一點黃白的膿頭。",
+        "pain": "腫的地方又脹又痛，一碰就疼。不怎麼癢，也不怕光。",
+        "vision": "看東西沒有變，只是眼皮腫得礙事。",
+        "onset": "三天前開始的。今年已經長了三回，有時左眼，有時右眼。家裡沒有別人這樣。",
+        "habit": "攤子擺到三更才收，收了攤才吃飯，天快亮才睡。",
+        "diet": "天天吃自己攤上的炙肉，又辣又香，再配幾碗冰鎮的酸梅湯。容易餓，口氣重，大便兩三天一次，又乾又硬。",
+        "mood": "生意好，沒什麼煩心的事，就是這眼睛老是出毛病。",
+        "tongue": "舌紅，苔黃。牙齦有些腫。脈滑數。"
+       },
+       "out": {
+        "feng": {
+         "r": "none",
+         "t": "表面的紅稍微退了一點，腫塊和脹痛都還在。病根在脾胃，光是疏散外面的風熱搆不到。"
+        },
+        "bu": {
+         "r": "worse",
+         "t": "滋膩的藥助了痰熱。腫塊更大更硬，連下眼皮也腫了起來。"
+        },
+        "xie": {
+         "r": "better",
+         "t": "紅腫退了，但大苦大寒的藥傷了胃氣，他這幾天吃不下飯。腫處留下一顆硬結，遲遲不消。"
+        },
+        "qi": {
+         "r": "worse",
+         "t": "溫補升提，胃火更往上衝。整個眼皮紅腫得睜不開。"
+        },
+        "san": {
+         "r": "chain",
+         "t": "服藥五日，紅腫熱痛退了大半，膿頭自己破了，流出一點膿就收了口。"
+        }
+       },
+       "keep": "減了藥量再服幾帖，硬結慢慢消了。只是胃口過了十來天才恢復。",
+       "refer": {
+        "r": "unneeded",
+        "trust": -5,
+        "t": "專科大夫看了一眼，說是尋常的針眼，開了清胃散結的方子，幾日便消了。阿魁後來說，早知道就不必多跑一趟。"
+       },
+       "late": {
+        "trust": 5,
+        "t": "我請阿魁改找專治眼病的大夫。那位大夫開了清胃散結的方子，幾日便消了。"
+       },
+       "thanks": "阿魁提著一包炙肉來，想了想又收回去，改送了一籃梨。",
+       "angry": "阿魁沒再來。聽說他的眼皮後來腫到要請人用針挑開。",
+       "chainLabel": "容易再長的病",
+       "chain": [
+        {
+         "title": "五日後",
+         "see": "紅腫熱痛都退了，膿頭已經收口。原處還摸得到一顆米粒大的硬結，不紅，按了也不痛。",
+         "say": "大夫，還剩這一顆硬的。要不要下重一點的藥，把它打掉？",
+         "hint": "紅腫痛的時候是一種處置，不紅不痛的時候是另一種。先看清楚現在是哪一種。",
+         "opts": [
+          {
+           "name": "原方減量，教他熱敷",
+           "sub": "不紅不痛了，溫敷眼周，幫阻塞的油脂排出去",
+           "right": true,
+           "trust": 8,
+           "spirit": 0,
+           "t": "我把藥減了量，教他每天用溫熱的布巾敷眼周。半個月後，硬結消得摸不到了。",
+           "m": "對。沒有紅腫疼痛的時候，溫熱能讓淤住的東西化開。"
+          },
+          {
+           "name": "改用苦寒重劑",
+           "sub": "用龍膽草之類，把餘熱一次清乾淨",
+           "right": false,
+           "trust": -6,
+           "spirit": 0,
+           "t": "火熱早已退了，苦寒的藥只傷到胃氣。他吃不下飯，硬結卻一點也沒小。",
+           "m": "這是眼睛外面的發炎。藥下得太強，傷的是正氣，往後反而更難治。"
+          },
+          {
+           "name": "教他冷敷",
+           "sub": "用井水浸過的布巾敷著，免得再腫",
+           "right": false,
+           "trust": -3,
+           "spirit": 0,
+           "t": "冷敷了幾天，硬結反而更硬了。不紅不痛的時候再用冷，淤住的東西更排不出去。",
+           "m": "冷敷是紅腫痛得厲害時用的，而且不能太冰。現在用，是用錯了時候。"
+          }
+         ]
+        },
+        {
+         "title": "一個多月後",
+         "see": "這回是左眼。下胞瞼紅腫一塊，又是一個小尖頭。阿魁說攤子生意正旺，天天忙到天亮，炙肉照吃。",
+         "say": "大夫，怎麼又長了？上回不是治好了嗎？",
+         "hint": "上回治好的是那一顆。讓它一顆接一顆長出來的，是另一件事。",
+         "opts": [
+          {
+           "name": "照方再治，和他談飲食作息",
+           "sub": "請他少吃炙烤辛辣，收攤後早點睡",
+           "right": true,
+           "trust": 6,
+           "spirit": 0,
+           "t": "我開了同樣的方子，然後和他算了算：今年每一回長針眼之前，他都連著熬了好幾夜、吃了好幾天的炙肉。阿魁愣了一下，說他回去試試讓夥計輪著收攤。",
+           "m": "反覆發作的病，要找的是讓它反覆的原因。藥只能治這一顆。"
+          },
+          {
+           "name": "照方再治，請他長了再來",
+           "sub": "方子有效，照開就是了",
+           "right": false,
+           "neutral": true,
+           "trust": 0,
+           "spirit": 0,
+           "t": "這一顆又治好了。阿魁很滿意，說往後長了就來找我。我知道他還會再來，很多次。",
+           "m": "不算錯，這一顆確實治好了。只是他的日子沒有變，眼睛也就不會變。"
+          },
+          {
+           "name": "加重清熱的藥",
+           "sub": "上回藥力不夠，這回下重一點，斷它的根",
+           "right": false,
+           "trust": -6,
+           "spirit": 0,
+           "t": "重藥下去，腫是退了，他的胃口也壞了。一個月後，針眼照樣長出來。",
+           "m": "根不在藥力夠不夠，在他每天夜裡吃什麼、幾時睡。"
+          }
+         ]
+        }
+       ],
+       "chainEnd": {
+        "well": "阿魁後來讓夥計輪著收攤，炙肉也少吃了。這半年，針眼沒有再長。",
+        "better": "針眼治好了。往後會不會再長，還要看他自己的日子怎麼過。",
+        "wobble": "針眼時消時長。阿魁還是來，只是每回都問我為什麼治不斷根。"
+       },
+       "quote": {
+        "src": "孫思邈《備急千金要方》",
+        "text": "生食五辛，接熱飲食……上十六件並是喪明之本。"
+       },
+       "advice": "沒有紅腫疼痛時多熱敷眼周，幫助阻塞的油脂排出；紅腫痛嚴重時可以冰敷緩解，但溫度不宜太低。少吃烤炸辣，晚上十一點前入睡，不要搓揉眼睛。",
+       "cmt": {
+        "best": "這一顆治好了，下一顆也擋住了。你治的不只是胞瞼上的腫，是他過日子的方式。",
+        "refer": "謹慎不是壞事。但尋常的外障若都往外送，病人就學不會信你，你也學不會看病。",
+        "xie": "火是清了，胃也傷了，還留下一顆硬結。這是眼睛外面的發炎，不必用大苦大寒。",
+        "done": "針眼是治好了。回頭想想哪一次回診，你只看了眼皮，沒有看這個人。",
+        "referred": "知道自己的極限在哪裡，也是醫道的一部分。只是下一次，要比這一次多看清一分。",
+        "fail": "這一案走了彎路。腫在胞瞼，口臭便秘，夜夜炙肉，這是脾胃的熱往上衝，補不得，升不得。"
+       },
+       "_review": "草稿",
+       "_note": ""
+      },
+      {
+       "id": "c5",
+       "name": "阿寬",
+       "type": "裁縫鋪夥計　寡言",
+       "img": "49fc1c80-551e-4cdd-9fb7-e6925a598c71.png",
+       "trust": 55,
+       "lv": 3,
+       "disease": "上胞下垂",
+       "modern": "眼瞼下垂",
+       "pattern": "qixu",
+       "right": "qi",
+       "wheel": "rou",
+       "keyQ": [
+        "onset",
+        "diet",
+        "tongue"
+       ],
+       "intro": "裁縫鋪的夥計阿寬進門時仰著頭，眉毛抬得老高，額上擠出幾道深紋。他說這幾個月眼皮越來越重，過了午後，幾乎要用手撐著才看得見針腳。",
+       "eye": {
+        "red": 0,
+        "gunk": false,
+        "haze": false,
+        "pupil": "normal",
+        "green": false,
+        "droop": true
+       },
+       "eyeText": "兩眼不紅不腫。上胞瞼鬆垂無力，蓋住了黑睛的上半，連瞳神的上緣也遮去一些。請他用力睜眼，只見額頭使勁，眼皮卻抬不起來。",
+       "eyeRight": "對。黑睛、瞳神本身沒有病，是胞瞼抬不起來。胞瞼是肉輪，屬脾。脾主肌肉，要問他的飲食和氣力。",
+       "eyeWrong": "黑睛和瞳神是被遮住，不是自己有病。病在抬不起來的胞瞼。胞瞼是肉輪，屬脾。",
+       "a": {
+        "gunk": "沒有眼屎，也不流淚。",
+        "pain": "不痛不癢。就是眼皮重，像掛了東西。",
+        "vision": "眼皮遮著，看東西要仰頭。東西本身是清楚的，沒有變成兩個。",
+        "onset": "三四個月了，慢慢來的。早上起來還好，過了中午就越來越垂，歇一會又好一些。說話、吞嚥、手腳的力氣都和平常一樣。",
+        "habit": "年前接了大批嫁衣，從早縫到夜裡，很少起身。",
+        "diet": "趕工時常常忘了吃，想起來就扒幾口冷飯，配涼茶。胃口一直不好，吃一點就脹，大便偏軟。",
+        "mood": "只覺得累，提不起勁。",
+        "tongue": "說話聲音低微。舌淡胖，邊有齒痕，苔薄白。脈細弱。"
+       },
+       "out": {
+        "feng": {
+         "r": "none",
+         "t": "外面沒有風熱可疏。眼皮照舊，人倒是更倦了。"
+        },
+        "bu": {
+         "r": "none",
+         "t": "滋膩的藥壓在本就虛弱的脾胃上。他胃口更差，眼皮還是一樣重。"
+        },
+        "xie": {
+         "r": "worse",
+         "t": "苦寒傷了脾胃之氣。他更沒力氣，眼皮垂得更低，還拉了幾天肚子。"
+        },
+        "qi": {
+         "r": "chain",
+         "t": "服藥半個月，阿寬說早上眼皮輕了些，人也比較有精神。這是要慢慢養的病，接下來看的是回診。"
+        },
+        "san": {
+         "r": "worse",
+         "t": "他的脾胃是虛，不是熱。清胃的藥下去，胃口全無，眼皮垂得更低。"
+        }
+       },
+       "refer": {
+        "back": true,
+        "r": "checked",
+        "t": "專科大夫試了他的手腳力氣、說話與吞嚥，又看了瞳神，說眼下只是胞瞼無力，不是險症，囑他回來調養，有變化再去。",
+        "m": "先確認沒有險象，是穩當的做法。現在可以安心立法了。"
+       },
+       "late": {
+        "trust": 5,
+        "t": "我向阿寬說明，這個病我目前沒有把握，為他寫了一封引薦信。"
+       },
+       "thanks": "阿寬送來一件親手縫的短褂，針腳細密。",
+       "angry": "阿寬沒有抱怨，只是之後不再來了。",
+       "chainLabel": "要慢慢養的病",
+       "chain": [
+        {
+         "title": "半個月後",
+         "see": "早上來時，上胞瞼已經抬得起來，露出整個瞳神。他說早上輕了，午後還是會垂。臉色比上回潤一些。",
+         "say": "大夫，有效。能不能藥量加倍，再添些補品，好得快一點？",
+         "hint": "脾胃虛的人，補得急了，他消化得了嗎？",
+         "opts": [
+          {
+           "name": "原方不動，調他的飲食",
+           "sub": "三餐定時，少量多餐，細嚼慢嚥，不吃冷飯涼茶",
+           "right": true,
+           "trust": 8,
+           "spirit": 0,
+           "t": "我沒有加藥，只請他把飯吃好：到了時辰就停針吃飯，吃熱的，一口一口嚼。他有點失望，還是答應了。",
+           "m": "脾胃要有時間把食物化成氣血。藥是借力，飯才是本錢。"
+          },
+          {
+           "name": "藥量加倍，囑他多進補",
+           "sub": "趁勢追擊，補氣的藥加重，再吃些溫補的藥膳",
+           "right": false,
+           "trust": -6,
+           "spirit": 0,
+           "t": "補得太急，虛弱的脾胃運化不了。他口乾唇裂，肚子脹得吃不下，眼皮沒有更好。",
+           "m": "亂補和不補一樣壞。他的脾胃擔不起這麼重的藥。"
+          },
+          {
+           "name": "改用滋陰養血",
+           "sub": "久病傷陰，換個方向補",
+           "right": false,
+           "trust": -6,
+           "spirit": 0,
+           "t": "方向一換，剛提起來的那點氣又散了。眼皮回到半個月前的樣子。",
+           "m": "有效的方子，為什麼要換？他現在的舌脈，並沒有陰虛的樣子。"
+          }
+         ]
+        },
+        {
+         "title": "兩個月後",
+         "see": "眼皮原本已經好了七八成。這幾天又垂了下來，而且他說看針腳會變成兩個。說話時句尾有些含糊，喝水嗆了兩回。",
+         "say": "大夫，是不是我這幾天又趕工，累著了？歇幾天就好了吧？",
+         "hint": "眼皮還是那個眼皮。可是他今天說的，有幾樣是上回沒有的。",
+         "opts": [
+          {
+           "name": "請別的大夫一同評估，原方續服",
+           "sub": "看東西成雙、說話含糊、嗆水，是新的症狀，不能只當成累",
+           "right": true,
+           "trust": 6,
+           "spirit": 0,
+           "t": "我告訴阿寬，這幾樣新的症狀不是單靠歇息能解釋的，為他寫了引薦信，請別的大夫一同看。我的藥照舊調養。他有些害怕，但還是去了。",
+           "m": "看得仔細。病會變。上回尋常，不代表這回也尋常。"
+          },
+          {
+           "name": "囑他歇息，原方續服",
+           "sub": "勞累所致，歇幾天再看",
+           "right": false,
+           "trust": -8,
+           "spirit": 0,
+           "t": "我請他回去歇著。十天後他被家人扶著來，連飯都嚥不順了。我這才連忙把他轉了出去。",
+           "m": "你只聽見「累」，沒聽見成雙、含糊、嗆水。這幾樣連在一起，已經不只是眼皮的事。"
+          },
+          {
+           "name": "加重補氣升提",
+           "sub": "氣又陷下去了，藥量加上去",
+           "right": false,
+           "trust": -8,
+           "spirit": 0,
+           "t": "藥加重了，新的症狀卻一樣也沒退。等到他吞嚥費力，我才明白這不是藥量的問題。",
+           "m": "該停下來重新看的時候，你卻只想著加藥。"
+          }
+         ]
+        }
+       ],
+       "chainEnd": {
+        "well": "阿寬後來兩邊一起看。眼皮穩住了，新添的症狀也及早有人照看。",
+        "better": "阿寬的眼皮好了大半。中間走了一段彎路。",
+        "wobble": "這幾個月時好時壞。有幾次，我是被病人的話牽著走的。"
+       },
+       "quote": {
+        "src": "李杲《蘭室秘藏》",
+        "text": "五臟六腑之精氣，皆稟受於脾，上貫於目。"
+       },
+       "advice": "許多眼皮下垂只是過度疲勞與身體虛弱，好好調養多能改善。三餐定時，少量多餐、細嚼慢嚥，避免冰冷與生冷的食物。",
+       "modernNote": "現代對照：眼皮下垂若合併複視、口齒不清、吞嚥或呼吸費力，可能是重症肌無力等疾病，應配合西醫的評估與治療。",
+       "cmt": {
+        "best": "此方東垣所製，補的是脾胃之氣。你守住了方，顧了他的飯，也看見了病在變。",
+        "done": "長路走完了。回頭看看哪一次回診，你是順著病人的話走的。",
+        "referred": "知道自己的極限在哪裡，也是醫道的一部分。只是下一次，要比這一次多看清一分。",
+        "fail": "這一案沒有走上正路。不紅不痛、午後加重、聲低食少，是脾氣虛弱抬不起胞瞼，要補，要升，不能清。"
+       },
+       "_review": "草稿",
+       "_note": ""
+      },
+      {
+       "id": "c6",
+       "name": "許老先生",
+       "type": "退休塾師　怕針",
+       "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "trust": 55,
+       "lv": 4,
+       "disease": "圓翳內障",
+       "modern": "老年性白內障",
+       "pattern": "laosun",
+       "right": "bu",
+       "wheel": "shui",
+       "keyQ": [
+        "vision",
+        "onset",
+        "tongue"
+       ],
+       "intro": "教了一輩子書的許老先生由孫兒牽著進門。他說這一年看書越來越吃力，湊到窗邊也看不清字。「聽說城裡有人用金針撥眼，我可不敢。大夫，吃藥能不能好？」",
+       "eye": {
+        "red": 0,
+        "gunk": false,
+        "haze": false,
+        "pupil": "normal",
+        "green": false,
+        "white": true
+       },
+       "eyeText": "兩眼不紅不腫，白睛、黑睛都乾淨。細看瞳神深處，不是烏黑的，而是隱隱一層灰白，像隔著一片薄雲。瞳神圓正，對光收放如常。",
+       "eyeRight": "對。外面都好，濁在瞳神裡頭。瞳神是水輪，屬腎。年高精血不足，是常見的來路。",
+       "eyeWrong": "白睛、黑睛、胞瞼都是好的。那層灰白在瞳神裡面。瞳神是水輪，屬腎。",
+       "a": {
+        "gunk": "沒有眼屎。眼睛有些乾澀。",
+        "pain": "不痛不癢，也不紅。只是容易痠。",
+        "vision": "像隔著一層薄霧看東西，一年來慢慢加重。太陽底下更糊，看燈火會散開。對街的人認得出身形，認不出臉。",
+        "onset": "一年多了，兩眼差不多。沒有受過傷，也沒有突然變壞過。",
+        "habit": "教書四十年，夜夜在油燈下批課卷。如今退了，還是手不釋卷。",
+        "diet": "吃得清淡，胃口尚可。夜裡要起來小解兩三回，腰膝有些痠軟。",
+        "mood": "怕瞎，更怕那根針。",
+        "tongue": "舌偏紅，苔少。脈細，兩尺偏弱。"
+       },
+       "out": {
+        "feng": {
+         "r": "none",
+         "t": "這不是外來的風熱。藥吃了幾帖，霧還是那層霧。"
+        },
+        "bu": {
+         "r": "chain",
+         "t": "服藥月餘，許老先生說眼睛沒那麼乾澀痠累了。翳障有沒有動靜，要等回診再看。"
+        },
+        "xie": {
+         "r": "worse",
+         "t": "苦寒的藥傷了老人本就不足的陰血。眼睛更乾澀，霧一點也沒散，胃口也壞了。"
+        },
+        "qi": {
+         "r": "none",
+         "t": "精神好了一點，眼前的霧依舊。"
+        },
+        "san": {
+         "r": "none",
+         "t": "他沒有胃熱可清。藥吃了幾帖，霧還是那層霧。"
+        }
+       },
+       "refer": {
+        "back": true,
+        "r": "checked",
+        "t": "專科大夫看過，說翳障還沒有到非動針不可的時候，可以先調養，但要定期回去讓他看。",
+        "m": "請人把過關，再來立法，穩當。記住他說的：要定期看。"
+       },
+       "late": {
+        "trust": 5,
+        "t": "我向許老先生說明，這個病我目前沒有把握，為他寫了一封引薦信。"
+       },
+       "thanks": "許老先生送來一幅親筆寫的字。",
+       "angry": "許老先生的孫兒說，爺爺不肯再吃藥了。",
+       "chainLabel": "要定期看的病",
+       "chain": [
+        {
+         "title": "六週後",
+         "see": "許老先生說眼睛舒服多了，不乾不痠，看燈火的散光好像也收了一點。我請他認對街的招牌，和六週前一樣認不出來。再看瞳神深處，那層灰白沒有變淡，反而比上回濃了一分。",
+         "say": "大夫，我覺得有好一些。再吃半年藥，應該就能把它化掉吧？",
+         "hint": "他說的舒服是真的。可是你要回答的是另一個問題：那層翳，這六週動了沒有？",
+         "opts": [
+          {
+           "name": "說明極限，請他接受金針撥障",
+           "sub": "六週沒有起色，翳還在加重，不能再拖。藥留著做術後調養",
+           "right": true,
+           "trust": 4,
+           "spirit": 3,
+           "t": "我告訴他：藥讓眼睛舒服了，卻沒有擋住翳障。再拖下去，還可能引出眼珠脹痛的病來。我陪他去見了那位撥障的大夫。他的手一直在抖，但還是去了。",
+           "m": "說得好。眼睛舒服，和翳障退了，是兩回事。分得清，才不會陪著病人一起拖。"
+          },
+          {
+           "name": "原方再服半年",
+           "sub": "病人覺得有效，就順著他",
+           "right": false,
+           "trust": 2,
+           "spirit": -4,
+           "t": "他高高興興地回去了。半年後翳障已經過熟，眼珠發脹，頭也痛了起來。撥障的大夫說，早半年來會容易得多。",
+           "m": "他想聽的話，你說了。他該聽的話，你沒說。"
+          },
+          {
+           "name": "加重藥量，再試六週",
+           "sub": "也許是藥力不夠",
+           "right": false,
+           "trust": -4,
+           "spirit": -2,
+           "t": "藥加重了，六週後翳又濃了一分。我多拖了他六週。",
+           "m": "給過一段治療的期限，沒有變化就該轉手。再加藥，是捨不得認輸。"
+          }
+         ]
+        }
+       ],
+       "chainEnd": {
+        "well": "撥障之後，許老先生看見了孫兒的臉。他說那一針沒有想的可怕。之後他還是回來，讓我替他調養。",
+        "wobble": "翳障終究拖到過熟才處理。許老先生的眼睛保住了，只是多受了許多罪。"
+       },
+       "quote": {
+        "src": "司馬遷《史記．扁鵲倉公列傳》",
+        "text": "過雒陽，聞周人愛老人，即為耳目痹醫。"
+       },
+       "advice": "初期與中期的老年性白內障可以嘗試治療，並定期追蹤。給四到六週的治療期，如果沒有變化或持續變嚴重，就該接受手術，避免拖到過熟引起眼壓上升。",
+       "modernNote": "現代對照：成熟的白內障以手術置換人工水晶體治療。",
+       "cmt": {
+        "best": "扁鵲過雒陽，知道那裡敬老，就專治老人的耳目。先看病人是誰、要過什麼日子，再決定怎麼治。你今天做的，是讓他敢去挨那一針。",
+        "done": "這一案要記下來。給了期限，就要守住期限。病人說舒服，不等於病退了。",
+        "referred": "知道自己的極限在哪裡，也是醫道的一部分。只是下一次，要比這一次多看清一分。",
+        "fail": "這一案沒有走上正路。不紅不痛、慢慢加重的霧，濁在瞳神裡頭，多是年高精血不足，要養，不能清。"
+       },
+       "_review": "草稿",
+       "_note": ""
+      }
+     ]
+    };
+    /* DATA>> */
+    const WHEELS = EY.WHEELS;
+    function eyeSVG(e, sel) {
+        const scl = e.red === 2 ? '#f0b9ae' : (e.red === 1 ? '#f2d3ca' : '#f6f1e7');
+        const pr = e.pupil === 'dilated' ? 37 : 21;
+        const pc = e.white ? '#b3b9bd' : (e.green ? '#3f6350' : '#121212');       // white：瞳神內灰白（圓翳內障）
+        /* droop：上胞瞼鬆垂，蓋住黑睛上半。stye：胞瞼上的紅腫尖頭 */
+        const droop = e.droop ? `<path class="zone${sel === 'rou' ? ' sel' : ''}" data-w="rou" d="M50 120 Q200 5 350 120 Q200 94 50 120 Z" fill="#d8b08c" stroke="#8a5a3a" stroke-width="1.2"/>` : '';
+        const stye = e.stye ? `<g pointer-events="none"><ellipse cx="262" cy="58" rx="27" ry="19" fill="#d9766a" opacity="0.45"/><ellipse cx="262" cy="60" rx="17" ry="12" fill="#d9665a" stroke="#a8453a" stroke-width="1"/><circle cx="262" cy="65" r="4" fill="#f3e6a6" stroke="#b89a4a" stroke-width="0.6"/></g>` : '';
+        const z = (w) => `class="zone${sel === w ? ' sel' : ''}" data-w="${w}"`;
+        const veins = e.red ? `<g stroke="#c2392f" stroke-width="${e.red === 2 ? 1.7 : 1.1}" fill="none" opacity="0.85" pointer-events="none">
+            <path d="M62 118 q30 -14 64 -6"/><path d="M70 129 q28 10 60 4"/><path d="M94 99 q20 2 38 11"/><path d="M108 147 q18 2 32 -7"/>
+            <path d="M338 118 q-30 -14 -64 -6"/><path d="M330 129 q-28 10 -60 4"/><path d="M306 99 q-20 2 -38 11"/><path d="M292 147 q-18 2 -32 -7"/></g>` : '';
+        const gunk = e.gunk ? `<g fill="#e6d36a" stroke="#a8963a" stroke-width="0.6" pointer-events="none"><ellipse cx="68" cy="127" rx="12" ry="6"/><ellipse cx="96" cy="150" rx="7" ry="3"/><ellipse cx="318" cy="140" rx="6" ry="3"/></g>` : '';
+        const haze = e.haze ? `<circle cx="200" cy="120" r="56" fill="rgba(208,218,222,0.5)" pointer-events="none"/>` : '';
+        return `<svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="病人的眼睛">
+            <defs>
+                <clipPath id="almond"><path d="M50 120 Q200 5 350 120 Q200 235 50 120 Z"/></clipPath>
+                <radialGradient id="iris" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#7a4a26"/><stop offset="0.75" stop-color="#4a2c16"/><stop offset="1" stop-color="#2a1608"/></radialGradient>
+            </defs>
+            <path ${z('rou')} d="M50 120 Q200 5 350 120 L374 114 Q200 -62 26 114 Z" fill="#d8b08c" stroke="#8a5a3a" stroke-width="1.5"/>
+            <path ${z('rou')} d="M50 120 Q200 235 350 120 L372 127 Q200 292 28 127 Z" fill="#d2a784" stroke="#8a5a3a" stroke-width="1.5"/>
+            <g clip-path="url(#almond)">
+                <path ${z('qi')} d="M50 120 Q200 5 350 120 Q200 235 50 120 Z" fill="${scl}"/>
+                ${veins}
+                <path ${z('xue')} d="M48 120 L88 104 L88 136 Z" fill="#e29a8e"/>
+                <path ${z('xue')} d="M352 120 L320 108 L320 132 Z" fill="#e6a79c"/>
+                <circle ${z('feng')} cx="200" cy="120" r="56" fill="url(#iris)"/>
+                ${haze}
+                <circle ${z('shui')} cx="200" cy="120" r="${pr}" fill="${pc}"/>
+                <circle cx="217" cy="103" r="6" fill="#ffffff" opacity="${e.haze ? 0.35 : 0.8}" pointer-events="none"/>
+                ${gunk}
+                ${droop}
+            </g>
+            <path d="M50 120 Q200 5 350 120 Q200 235 50 120 Z" fill="none" stroke="#5a3a26" stroke-width="1.5" pointer-events="none"/>
+            ${stye}
+        </svg>`;
+    }
+    function pickText(w) {
+        const x = WHEELS[w];
+        return isEasy() ? `我看的是：<b class="name">${x.name}</b>（${x.part}，${x.plain}），屬${x.organ}` : `我看的是：<b class="name">${x.part}</b>（${x.plain}）`;
+    }
+    const LEGEND = '<div class="legend small">' + Object.keys(WHEELS).map(k => { const x = WHEELS[k]; return `<span><b>${x.name}</b>${x.part}（${x.plain}）屬${x.organ}</span>`; }).join('') + '</div>';
+
+    /* ================= 門診日的安排 ================= */
+    const SHM = '師父';        // 業師張仲景，帶外感病
+    const EYM = '黃庭鏡';      // 書中師，帶眼病
+
+    /* ================= 一生的骨架 =================
+       五章。每章從病例庫抽 quota 位新病人，分兩天上門；病人都結案後，這一章才結束。
+       之後病例庫變大，每一輪抽到的人不同，一輪的長度不變。 */
+    const CHAPTERS = [
+        { name: '習醫', quota: 3,
+          lines: [{ who: SHM, text: '今日起，你自己坐診。' }, { who: SHM, text: '病人不會只來一次。方子開出去，要等他回來，你才知道對不對。這段日子，你還得看別的病人。' }],
+          end: '師父翻了翻我的病歷簿，沒有說好，也沒有說不好。他只說：都記下來了，就好。' },
+        { name: '立業', quota: 2,
+          lines: [{ text: '幾年過去。我在城南賃了一間小屋，掛上自己的招牌。' }, { who: SHM, text: '往後沒有人替你看方子了。錯了，是你的。對了，也不全是你的。' }],
+          end: '招牌掛了幾年，漆有些褪了。認得這塊招牌的人，倒是多了。' },
+        { name: '盛年', quota: 2,
+          lines: [{ text: '診間外的長凳越坐越滿。有人從鄰縣趕來，說是聽了我的名字。' }, { text: '名聲是好東西。只是我發現，自己越來越怕治不好。' }],
+          end: '我開始記不住每一位病人的名字。這讓我有些不安。' },
+        { name: '傳承', quota: 2,
+          lines: [{ text: '我收了第一個學徒。他問的問題，都是我當年問過師父的。' }, { text: '我才知道，要把「我不知道」說出口，比開方子難。' }],
+          end: '我看著學徒替病人診脈的樣子，想起師父當年看我的眼神。' },
+        { name: '晚年', quota: 2,
+          lines: [{ text: '我的眼睛也花了。看診的時候，得把病人的手拉近一點。' }, { text: '來的人少了。我有更多時間，把每一位看清楚。' }],
+          end: '我把診間的鑰匙交了出去。病歷簿，我自己留著。' }
+    ];
+    const chOf = () => CHAPTERS[S.ch] || { name: '終章' };
+    /* 病例最早在第幾章出現。之後改由試算表的欄位決定（病例上有 lv 就用病例自己的）。ORD 只用來固定第一章的順序 */
+    const CASE_LV = { chen: 1, c1: 1, wen: 1, bo: 2, c4: 2, c2: 2, hu: 3, c3: 3, c5: 3, shui: 4, c6: 4 };
+    const CASE_ORD = { chen: 1, c1: 2, wen: 3 };
+    const lvOf = (c) => c.lv || CASE_LV[c.id] || 1;
+    function planChapter(k) {
+        const pool = SH.CASES.concat(EY.CASES).filter(c => !P[c.id] && lvOf(c) <= k + 1)
+            .map(c => ({ id: c.id, lv: lvOf(c), o: c.ord || CASE_ORD[c.id] || 10 + Math.random() * 80 }))
+            .sort((a, b) => (b.lv - a.lv) || (a.o - b.o));          // 合乎這一章程度的優先，同程度隨機
+        const picks = pool.slice(0, CHAPTERS[k].quota).map(x => x.id);
+        const n1 = Math.ceil(picks.length / 2);
+        return { 1: picks.slice(0, n1), 2: picks.slice(n1) };
+    }
+
+    /* ================= 狀態 ================= */
+    /* dil：每章遇過的困境；echo：還沒浮現的回音；flags：留到結局的印記；dilLog：一生的抉擇 */
+    /* 第一代的數值：energy 精力、peace 修為、money 金錢；jiji 既濟的天數、bal 目前的身心狀態、over 透支次數、poor 連續入不敷出的天數、epi 已領悟的心法 */
+    const fresh = () => ({ energy: 70, peace: 0, money: 20, jiji: 0, bal: '', over: 0, poor: 0, epi: [], gives: 0,
+                           day: 1, ch: 0, chDay: 1, arr: {}, spirit: 70, skill: 0, fame: 0, study: 0, studyNext: 0, queue: [], news: [], metEye: false, dil: [], echo: [], flags: {}, dilLog: [],
+                           app: { on: false, exp: 0, done: false } });       // app：學徒（第四章起）
+    const S = Object.assign({ diff: 'easy' }, fresh());
+    const P = {};               // 病歷簿：每位病人一筆，跨門診日保存
+    let V = null;               // 目前在診間的病人
+    const isEasy = () => S.diff === 'easy';
+    const clamp = (n) => Math.max(0, Math.min(100, n));
+    const clone = (o) => JSON.parse(JSON.stringify(o));
+    function mk(id) {
+        const sh = SH.CASES.find(c => c.id === id);
+        const c = sh || EY.CASES.find(x => x.id === id);
+        const rep = Math.max(-12, Math.min(12, Math.round(S.fame / 3)));          // 聲望會帶到新病人一開始的信任
+        return { id, c, kind: sh ? 'sh' : 'eye', trust: clamp(c.trust + rep), status: 'new', due: 0, firstDay: S.day, firstCh: S.ch, visits: 0, spiritUsed: 0, spiritStart: 0, lowSpirit: false,
+                 asked: [], pattern: null, paidPattern: null, round: 1, referred: false, outcome: '', lost: false,
+                 bagang: [null, null, null], results: [], lastRx: null,
+                 wheel: null, wheelOk: null, plan: null, log: [], pending: null, inChain: false, chainIdx: 0, chainRight: 0, chainDone: false, promise: false, noRefer: false, keyHit: 0 };
+    }
+    function maxAsk() {
+        const base = V.kind === 'sh' ? (isEasy() ? 5 : 3) : (isEasy() ? 4 : 3);
+        return Math.max(1, base + S.study + (S.skill >= 10 ? 1 : 0) - (V.lowSpirit ? 1 : 0));
+    }
+    /* 醫術：每結一案就長一點，到門檻會讓看診省力。聲望：治好加、治壞減，影響新病人的信任 */
+    const askCost = () => (S.skill >= 30 ? 2 : 3);
+    const patCost = () => (S.skill >= 20 ? 3 : 5);
+    const PERKS = [[10, '往後每一診可以多問一項。'], [20, '往後定證只耗心神 3。'], [30, '往後問診每一項只耗心神 2。']];
+    function addSkill(n) {
+        const b = S.skill; S.skill += n;
+        const p = PERKS.find(x => b < x[0] && S.skill >= x[0]);
+        return p ? `醫術到了 ${p[0]}。${p[1]}` : '';
+    }
+    const FAME = { '痊癒': 3, '保住視力': 3, '明顯改善': 3, '好轉': 1, '轉介': 1, '無效': -1, '時好時壞': -1, '惡化': -3 };
+    const GOOD3 = ['痊癒', '保住視力', '明顯改善'];
+    const gainHTML = () => `<tr><td>所得</td><td><span class="up">${V.gain}</span>${V.perk ? `<br><b class="name">${V.perk}</b>` : ''}</td></tr>`;
+    const lowNote = () => (V.lowSpirit ? '<div class="down small" style="margin-top:6px">心神不足，這一診能問的少一項。</div>' : (S.study ? '<div class="up small" style="margin-top:6px">昨日研讀有得，這一診可多問一項。</div>' : ''));
+
+    /* ================= 存檔 =================
+       每個門診日開始時自動存一次。病人資料裡的 c（病例內容）不存，讀檔時用編號接回去。 */
+    const SAVE_KEY = 'xinglin-clinic-v1';
+    let memSave = null;
+    const store = {
+        get() { try { return localStorage.getItem(SAVE_KEY) || memSave; } catch (e) { return memSave; } },
+        set(v) { memSave = v; try { localStorage.setItem(SAVE_KEY, v); } catch (e) { /* 無法寫入時只留在記憶體 */ } },
+        del() { memSave = null; try { localStorage.removeItem(SAVE_KEY); } catch (e) { /* 同上 */ } }
+    };
+    function readSave() {
+        try { const d = JSON.parse(store.get()); return d && d.v === 2 ? d : null; } catch (e) { return null; }      // v2：加入章節、醫術、聲望
+    }
+    function saveGame() {
+        const ps = {};
+        Object.keys(P).forEach(id => { const o = Object.assign({}, P[id]); delete o.c; ps[id] = o; });
+        const s = Object.assign({}, S); delete s.queue; delete s.news;       // 狀態整包存，之後加新欄位不必再改這裡
+        store.set(JSON.stringify({ v: 2, S: s, P: ps }));
+    }
+    function loadGame() {
+        const d = readSave();
+        if (!d) return false;
+        try {
+            const ps = {};
+            Object.keys(d.P).forEach(id => { ps[id] = Object.assign(mk(id), d.P[id]); });
+            Object.keys(P).forEach(k => delete P[k]);
+            Object.assign(P, ps);
+            Object.assign(S, fresh(), d.S, { queue: [], news: [] });          // 先鋪預設值，舊存檔缺的欄位才不會出錯
+            return true;
+        } catch (e) { return false; }
+    }
+
+    /* ================= 札記與成就（跨輪保存） =================
+       和存檔分開放：存檔是「這一輪玩到哪」，札記是「玩過的每一輪留下了什麼」。 */
+    const META_KEY = 'xinglin-meta-v1';
+    let memMeta = null;
+    function loadMeta() {
+        let m = null;
+        try { m = JSON.parse(localStorage.getItem(META_KEY) || memMeta); } catch (e) { try { m = JSON.parse(memMeta); } catch (e2) { m = null; } }
+        return Object.assign({ runs: 0, ach: [], cases: {}, dil: [], epi: [], books: 0 }, m || {});
+    }
+    function saveMeta(m) {
+        memMeta = JSON.stringify(m);
+        try { localStorage.setItem(META_KEY, memMeta); } catch (e) { /* 存不了就只留在這一次 */ }
+    }
+    const OUT_RANK = ['痊癒', '保住視力', '明顯改善', '好轉', '轉介', '多跑一趟', '時好時壞', '無效', '惡化', '沒有回診'];
+    /* 記下這位病人最好的一次結果 */
+    function metaCase(p) {
+        const m = loadMeta(), old = m.cases[p.id], now = p.outcome;
+        if (!old || OUT_RANK.indexOf(now) < OUT_RANK.indexOf(old)) { m.cases[p.id] = now; saveMeta(m); }
+    }
+    /* 成就：每一輪結束時檢查。x 是這一輪的統計 */
+    const ACH = [
+        { id: 'author', name: '立言傳世', desc: '走完五章，把醫案寫成書', check: (x) => !x.poor },
+        { id: 'healer', name: '仁心仁術', desc: '一輪裡看好八位以上的病人', check: (x) => x.ok >= 8 },
+        { id: 'diag', name: '四診合參', desc: '一輪裡有八位病人第一次處置就對', check: (x) => x.firstRight >= 8 },
+        { id: 'honest', name: '知所不能', desc: '該急送專科的病人，第一時間就送了出去', check: (x) => x.mustRefer > 0 && x.mustReferOk === x.mustRefer },
+        { id: 'kept', name: '一個都沒走', desc: '一輪裡沒有病人不告而別', check: (x) => !x.poor && x.n >= 8 && x.lost === 0 },
+        { id: 'jiji', name: '水火既濟', desc: '一輪裡身心相濟十二天以上', check: () => S.jiji >= 12 },
+        { id: 'steady', name: '量力而為', desc: '走完一生，從未把精力用到見底', check: (x) => !x.poor && S.over === 0 },
+        { id: 'mortal', name: '褪去神格', desc: '領悟三個心法', check: () => S.epi.length >= 3 },
+        { id: 'enlight', name: '歸真境界', desc: '修為達到「歸真」', check: () => S.peace >= 45 },
+        { id: 'saint', name: '懸壺濟世', desc: '一輪裡施藥三次以上', check: () => S.gives >= 3 },
+        { id: 'mentor', name: '春風化雨', desc: '帶出一位出師的學徒', check: () => S.app.done },
+        { id: 'master', name: '一代宗師', desc: '醫術達到 50', check: () => S.skill >= 50 },
+        { id: 'renown', name: '名滿杏林', desc: '聲望達到 50', check: () => S.fame >= 50 },
+        { id: 'poor', name: '只剩病歷簿', desc: '診間開不下去了，病歷簿還留著', check: (x) => x.poor }
+    ];
+    /* 一輪結束：算成就、寫進札記，回傳這一輪新得到的成就 */
+    function settleMeta(list, poor) {
+        const refer = list.filter(p => p.kind === 'eye' && p.c.right === 'refer');
+        const x = { poor, n: list.length, ok: list.filter(p => GOOD3.includes(p.outcome)).length,
+                    firstRight: list.filter(p => p.round === 1 && GOOD3.includes(p.outcome)).length,
+                    lost: list.filter(p => p.status === 'lost').length,
+                    mustRefer: refer.length, mustReferOk: refer.filter(p => p.outcome === '保住視力').length };
+        const m = loadMeta();
+        const earned = ACH.filter(a => a.check(x)).map(a => a.id);
+        const added = earned.filter(id => !m.ach.includes(id));
+        m.runs++;
+        if (!poor) m.books++;
+        m.ach = m.ach.concat(added);
+        S.epi.forEach(id => { if (!m.epi.includes(id)) m.epi.push(id); });
+        S.dil.concat(S.flags.seen_aging ? ['aging'] : []).forEach(id => { if (id && !m.dil.includes(id)) m.dil.push(id); });
+        saveMeta(m);
+        return { earned, fresh: added };
+    }
+    /* 札記的內容：成就、看過的病人、領悟的心法、遇過的困境。沒遇過的只顯示問號 */
+    function notesHTML() {
+        const m = loadMeta();
+        const all = SH.CASES.concat(EY.CASES);
+        const ach = ACH.map(a => { const got = m.ach.includes(a.id);
+            return `<li class="${got ? '' : 'dim'}"><b class="${got ? 'name' : ''}">${got ? a.name : '？？？'}</b>　${a.desc}</li>`; }).join('');
+        const cases = all.map(c => { const o = m.cases[c.id];
+            if (!o) return '<li class="dim">？？？</li>';
+            const what = SH.CASES.includes(c) ? SH.PATTERNS[c.pattern].name : `${c.disease}（${c.modern}）`;
+            return `<li><b class="name">${c.name}</b>　${what}　<span class="${GOOD4.includes(o) ? 'up' : 'down'}">${o}</span></li>`; }).join('');
+        const epi = EPI.map(e => (m.epi.includes(e.id) ? `<li><b class="name">${e.name}</b>　${e.desc}</li>` : '<li class="dim">？？？</li>')).join('');
+        const dil = Object.keys(DILEMMAS).map(id => (m.dil.includes(id) ? `<li><b class="name">${DILEMMAS[id].title}</b></li>` : '<li class="dim">？？？</li>')).join('');
+        const seen = all.filter(c => m.cases[c.id]).length;
+        return `<div class="small hint">行醫 <b class="px">${m.runs}</b> 輪，成書 <b class="px">${m.books}</b> 部。札記記在這台裝置的瀏覽器裡。</div>
+            <h2>成就 <span class="px">${m.ach.length}/${ACH.length}</span></h2><ul class="small notes">${ach}</ul>
+            <h2>看過的病人 <span class="px">${seen}/${all.length}</span>　只記最好的一次結果</h2><ul class="small notes two">${cases}</ul>
+            <h2>心法 <span class="px">${m.epi.length}/${EPI.length}</span></h2><ul class="small notes">${epi}</ul>
+            <h2>困境 <span class="px">${m.dil.length}/${Object.keys(DILEMMAS).length}</span></h2><ul class="small notes two">${dil}</ul>`;
+    }
+
+    /* ================= 對話橫帶 ================= */
+    /* 小頭像放大成半身：去掉底色方塊，鏡頭拉遠到肩膀 */
+    const bustSVG = (svg) => svg.replace('viewBox="34 20 52 52"', 'viewBox="28 16 64 70"').replace(/<rect[^>]*\/>/, '');
+    let typing = null, fullText = '', queue = [], after = null;
+    /* done：全部說完、玩家再點一下之後要做的事（劇情段落用） */
+    function speak(lines, done) {
+        queue = Array.isArray(lines) ? lines.slice() : [lines];
+        after = done || null;
+        if (!queue.length && after) { const f = after; after = null; f(); return; }
+        nextLine();
+    }
+    function nextLine() {
+        if (!queue.length) { $('#dlg-more').classList.add('hidden'); return; }
+        const l = queue.shift();
+        const who = l.who || '';
+        const face = $('#dlg-face');
+        face.style.backgroundImage = ''; face.innerHTML = '';
+        const fig = who === EYM ? MENTOR_SVG : (who === SHM ? MASTER_SVG : (who && who !== 'patient' ? HERO_SVG : ''));
+        face.classList.toggle('fig', !!fig);
+        if (who === 'patient' && V) { face.style.backgroundImage = `url('${IMG}${V.c.img}')`; face.classList.remove('hidden'); }
+        else if (fig) { face.innerHTML = bustSVG(fig); face.classList.remove('hidden'); }
+        else { face.classList.add('hidden'); }
+        $('#dlg-name').textContent = who === 'patient' ? (V ? V.c.name + '：' : '') : (who ? who + '：' : '');
+        fullText = l.text;
+        let n = 0;
+        clearInterval(typing);
+        $('#dlg-text').textContent = '';
+        $('#dlg-more').classList.add('hidden');
+        typing = setInterval(() => {
+            n++;
+            $('#dlg-text').textContent = fullText.slice(0, n);
+            if (n >= fullText.length) endTyping();
+        }, 26);
+    }
+    function endTyping() {
+        clearInterval(typing); typing = null;
+        $('#dlg-text').textContent = fullText;
+        if (queue.length || after) $('#dlg-more').classList.remove('hidden');
+    }
+    $('#dlg').onclick = () => {
+        if (typing) endTyping();
+        else if (queue.length) nextLine();
+        else if (after) { const f = after; after = null; $('#dlg-more').classList.add('hidden'); f(); }
+    };
+    /* 劇情段落：收起病人與自己的狀態牌，只留場景與對話。big 是黑底題字 */
+    function story(big, sub, lines, done) {
+        V = null;
+        $('#ui').classList.add('story'); $('#ui').classList.remove('clinic');
+        $('#panel-win').classList.add('hidden');
+        $('#scene').classList.remove('hidden'); $('#scene').classList.add('bare');
+        if (big) showVeil(big, sub || '');
+        speak(lines, () => { $('#ui').classList.remove('story'); done(); });
+    }
+    $('#skip').onclick = () => {
+        clearInterval(typing); typing = null; queue = [];
+        const f = after; after = null;
+        if (f) f();
+    };
+    const mentorName = () => (V && V.kind === 'eye' ? EYM : SHM);
+    const Mt = (text) => ({ who: mentorName(), text });
+    const narr = (text) => ({ text });
+    const tips = (...texts) => (isEasy() ? texts.map(Mt) : []);
+
+    /* ================= 畫面更新 ================= */
+    function hud() {
+        const face = $('#pt-face');
+        if (V) {
+            face.style.backgroundImage = `url('${IMG}${V.c.img}')`;
+            $('#pt-name').textContent = V.c.name; $('#pt-type').textContent = V.c.type;
+            $('#tr-row').classList.remove('hidden');
+            $('#g-tr').style.width = V.trust + '%'; $('#v-tr').innerHTML = `${V.trust}<small>/100</small>`;
+        } else {
+            face.style.backgroundImage = '';
+            $('#pt-name').textContent = '候診室'; $('#pt-type').textContent = '';
+            $('#tr-row').classList.add('hidden');
+        }
+        $('#me-face').innerHTML = HERO_SVG;
+        face.classList.toggle('hidden', !V);
+        const over = S.ch >= CHAPTERS.length;      // 五章走完，進入結局
+        $('#me-name').textContent = `我（${['弟子', '醫者', '醫者', '師者', '老醫者'][S.ch] || '著書人'}）`;
+        $('#me-diff').innerHTML = over ? '終章' : `<span class="wide">${isEasy() ? '入門' : '專業'}　${chOf().name}　第 ${S.chDay} 日</span><span class="narrow">${chOf().name} ${S.chDay} 日</span>`;
+        /* 精力、心神與四個數值有兩處顯示：平常在右上的狀態牌，看診時在右下的狀態窗 */
+        $$('.g-sp').forEach(e => { e.style.width = S.spirit + '%'; }); $$('.v-sp').forEach(e => { e.innerHTML = `${S.spirit}<small>/100</small>`; });
+        $$('.g-en').forEach(e => { e.style.width = S.energy + '%'; }); $$('.v-en').forEach(e => { e.innerHTML = `${S.energy}<small>/100</small>`; });
+        [['.s-sk', S.skill], ['.s-pc', S.peace], ['.s-fm', S.fame], ['.s-mn', S.money]].forEach(([sel, val]) => $$(sel).forEach(e => { e.textContent = val; }));
+        $$('.v-bal').forEach(bal => {
+            bal.textContent = S.bal === 'jiji' ? '既濟' : '未濟';
+            bal.classList.toggle('off', S.bal !== 'jiji');
+            bal.classList.toggle('hidden', !S.bal);
+        });
+        /* 診間裡有病人，就換成看診畫面的版面 */
+        $('#ui').classList.toggle('clinic', !!V);
+        if (V) $('#sc-tag').innerHTML = `<span class="name">${V.c.name}</span>　${V.c.type}　信任 <span class="px">${V.trust}</span>`;
+    }
+    /* 病人進診間：擺好病人、我與師父，清掉上一位的指令 */
+    function sceneSetup() {
+        $('#sc-pt').style.backgroundImage = `url('${IMG}${V.c.img}')`;
+        $('#sc-mt').innerHTML = V.kind === 'sh' ? SIL.master : SIL.mentor;
+        $('#sc-me').innerHTML = SIL.hero;
+        $('#cs-face').innerHTML = HERO_SVG;
+        $('#sc-cmds').innerHTML = ''; $('#sc-steps').innerHTML = '';
+    }
+    /* 數值變動時，在病人或狀態窗上飄一行字（只在看診畫面） */
+    function floatText(text, cls, sel) {
+        const t = $(sel);
+        if (!$('#ui').classList.contains('clinic') || !t || t.offsetParent === null || $$('.float').length > 6) return;
+        const r = t.getBoundingClientRect(), s = $('#stage').getBoundingClientRect();
+        const el = document.createElement('div');
+        el.className = 'float px ' + cls;
+        el.textContent = text;
+        el.style.left = (r.left - s.left + r.width * (0.2 + Math.random() * 0.4)) + 'px';
+        el.style.top = (r.top - s.top + 4 - $$('.float').length * 22) + 'px';   // 同時跳出好幾個時往上疊，不要蓋在一起
+        $('#stage').appendChild(el);
+        setTimeout(() => el.remove(), 1400);
+    }
+    const sgn = (n) => `${n > 0 ? '+' : '−'}${Math.abs(n)}`;
+    function panel(html) {
+        $('#scene').classList.add('hidden'); $('#panel-win').classList.remove('hidden');
+        $('#panel').innerHTML = html; $('#panel').scrollTop = 0;
+    }
+    /* 診間：看診的中心畫面。每做完一步就回到這裡，再選下一個指令。
+       指令依序解鎖：前一步沒做，後一步是灰的。做過的步驟只要還開著，可以回頭再做。 */
+    /* 診間裡的我與師父：背對鏡頭的水墨剪影。正式的立繪到位前先用這個，免得和水墨背景打架 */
+    const figSil = (id, c1, c2, hat) => `<svg viewBox="0 0 120 222" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="sil-${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient></defs>
+        <g fill="url(#sil-${id})" stroke="rgba(255,255,255,0.22)" stroke-width="1.2" stroke-linejoin="round">
+            <path d="M60 58 C40 58 27 67 23 85 L9 150 C7 161 16 165 24 160 L31 132 L27 216 L93 216 L89 132 L96 160 C104 165 113 161 111 150 L97 85 C93 67 80 58 60 58 Z"/>
+            <ellipse cx="60" cy="38" rx="17" ry="19"/>
+            ${hat ? '<rect x="44" y="6" width="32" height="14" rx="3"/>' : '<ellipse cx="60" cy="15" rx="9" ry="8"/>'}
+        </g>
+        <path d="M32 132 H88" stroke="rgba(255,255,255,0.28)" stroke-width="3" stroke-linecap="round"/>
+    </svg>`;
+    const SIL = { hero: figSil('hero', '#1f3a30', '#2f5a48', false), master: figSil('master', '#3a1c18', '#6a2c22', true), mentor: figSil('mentor', '#2a2440', '#4a4068', true) };
+    const paid = () => !!V.paidPattern && V.paidPattern === V.pattern;
+    function hub(lines) {
+        const sh = V.kind === 'sh', n = V.asked.length, bg = V.bagang.every(Boolean), eyed = V.wheelOk !== null;
+        const pats = sh ? SH.PATTERNS : EY.PATTERNS;
+        const steps = sh ? [
+            { name: '四診', on: true, done: n > 0, sub: n ? `已問 ${n} 項` : '望聞問切', go: shAsk },
+            { name: '八綱', on: n > 0, done: bg, sub: bg ? V.bagang.join('、') : '表裡寒熱虛實', go: shBagang },
+            { name: '定證', on: bg, done: paid(), sub: paid() ? pats[V.pattern].name : '斷為何證', go: shPattern },
+            { name: '處方', on: paid(), done: false, sub: '君臣佐使', go: shRx }
+        ] : [
+            { name: '察目', on: !eyed, done: eyed, sub: eyed ? `${WHEELS[V.wheel].name}　${WHEELS[V.wheel].part}` : '五輪定位', go: eyEye },
+            { name: '問診', on: eyed, done: n > 0, sub: n ? `已問 ${n} 項` : '起病與起居', go: eyAsk },
+            { name: '辨證', on: eyed && n > 0, done: paid(), sub: paid() ? pats[V.pattern].name : '斷為何證', go: eyPattern },
+            { name: '處置', on: paid(), done: false, sub: '立法施治', go: eyPlan }
+        ];
+        const cur = steps.findIndex(s => s.on && !s.done);
+        /* 十字指令：上、左、右、下依序是四個步驟。旁邊列出每一步的現況 */
+        $('#sc-cmds').innerHTML = steps.map((s, i) => `<button class="octw${i === cur ? ' cur' : ''}${s.done ? ' done' : ''}" data-i="${i}" ${s.on ? '' : 'disabled'} title="${s.sub}">
+            <span class="oct"><b>${s.name}</b></span><span class="sub">${s.sub}</span></button>`).join('');
+        $('#sc-steps').innerHTML = steps.map((s, i) => `<li class="${s.done ? 'done' : (i === cur ? 'cur' : 'off')}">${s.done ? '✓' : (i === cur ? '▶' : '　')} ${s.name}　${s.sub}</li>`).join('')
+            + (V.lowSpirit ? '<li class="down">心神不足，能問的少一項</li>' : (S.study ? '<li class="up">昨日研讀有得，可多問一項</li>' : ''));
+        $('#panel').innerHTML = '';
+        $('#panel-win').classList.add('hidden'); $('#scene').classList.remove('hidden', 'bare');
+        $$('#sc-cmds .octw').forEach(b => b.onclick = () => steps[+b.dataset.i].go());
+        if (lines && lines.length) speak(lines);
+    }
+    function addTrust(d) {
+        if (d < 0 && S.epi.includes('comm')) d = Math.ceil(d / 2);       // 降維溝通：不再與病人的焦慮共振
+        V.trust = clamp(V.trust + d);
+        if (d) floatText(`信任 ${sgn(d)}`, d > 0 ? 'up' : 'down', '#sc-pt');
+    }
+    function addSpirit(d) { S.spirit = clamp(S.spirit + d); if (d) floatText(`心神 ${sgn(d)}`, d > 0 ? 'up' : 'down', '#sc-stat'); }
+    /* 精力用到見底還硬撐，不足的部分會加倍從心神扣回來（第一代的「透支」） */
+    function addEnergy(d) {
+        const v = S.energy + d;
+        if (d) floatText(`精力 ${sgn(d)}`, d > 0 ? 'up' : 'down', '#sc-stat');
+        if (v < 0) { S.energy = 0; S.over++; addSpirit(Math.round(v * 2.5)); return true; }
+        S.energy = Math.min(100, v);
+        return false;
+    }
+    /* 修為與三個心法（門檻依第二代一輪的長度縮小） */
+    const EPI = [
+        { req: 10, id: 'pause', name: '三秒停頓法', desc: '開口之前先停三秒。每位新病人進診間時，心神 +2。' },
+        { req: 25, id: 'comm', name: '降維溝通', desc: '不再與病人的焦慮共振。病人的信任下降時，降幅減半。' },
+        { req: 40, id: 'mortal', name: '褪去神格', desc: '允許自己示弱與不完美。病人沒治好時，不再自責耗神。' }
+    ];
+    function addPeace(n) {
+        S.peace = Math.max(0, S.peace + n);
+        const e = EPI.find(x => S.peace >= x.req && !S.epi.includes(x.id));
+        if (!e) return '';
+        S.epi.push(e.id);
+        return `領悟「${e.name}」。${e.desc}`;
+    }
+    const tierOf = () => (S.peace >= 45 ? '歸真' : (S.peace >= 30 ? '通透' : (S.peace >= 15 ? '沉穩' : '青澀')));
+    /* 診金：依結果給，權貴加倍、窮苦減半（病例有 pay 就用病例自己的倍數） */
+    const PAY = { '痊癒': 10, '保住視力': 10, '明顯改善': 10, '好轉': 6, '時好時壞': 4, '無效': 3, '轉介': 4, '多跑一趟': 3, '惡化': 0 };
+    const PAY_MULT = { 'f21ec345-fe48-44bd-ba09-d2064ba919b1.png': 2, '3247410f-91ee-4a52-b562-2f239da71268.png': 0.5 };
+    const payOf = (c, outcome) => Math.round((PAY[outcome] || 0) * (c.pay || PAY_MULT[c.img] || 1));
+    const LIVING = [1, 4, 5, 6, 5];       // 每個門診日的生計：習醫時吃住在師父家，之後要自己撐起一間診間
+    const POOR_LIMIT = 4;                 // 連續這麼多天入不敷出，就撐不下去了
+    /* 既濟：精力與心神都在五成以上且相差不大。規則照第一代，不指定何者為水、何者為火 */
+    function evalBalance() {
+        const e = S.energy / 100, s = S.spirit / 100;
+        const prev = S.bal;
+        S.bal = (e >= 0.5 && s >= 0.5 && Math.abs(e - s) <= 0.25) ? 'jiji' : (e - s >= 0.4 ? 'body' : (s - e >= 0.4 ? 'mind' : ''));
+        if (S.bal === 'jiji') {
+            S.jiji++;
+            const pk = addPeace(1);
+            addEnergy(2); addSpirit(2);
+            return { text: `【既濟】精力與心神相濟，不偏不倚。${prev === 'jiji' ? '' : '身心安穩的日子，本身就是一種修行。'}修為 +1，精力與心神各 +2。`, cls: 'up', perk: pk };
+        }
+        if (S.bal === 'body') return { text: '【未濟】身強而神疲：身體還能動，心神卻已見底。此時再往前衝，耗的是根本。宜靜坐養神。', cls: 'down', perk: '' };
+        if (S.bal === 'mind') return { text: '【未濟】神清而身疲：心裡明白，身體卻跟不上。此時宜休養生息，讓肉身趕上心志。', cls: 'down', perk: '' };
+        return null;
+    }
+    const nextLabel = () => (S.queue.length ? '請下一位' : '今天的病人都看完了');
+    const R_NAME = { cured: '痊癒', saved: '保住視力', better: '好轉', none: '無效', worse: '惡化', unneeded: '多跑一趟', checked: '先行確認', handed: '轉介',
+                     chain: '方向正確', good: '得當', ok: '穩當', bad: '失當', well: '明顯改善', wobble: '時好時壞' };
+    const R_GOOD = ['cured', 'saved', 'better', 'chain', 'good', 'ok', 'well', 'checked'];
+    const rCls = (r) => (R_GOOD.includes(r) ? 'up' : 'down');
+    function resultHead(r, d) {
+        const dt = d ? `　<span class="${d >= 0 ? 'up' : 'down'} small">信任 ${d >= 0 ? '+' : '−'}${Math.abs(d)}</span>` : '';
+        return `<div><span class="${rCls(r)} px" style="font-size:1.25em">${R_NAME[r]}</span>${dt}</div>`;
+    }
+
+    /* ================= 門診日的流程 ================= */
+    const CN = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+    let veilTimer = null;
+    function showVeil(big, sub) {
+        const v = $('#veil');
+        $('#veil-big').textContent = big; $('#veil-sub').textContent = sub;
+        v.classList.add('hidden'); void v.offsetWidth; v.classList.remove('hidden');     // 重新播放淡出
+        clearTimeout(veilTimer);
+        veilTimer = setTimeout(() => v.classList.add('hidden'), 1700);
+    }
+    $('#veil').onclick = () => { clearTimeout(veilTimer); $('#veil').classList.add('hidden'); };
+    function dayStart() {
+        V = null;
+        saveGame();
+        S.news = [];
+        const back = [];
+        Object.values(P).filter(p => p.status === 'waiting' && p.due <= S.day).forEach(p => {
+            if (p.lost) { p.status = 'lost'; p.outcome = '沒有回診'; metaCase(p); S.fame -= 2; if (!S.epi.includes('mortal')) addSpirit(-4); S.news.push(`${p.c.name}沒有回診。那帖藥後來怎麼樣了，我不會知道。`); }
+            else back.push(p);
+        });
+        const arr = (S.arr[S.chDay] || []).map(id => (P[id] = mk(id)));
+        S.queue = back.concat(arr);
+        const future = Object.keys(S.arr).some(d => +d > S.chDay && S.arr[d].length);
+        if (!S.queue.length && !future) return chapterEnd();          // 這一章的病人都結案了
+        /* 回音：上一章的抉擇，在這一章的第一天浮現 */
+        const echoes = [];
+        if (S.chDay === 1) {
+            S.echo.filter(e => e.ch <= S.ch).forEach(e => { if (ECHOES[e.id]) echoes.push(ECHOES[e.id](e)); });
+            S.echo = S.echo.filter(e => e.ch > S.ch);
+        }
+        hud();
+        showVeil(`${chOf().name}　第${CN[S.chDay] || S.chDay}個門診日`, S.queue.length ? `候診 ${S.queue.length} 位` : '今天沒有病人上門');
+        const li = S.queue.map(p => `<li><div class="face" style="background-image:url('${IMG}${p.c.img}')"></div>
+            <div class="who"><span class="name">${p.c.name}</span> <span class="small hint">${p.c.type}</span></div>
+            <span class="tag${p.status === 'waiting' ? ' back' : ''}">${p.status === 'waiting' ? '回診' : '新病人'}</span></li>`).join('');
+        const news = S.news.map(t => `<div class="down small" style="margin-top:6px">${t}</div>`).join('');
+        const warn = S.spirit < 20 ? '<div class="down small" style="margin-top:6px">心神不足二十。今天每一診能問的都會少一項。</div>' : '';
+        panel(`<h3>${chOf().name}　第 ${S.chDay} 個門診日 <span>候診 <span class="px">${S.queue.length}</span> 位</span></h3>
+            ${echoes.map(t => `<div class="note small" style="margin:0 0 8px"><b class="hint">回音</b>　${t}</div>`).join('')}
+            ${S.queue.length ? `<ul class="plist">${li}</ul>` : '<div class="dim">今天沒有病人上門。</div>'}${news}${warn}
+            <div class="small dim" style="margin-top:8px">新病人耗精力 10，還要從頭問診，耗心神較多。回診每位耗精力 3、心神 ${S.app.on ? '1（學徒幫忙記錄）' : '2'}。</div>
+            <div class="foot"><button class="btn go px" id="next">${S.queue.length ? '開始看診' : '過這一天'}</button></div>`);
+        const lines = echoes.map(narr);
+        if (S.news.length) lines.push(narr(S.news[0]));
+        else lines.push(narr(S.queue.some(p => p.status === 'waiting') ? '候診的人裡，有幾張熟面孔。' : '新的一個門診日。'));
+        if (S.spirit < 20) lines.push(...(isEasy() ? [{ who: SHM, text: '你臉色不好。醫者自己心神不寧，是看不清病人的。' }] : []));
+        speak(lines);
+        $('#next').onclick = nextPatient;
+    }
+    function nextPatient() {
+        if (!S.queue.length) {
+            if (S.ch === 4 && S.chDay === 1 && !S.flags.seen_aging) return dilemma('aging');        // 晚年的第一天，多一個困境
+            return (S.chDay === 2 && !S.dil[S.ch]) ? dilemma() : freeAction();                       // 每章第二天看完診，遇上一次困境
+        }
+        V = S.queue.shift();
+        sceneSetup();
+        V.visits++;
+        V.spiritStart = S.spirit;
+        V.lowSpirit = S.spirit < 20;
+        hud();
+        /* 看診耗精力：新病人 10，回診 3。三秒停頓法：新病人進門先定一定神 */
+        if (V.status === 'new') {
+            addEnergy(-10);
+            if (S.epi.includes('pause')) addSpirit(2);
+            hud();
+            V.status = 'seeing'; (V.kind === 'sh' ? shStart : eyStart)();
+        } else { addEnergy(-3); addSpirit(S.app.on ? -1 : -2); hud(); (V.kind === 'sh' ? shRevisit : eyReturn)(); }     // 回診也要用心，只是比初診省力；有學徒幫忙記錄更省
+    }
+    /* 處置完畢，病人離開。結果要等回診才揭曉 */
+    function leave(what) {
+        V.status = 'waiting'; V.due = S.day + 1;
+        V.spiritUsed += Math.max(0, V.spiritStart - S.spirit);
+        panel(`<h3>${V.c.name}離開了</h3><div>${what}</div>
+            <div class="dim" style="margin-top:8px">結果要等他下個門診日回來才知道。可以從選單翻病歷簿。</div>
+            <div class="foot"><button class="btn go px" id="next">${nextLabel()}</button></div>`);
+        $('#next').onclick = nextPatient;
+    }
+    function closeCase(outcome) {
+        V.status = 'closed'; V.outcome = outcome;
+        V.spiritUsed += Math.max(0, V.spiritStart - S.spirit);
+        /* 治好了長得多，沒治好也有所得：把它記下來就是學到 */
+        const sk = GOOD3.includes(outcome) ? (V.round === 1 ? 3 : 2) : 1;
+        const fm = FAME[outcome] || 0;
+        const perks = [addSkill(sk)];
+        S.fame += fm;
+        const pay = payOf(V.c, outcome);
+        S.money += pay;
+        const parts = [`醫術 +${sk}`];
+        if (fm) parts.push(`聲望 ${fm > 0 ? '+' : '−'}${Math.abs(fm)}`);
+        if (pay) parts.push(`診金 +${pay}`);
+        /* 沒治好會自責耗神；領悟「褪去神格」之後不再自責，反而長修為。老實轉介也長修為 */
+        const bad = ['無效', '惡化', '時好時壞'].includes(outcome);
+        if (bad && !S.epi.includes('mortal')) { addSpirit(-6); parts.push('自責，心神 −6'); }
+        if (bad && S.epi.includes('mortal')) { perks.push(addPeace(1)); parts.push('修為 +1'); }
+        if (outcome === '轉介') { perks.push(addPeace(2)); parts.push('修為 +2'); }
+        V.perk = perks.filter(Boolean).join('　');
+        V.gain = parts.join('　');
+        metaCase(V);
+        hud();
+    }
+    /* ================= 音樂與音效 =================
+       配樂沿用第一代的五首，放在 GitHub，經 jsDelivr 載入。五章依序是春、夏、夏、秋、冬，困境另有一首。
+       音效用程式合成，不需要音檔。靜音的設定記在瀏覽器裡。 */
+    const AUDIO_BASE = 'https://cdn.jsdelivr.net/gh/jaecolin/fireandwater@main/';
+    const TRACKS = { spring: '春日微風.mp3', summer: '盛夏流水.mp3', autumn: '秋天的風.mp3', winter: '冬雪之音.mp3', dilemma: '困境-最後的呼吸.mp3' };
+    const CH_TRACK = ['spring', 'summer', 'summer', 'autumn', 'winter'];
+    const MUSIC_VOL = 0.32;
+    const pool = {};
+    let curTrack = '', wantTrack = '', muted = false, actx = null;
+    try { muted = localStorage.getItem('xinglin-mute') === '1'; } catch (e) { /* 讀不到就當作沒靜音 */ }
+    function fade(a, to, ms) {
+        clearInterval(a._f);
+        const from = a.volume, n = 20; let i = 0;
+        a._f = setInterval(() => {
+            i++; a.volume = Math.max(0, Math.min(1, from + (to - from) * i / n));
+            if (i >= n) { clearInterval(a._f); if (to === 0) a.pause(); }
+        }, ms / n);
+    }
+    function playTrack(key) {
+        wantTrack = key || '';
+        if (muted || wantTrack === curTrack) return;
+        if (curTrack && pool[curTrack]) fade(pool[curTrack], 0, 900);
+        curTrack = wantTrack;
+        if (!curTrack) return;
+        try {
+            const a = pool[curTrack] || (pool[curTrack] = new Audio(AUDIO_BASE + encodeURIComponent(TRACKS[curTrack])));
+            a.loop = true; a.volume = 0;
+            const p = a.play();
+            if (p && p.catch) p.catch(() => { curTrack = ''; });       // 載不到或被瀏覽器擋下時，安靜地略過
+            fade(a, MUSIC_VOL, 1400);
+        } catch (e) { curTrack = ''; }
+    }
+    const chapterTrack = () => playTrack(CH_TRACK[S.ch] || 'winter');
+    function setMuted(m) {
+        muted = m;
+        try { localStorage.setItem('xinglin-mute', m ? '1' : '0'); } catch (e) { /* 存不了就只在這一次有效 */ }
+        if (m) { if (curTrack && pool[curTrack]) fade(pool[curTrack], 0, 300); curTrack = ''; }
+        else { const k = wantTrack; wantTrack = ''; playTrack(k); }
+        $$('.snd').forEach(b => { b.textContent = m ? '聲音：關' : '聲音：開'; });
+    }
+    function beep(freq, dur, vol, type) {
+        if (muted) return;
+        try {
+            actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+            const o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime;
+            o.type = type || 'triangle'; o.frequency.value = freq;
+            g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+            o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + dur);
+        } catch (e) { /* 沒有聲音裝置就不出聲 */ }
+    }
+    /* 按鈕是短音，確認是兩個上行的音，翻對話是更輕的一聲 */
+    document.addEventListener('click', (e) => {
+        const t = e.target.closest ? e.target.closest('button, .zone, .slot, #dlg, #veil') : null;
+        if (!t || t.disabled) return;
+        if (t.id === 'dlg' || t.id === 'veil') beep(620, 0.05, 0.025, 'sine');
+        else if (t.classList.contains('go')) { beep(523, 0.09, 0.05); setTimeout(() => beep(784, 0.13, 0.05), 70); }
+        else beep(440, 0.06, 0.045);
+    }, true);
+
+    /* ================= 鍵盤操作 =================
+       方向鍵移動游標，Enter 或空白鍵確認，Esc 返回。沒有游標時，Enter 會翻對話。 */
+    const shown = (el) => !!el && el.offsetParent !== null;
+    document.addEventListener('keydown', (e) => {
+        const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+        const root = !$('#book').classList.contains('hidden') ? $('#book') : (!$('#title').classList.contains('hidden') ? $('#title') : $('#ui'));
+        const veil = $('#veil');
+        /* 系統選單開著時，上下鍵換分頁；遊戲中按 M 開選單 */
+        if (root === $('#book') && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+            mSel = (mSel + (e.key === 'ArrowDown' ? 1 : MENU.length - 1)) % MENU.length; subSel = 0; armed = false;
+            beep(880, 0.03, 0.03, 'sine'); renderMenu(); e.preventDefault(); return;
+        }
+        if ((e.key === 'm' || e.key === 'M') && root === $('#ui') && !$('#ui').classList.contains('hidden') && !$('#ui').classList.contains('story')) { openMenu(); e.preventDefault(); return; }
+        if (step) {
+            const list = [...root.querySelectorAll('button:not(:disabled)')].filter(shown);
+            if (!list.length) return;
+            const i = list.indexOf(document.activeElement);
+            list[i < 0 ? (step > 0 ? 0 : list.length - 1) : (i + step + list.length) % list.length].focus();
+            beep(880, 0.03, 0.03, 'sine');
+            e.preventDefault();
+        } else if (e.key === 'Escape') {
+            const back = ['#book-x', '#t-notes-back', '#t-back', '#back'].map(s => $(s)).find(shown);
+            if (back) { back.click(); e.preventDefault(); }
+        } else if (e.key === 'Enter' || e.key === ' ') {
+            const a = document.activeElement;
+            if (a && a.tagName === 'BUTTON' && shown(a)) return;          // 游標在按鈕上，交給按鈕自己處理
+            if (!veil.classList.contains('hidden')) { veil.click(); e.preventDefault(); }
+            else if (root === $('#ui')) { $('#dlg').click(); e.preventDefault(); }
+        }
+    });
+
+    /* ================= 困境 =================
+       每章一次，在第二個門診日看完診之後。文字沿用第一代，改成接上有名字的病人。
+       同一個選擇落在不同的身心狀態上，結果不同：v 由上而下，第一組 when 成立的生效（沒有 when 的保底）。
+       hint 顯示在按鈕下方，讓玩家看見此刻的自己如何改變這個選擇的重量。
+       echo 是下一章才浮現的後果；flag 留到結局。req 不成立時選項反灰。 */
+    const DIL_IMG = { transfer: 'cd9b590b-31a5-493b-ab36-8bfde23ec1ef.png', queue: '7f36b791-c12b-4694-939d-451a0d4f359a.png', debate: '3421f183-8919-466f-af5d-eb791d39621b.png',
+                      terminal: '791ad5b6-bb1b-4050-b3c6-37fe87df9a29.png', wealth: '6a306648-e3e6-4d86-9e39-a137525c7e03.png', midnight: 'daaf1090-5895-42a3-9d3e-dc10276cd3ae.png', apprentice: '3421f183-8919-466f-af5d-eb791d39621b.png' };
+    const DILEMMAS = {
+        transfer: {
+            title: '焦慮的轉嫁',
+            ctx: () => ({ p: Object.values(P).filter(p => p.status === 'waiting').sort((a, b) => a.trust - b.trust)[0] || null }),
+            text: (c) => `${c.p ? c.p.c.name + '的家人' : '一位病人的家人'}在門外攔住我，神情緊繃，反覆地問：「大夫，這藥吃下去，保證一定會好嗎？」我感覺到，他們正想把所有的害怕都交到我手上。`,
+            opts: [
+                { name: '保證', sub: '拍胸脯說一定會好', v: [
+                    { hint: '耗神，得信任。話說出去了，就得有人擔', energy: -3, spirit: -12, fame: 3, trust: 10, echo: 'promise', log: '我拍胸脯保證會治好。他們安心地走了，我卻覺得肩上多了一塊石頭。' }] },
+                { name: '說明', sub: '說明醫藥的極限', v: [
+                    { when: () => S.peace >= 8, hint: '心定，話說得清楚。守神，增修為', energy: -3, fame: -1, peace: 4, trust: 4, log: '我溫和但清楚地說：我會盡力，結果不全在我手上。他們有些失望，但我守住了自己的心。' },
+                    { hint: '修為還淺，話容易說得生硬', energy: -3, spirit: -6, fame: -2, peace: 2, trust: -6, log: '我想說明治療的極限，話一出口卻又急又硬。他們的臉色沉了下來。道理沒有錯，只是我的心還不夠穩。' }] },
+                { name: '傾聽', sub: '陪他們把擔心說完，再談治療', v: [
+                    { hint: '費時費力，但雙方都安心', energy: -8, spirit: -5, fame: 1, peace: 3, trust: 8, log: '我請他們坐下，把最害怕的事慢慢說完。多花了半個時辰。他們不再追問保證，我也不必扛下不屬於我的重量。' }] }
+            ]
+        },
+        midnight: {
+            title: '深夜的叩門',
+            text: () => '三更半夜，急促的敲門聲把我驚醒。門外是一位母親，懷裡抱著發高燒的孩子。',
+            opts: [
+                { name: '起身', sub: '立刻起身，全力救治', v: [
+                    { when: () => S.energy >= 50, hint: '尚有餘力。耗體力，得聲望', energy: -15, spirit: -3, fame: 4, peace: 3, skill: 1, log: '我披衣而起，連夜診治，孩子退了燒。身體還撐得住的時候伸出手，這是慈悲，不是逞強。' },
+                    { hint: '已近透支，恐怕傷及根本', energy: -22, spirit: -8, fame: 4, peace: 1, echo: 'collapse', log: '我披衣而起，連夜診治，孩子退了燒。天亮時我幾乎站不穩，卻聽見了那聲微弱的「謝謝大夫」。' }] },
+                { name: '指路', sub: '指引她去找鄰街的同道，自己歇息', v: [
+                    { when: () => S.energy < 50, hint: '守住體力，聲望略損，增修為', spirit: -3, fame: -3, peace: 4, log: '我老實告訴她，我今天已經用盡了，指引她去找鄰街的同道。關上門時有些愧疚，但我知道，一個垮掉的醫者救不了任何人。' },
+                    { hint: '明明還有餘力，於心難安', spirit: -8, fame: -4, peace: -2, log: '我以需要歇息為由，請她去找鄰街的同道。關上門後卻翻來覆去睡不著。我明明還有力氣。這不是守界線，是拿界線當藉口。' }] },
+                { name: '急救', sub: '先替孩子退熱，天亮再轉給同道', req: () => S.skill >= 6, reqText: '需醫術 6：急救的手法還不熟', v: [
+                    { hint: '折衷之道', energy: -7, spirit: -3, fame: 2, peace: 3, log: '我先替孩子退了熱，囑咐母親天亮後去找鄰街的同道接手。不必一個人扛到底，也不必把門關死。' }] }
+            ]
+        },
+        wealth: {
+            title: '權貴的重金',
+            text: () => '一位富商派人送來十倍的診金，要我放下門外排隊的病人，先到府上為他的家眷調理。沉甸甸的銀兩就擺在桌上。',
+            opts: [
+                { name: '收下', sub: '收下重金，先看權貴', v: [
+                    { when: () => S.money < 10 || S.poor > 0, hint: '家計已見底，這是活路', energy: -4, spirit: -5, fame: 2, money: 40, log: '家裡的米缸已經見底。我收下銀兩，也記住這份不得已。先活下來，才談得上守原則。' },
+                    { hint: '得重金，耗神，損修為', energy: -4, spirit: -10, fame: 3, peace: -4, money: 40, echo: 'string', log: '我收下了銀兩。錢袋鼓了，回頭看見門外那些失望的眼神，心裡某處空了一塊。' }] },
+                { name: '婉拒', sub: '請他依序候診', v: [
+                    { hint: '守住規矩，增修為，失了重金', energy: -3, spirit: 2, fame: -2, peace: 6, echo: 'refuse', log: '我請富商的人一同排隊候診。他拂袖而去。門外有人看著我，沒有說話。' }] },
+                { name: '兩全', sub: '收下診金，但請他照樣排隊', req: () => S.fame >= 12, reqText: '需聲望 12：人微言輕，談不了條件', v: [
+                    { hint: '以聲望為籌碼，兩全但費神', energy: -4, spirit: -6, fame: 2, peace: 3, money: 20, log: '我收下診金，但請他與眾人一同候診。來人皺了皺眉，終究坐了下來。聲望不是拿來炫耀的，是拿來守住規矩的。' }] }
+            ]
+        },
+        debate: {
+            title: '同業的詆毀',
+            text: () => '城中另一位老大夫到處說我的治法是旁門左道。病人開始拿著他的話來問我。我心裡升起一股強烈的、想要辯駁的念頭。',
+            opts: [
+                { name: '駁斥', sub: '據理力爭，公開反駁', v: [
+                    { when: () => S.skill >= 20, hint: '學養足以服人。耗神，搏聲望', energy: -5, spirit: -10, fame: 6, peace: -2, log: '我寫下長文逐條反駁，學理紮實，引來一陣喝采。我贏了口舌，卻整夜難眠。' },
+                    { hint: '學養尚淺，恐怕自取其辱', energy: -5, spirit: -14, fame: -4, peace: -2, log: '我急著公開反駁，學理卻站不住腳，反被當眾問得啞口無言。原來最想證明自己的時候，往往最沒有底氣。' }] },
+                { name: '沉默', sub: '不回應，讓療效說話', v: [
+                    { hint: '守神，增修為，聲望暫損', energy: -2, spirit: 2, fame: -3, peace: 5, echo: 'silence', log: '我沒有回應，只是繼續把每一位病人看好。毀譽於我，終究如過眼雲煙。' }] },
+                { name: '請教', sub: '登門拜訪，當面請教', req: () => S.peace >= 15, reqText: '需修為 15：心裡還放不下輸贏', v: [
+                    { hint: '放下輸贏，增醫術與修為', energy: -4, spirit: -5, fame: 2, peace: 6, skill: 3, log: '我帶著一壺茶登門請教。他先是錯愕，接著與我爭了一下午。回程路上我才承認，他的批評裡確有三分道理。' }] }
+            ]
+        },
+        queue: {
+            title: '滿診的疲勞',
+            text: () => '今天的號早就看完了，門外卻還排著長長的人龍，都是聽了名聲從外地趕來的。我已經連續看了好幾個時辰。該不該停下來，得先問問自己的身體。',
+            opts: [
+                { name: '看完', sub: '把門外的人全部看完', v: [
+                    { when: () => S.energy >= 60, hint: '尚有餘力。耗體力，得診金與聲望', energy: -18, spirit: -6, fame: 5, peace: 1, money: 10, log: '我估量自己還撐得住，便把門外的人都看完了。累，但踏實。這是量力而為，不是硬撐。' },
+                    { hint: '已近透支，硬撐容易出差錯', energy: -25, spirit: -12, fame: 5, money: 10, echo: 'mistake', log: '我強迫自己把所有人看完。結束時，我已經記不得最後幾位病人說了什麼。' }] },
+                { name: '關門', sub: '請他們明日再來，把時間還給自己', v: [
+                    { when: () => S.energy < 60, hint: '回復體力，聲望略損，增修為', energy: 10, spirit: 4, fame: -4, peace: 5, log: '我請門外的人明日再來，給自己倒了一杯溫水。外面傳來抱怨聲，但我知道這是必須的。' },
+                    { hint: '其實還有餘力，聲望折損較重', energy: 3, spirit: 3, fame: -6, peace: 1, log: '我關了門。坐下來才發現，自己其實並不累，只是不想再面對人群。留白是良藥，拿來逃避，藥效就打了折扣。' }] },
+                { name: '分流', sub: '只留急重症，其餘改約明日', v: [
+                    { hint: '折衷，各有小損', energy: -9, spirit: -5, fame: -1, peace: 3, money: 4, skill: 1, log: '我走到門外，請輕症的人明日再來，只留下急重症。有人嘟囔，也有人點頭。界線不必是一堵牆，也可以是一扇有門檻的門。' }] }
+            ]
+        },
+        apprentice: {
+            title: '學徒的處方',
+            text: () => '學徒為一位病人擬了方子，思路和我不同，卻也說得通。病人等著拿藥，學徒望著我，等我一句話。',
+            opts: [
+                { name: '改方', sub: '提筆改回我的方子', v: [
+                    { hint: '穩妥，但學徒難以長大', energy: -3, spirit: -5, fame: 1, peace: -2, log: '我提筆改回自己慣用的方子。病人安心，學徒低下了頭。我保住了療效，卻也告訴了他：在這裡只有一種對的方法。' }] },
+                { name: '放手', sub: '照他的方子，後果我來承擔', v: [
+                    { when: () => S.peace >= 15, hint: '放得下手，也放得下心。增修為', spirit: -3, peace: 6, echo: 'apprentice', log: '我點頭讓他照自己的方子抓藥，並告訴他有事我擔著。他的眼睛亮了起來。' },
+                    { hint: '手放開了，心卻還懸著', spirit: -10, peace: 3, echo: 'apprentice', log: '我讓他照自己的方子抓藥，接下來幾天卻坐立難安，三番兩次想去追問病人的狀況。手放開了，心還沒有。' }] },
+                { name: '推敲', sub: '坐下來，一起推敲', v: [
+                    { hint: '費時費神，教學相長', energy: -7, spirit: -6, peace: 3, skill: 3, log: '我請病人稍候，與學徒把兩張方子攤開，一味一味推敲。最後的方子，兩人都改了幾處。原來教學相長不是客套話。' }] }
+            ]
+        },
+        renown: {
+            title: '盛名之累',
+            img: 'wealth',
+            cond: () => S.fame >= 18,          // 要有名聲，才會有人來請
+            text: () => '遠方州府派人來請，要我遷往大城坐鎮醫署。名位與俸祿都遠勝今日，只是這裡的病人，都得放下。',
+            opts: [
+                { name: '赴任', sub: '收拾行囊，前往大城', v: [
+                    { hint: '得重金與大名，心神的負擔加重', energy: -6, spirit: -12, fame: 12, peace: -5, money: 50, echo: 'office', log: '我收拾行囊赴任。迎接的排場很大，我卻想起了小鎮上那些叫得出名字的病人。位子越高，離病床越遠。' }] },
+                { name: '婉謝', sub: '寫信婉謝，留在原地', v: [
+                    { when: () => S.peace >= 15, hint: '知足，增修為', spirit: 5, fame: -2, peace: 8, log: '我寫了一封婉謝的信。寄出後，心裡一片清明。我已經知道自己要的是什麼，不需要更大的匾額來證明。' },
+                    { hint: '人留下了，心裡卻還惦記', spirit: -8, fame: -2, peace: 2, log: '我婉謝了邀請，之後卻常在夜裡想：如果去了，會不會更有成就？人留下了，心還在比較。' }] },
+                { name: '薦舉', sub: '薦舉一位信得過的同道前往', req: () => S.fame >= 28, reqText: '需聲望 28：我的薦舉還不夠分量', v: [
+                    { hint: '成全別人，增修為與聲望', spirit: -3, fame: 4, peace: 6, log: '我向來使薦舉了一位信得過的同道。看著他意氣風發地啟程，我明白成全別人，不必把所有的位子都自己坐。' }] }
+            ]
+        },
+        aging: {
+            title: '老去的手',
+            img: 'terminal',
+            text: () => '察目的時候，我湊得很近，還是看不清病人黑睛上的那一點翳。病人沒有察覺，一旁的後輩卻看見了。',
+            opts: [
+                { name: '硬撐', sub: '不動聲色，照舊自己看完', v: [
+                    { when: () => S.energy >= 50, hint: '今日狀態尚可，耗體力', energy: -9, spirit: -6, fame: 2, peace: 1, log: '我定了定神，換了個角度，總算看清了。今天的眼睛還聽使喚。我心懷感激，也知道這樣的日子不會永遠。' },
+                    { hint: '力不從心，容易看錯', energy: -12, spirit: -12, fame: -4, log: '我不肯承認眼睛已經不行，硬是下了判斷。後來才知道看漏了一處。我護住了面子，卻讓病人替我的不服老付了代價。' }] },
+                { name: '交棒', sub: '請後輩來看，自己在旁口述', v: [
+                    { hint: '承認老去，增修為', energy: -3, spirit: -3, fame: -1, peace: 7, skill: 2, flag: 'handover', log: '我請後輩過來替我看，問他看見了什麼，再告訴他該留意哪裡。承認這雙眼睛老了，並不等於承認自己沒有用了。' }] },
+                { name: '改問', sub: '看不清就多問，以問診補察目', req: () => S.skill >= 30, reqText: '需醫術 30：問診的功夫還不夠深', v: [
+                    { hint: '揚長避短', energy: -3, spirit: -3, fame: 1, peace: 3, log: '我放下燈，改用問的。問他怎麼開始，怎麼變化，什麼時候加重。醫者的工具不只一種。身體關上一扇門，我便換一扇窗。' }] }
+            ]
+        },
+        terminal: {
+            title: '無法治癒的故人',
+            /* 找一位早年治好過、最信任我的舊病人 */
+            ctx: () => ({ p: Object.values(P).filter(p => p.status === 'closed' && GOOD4.includes(p.outcome) && p.firstCh < S.ch).sort((a, b) => (a.firstCh - b.firstCh) || (b.trust - a.trust))[0] || null }),
+            text: (c) => `${c.p ? c.p.c.name + '來了。多年前我治好過他，如今他' : '一位多年的老友'}病入膏肓。我翻遍醫書，知道這一回已經不是人力可以挽回的。他拉著我的手，眼裡滿是想活下去的渴望。`,
+            opts: [
+                { name: '施救', sub: '傾盡所有，勉力施救', v: [
+                    { when: () => S.peace >= 15, hint: '明知結局，仍送他一程。耗神，增修為', energy: -12, spirit: -9, fame: 2, peace: 5, flag: 'farewell', log: '我知道結局不會改變，仍為他施藥針灸，只求他少受些苦。這一次我不是在對抗死亡，是在送行。' },
+                    { hint: '極耗心神，放不下便成了執念', energy: -15, spirit: -18, fame: 2, peace: 1, flag: 'guilt', log: '我不眠不休地施藥針灸，不肯承認已經無力回天。他最終還是走了。' }] },
+                { name: '坦承', sub: '老實告訴他，轉為陪伴', v: [
+                    { when: () => S.peace >= 8, hint: '心定，實話說得溫柔。增修為', energy: -5, spirit: -5, fame: -1, peace: 8, flag: 'letter', log: '我握著他的手，老實告訴他大限將至。我們聊起從前的事，他走得很安詳。承認無能為力，是醫者最難的一課。' },
+                    { hint: '實話需要定力，才說得溫柔', energy: -5, spirit: -11, fame: -1, peace: 3, log: '我告訴他大限將至，話卻說得太急太硬。他眼裡的光暗了下去。實話沒有錯，只是我還沒學會把它說得溫柔。' }] }
+            ]
+        }
+    };
+    /* 第五章有兩個：第一天是老去的手（另外觸發），第二天是無法治癒的故人 */
+    const DIL_BY_CH = [['transfer', 'midnight'], ['wealth', 'debate'], ['queue', 'renown'], ['apprentice'], ['terminal']];
+    function pickDilemma() {
+        let c = DIL_BY_CH[S.ch] || [];
+        if (S.ch === 2) c = c.concat(DIL_BY_CH[0], DIL_BY_CH[1]);
+        c = c.filter(id => !S.dil.includes(id) && (!DILEMMAS[id].cond || DILEMMAS[id].cond()));
+        return c.length ? c[Math.floor(Math.random() * c.length)] : '';
+    }
+    /* 回音：上一章的抉擇，到這一章才看見後果 */
+    const ECHOES = {
+        promise: (e) => {
+            const p = P[e.pid];
+            if (p && GOOD4.includes(p.outcome)) { S.fame += 3; addSpirit(-5); return '我拍過胸脯的那一家人，逢人就說我是神醫。來找我的人多了，要我保證的人也多了。'; }
+            S.fame -= 5; return '我保證過會治好的那位病人沒有好。他的家人在街上說，我是個說話不算話的大夫。';
+        },
+        collapse: () => { addEnergy(-12); addSpirit(-4); return '那一夜之後，我病了一場。原來醫者的身體也會討債。'; },
+        string: () => { addSpirit(-8); return '收過那位富商的銀兩之後，他三天兩頭派人來喚。我發現自己很難對他說不。'; },
+        refuse: () => { S.fame += 5; return '那天在門外排隊的人裡，有一位後來帶了全村的人來看病。他說，這位大夫不看錢。'; },
+        silence: () => { S.fame += 5; return '那位老大夫的流言，不知從什麼時候起沒人提了。倒是有幾位他的病人，悄悄來我這裡掛了號。'; },
+        mistake: () => { S.fame -= 4; addSpirit(-5); return '那天硬撐著看的最後幾位病人裡，有一位的方子我開錯了一味。幸好他自己覺得不對，沒有吃。'; },
+        apprentice: () => { S.fame += 4; return '學徒那張方子，病人吃了見效。他如今看診，敢說自己的想法了。'; },
+        office: () => { addSpirit(-8); return '位子高了，我看的公文比病人多。有一天我發現，自己已經叫不出候診病人的名字。'; }
+    };
+    const signed = (n) => `${n > 0 ? '+' : '−'}${Math.abs(n)}`;
+    function dilemma(force) {
+        V = null; hud();
+        const id = force || pickDilemma();
+        if (!id) return freeAction();
+        if (force) S.flags['seen_' + id] = true; else S.dil[S.ch] = id;
+        playTrack('dilemma');
+        const d = DILEMMAS[id], ctx = d.ctx ? d.ctx() : {};
+        const rows = d.opts.map(o => ({ o, v: o.v.find(x => !x.when || x.when()), locked: !!o.req && !o.req() }));
+        const text = d.text(ctx);
+        panel(`<h3>困境　${d.title} <span>此刻的我：精力 ${S.energy}　心神 ${S.spirit}　修為 ${S.peace}　醫術 ${S.skill}　聲望 ${S.fame}　金錢 ${S.money}</span></h3>
+            <div class="dwrap"><div class="dimg" style="background-image:url('${IMG}${DIL_IMG[d.img || id]}')"></div><div class="see">${text}</div></div>
+            <div class="octs">${rows.map((x, i) => `<button class="octw" data-d="${i}" ${x.locked ? 'disabled' : ''}><span class="oct"><b>${x.o.name}</b></span>
+                <span class="sub"><b>${x.o.sub}</b><br>${x.locked ? x.o.reqText : x.v.hint}</span></button>`).join('')}</div>`);
+        speak(narr(text));
+        $$('#panel [data-d]').forEach(b => b.onclick = () => {
+            const { o, v } = rows[+b.dataset.d];
+            const overdrawn = v.energy ? addEnergy(v.energy) : false;
+            addSpirit(v.spirit || 0);
+            S.fame += v.fame || 0;
+            S.money = Math.max(0, S.money + (v.money || 0));
+            const perk = [v.skill ? addSkill(v.skill) : '', v.peace ? addPeace(v.peace) : '', overdrawn ? '精力見底還硬撐，不足的部分加倍從心神扣了回來。' : ''].filter(Boolean).join('　');
+            if (v.trust && ctx.p) ctx.p.trust = clamp(ctx.p.trust + v.trust);
+            if (v.echo) S.echo.push({ id: v.echo, pid: ctx.p ? ctx.p.id : '', ch: S.ch + 1 });
+            if (v.flag) S.flags[v.flag] = true;
+            S.dilLog.push(`${d.title}（${o.name}）`);
+            hud();
+            const delta = [v.energy ? `精力 ${signed(v.energy)}` : '', v.spirit ? `心神 ${signed(v.spirit)}` : '', v.peace ? `修為 ${signed(v.peace)}` : '',
+                           v.fame ? `聲望 ${signed(v.fame)}` : '', v.money ? `金錢 ${signed(v.money)}` : '', v.skill ? `醫術 ${signed(v.skill)}` : '',
+                           v.trust && ctx.p ? `${ctx.p.c.name}的信任 ${signed(v.trust)}` : ''].filter(Boolean).join('　');
+            panel(`<h3>${d.title} <span>${o.sub}</span></h3><div>${v.log}</div>
+                <div class="small hint" style="margin-top:8px">${delta}</div>${perk ? `<div style="margin-top:6px"><b class="name">${perk}</b></div>` : ''}
+                ${v.echo ? '<div class="small dim" style="margin-top:6px">這個選擇的後果，日後才會看見。</div>' : ''}
+                <div class="foot"><button class="btn go px" id="next">繼續</button></div>`);
+            speak(narr(v.log));
+            $('#next').onclick = freeAction;
+        });
+    }
+    function freeAction() {
+        V = null; hud();
+        const waiting = Object.values(P).filter(p => p.status === 'waiting');
+        const eye = S.energy < 30, heart = S.spirit < 30;        // 第一代的肉身警訊：精力低讀不下書，心神低歇不安穩
+        panel(`<h3>門診結束 <span>今天還能做一件事</span></h3>
+            <div class="octs">
+                <button class="octw" data-act="rest"><span class="oct"><b>休養</b></span><span class="sub">${heart ? '心悸失眠，歇不安穩。精力 +9，心神 +2' : '早睡，讓身體歇著。精力 +18，心神 +5'}</span></button>
+                <button class="octw" data-act="sit"><span class="oct"><b>靜坐</b></span><span class="sub">關上門，坐一個時辰。心神 +14，修為 +2</span></button>
+                <button class="octw" data-act="study" ${eye ? 'disabled' : ''}><span class="oct"><b>研讀</b></span><span class="sub">${eye ? '精力不足 30：眼壓飆高，視物模糊，讀不下書' : '讀《傷寒論》與《目經大成》。精力 −4，醫術 +1，下個門診日每位新病人可多問一項'}</span></button>
+                <button class="octw" data-act="visit" ${waiting.length ? '' : 'disabled'}><span class="oct"><b>探望</b></span><span class="sub">${waiting.length ? '去看看治療中最讓我放不下的那一位。精力 −4，信任 +8' : '目前沒有治療中的病人'}</span></button>
+                <button class="octw" data-act="give" ${S.money >= 15 ? '' : 'disabled'}><span class="oct"><b>施藥</b></span><span class="sub">${S.money >= 15 ? '拿出金錢 15，替付不起藥錢的人抓藥。聲望 +3，修為 +2' : '需金錢 15：手頭不寬裕'}</span></button>
+                ${S.app.on && !S.app.done ? `<button class="octw" data-act="teach"><span class="oct"><b>帶徒</b></span><span class="sub">把今天的病人一位一位講給學徒聽。精力 −3，醫術 +1，聲望 +1。學徒歷練 ${S.app.exp}/3</span></button>` : ''}
+            </div>
+            <div class="small dim" style="text-align:center">精力 ${S.energy}　心神 ${S.spirit}。兩者都在五成以上且相差不大，就是既濟。</div>`);
+        chapterTrack();
+        speak(narr('最後一位病人離開了。天色還早。'));
+        $$('#panel [data-act]').forEach(b => b.onclick = () => {
+            const a = b.dataset.act;
+            if (a === 'rest') { addEnergy(heart ? 9 : 18); addSpirit(heart ? 2 : 5); dayEnd(heart ? '我早早躺下，心卻跳得厲害，翻來覆去到半夜才闔眼。' : '我關了診間的門，吃了頓熱飯，早早睡了。'); }
+            else if (a === 'sit') { addSpirit(14); const pk = addPeace(2); dayEnd('我關上門，坐了一個時辰。念頭來了又走，我只是看著。', pk); }
+            else if (a === 'study') { addEnergy(-4); S.studyNext = 1; const pk = addSkill(1); dayEnd('我在燈下讀書，把今天的病人和書上的條文一一對照。', pk); }
+            else if (a === 'give') {
+                S.money -= 15; S.fame += 3; S.gives++; const pk = addPeace(2);
+                dayEnd('我拿出一些錢，替幾位付不起藥錢的人抓了藥。他們道謝的時候，我反而有些不好意思。', pk);
+            }
+            else if (a === 'teach') {
+                /* 教學相長：講給別人聽，自己也更清楚。講滿三次，學徒出師 */
+                addEnergy(-3);
+                const pk = addSkill(1); S.fame += 1; S.app.exp++;
+                if (S.app.exp >= 3) {
+                    S.app.done = true; S.fame += 4;
+                    dayEnd('我把今天的病人講完，學徒忽然說出了我正要說的下一句話。我知道，他可以自己坐診了。', [pk, '學徒出師了。聲望 +4'].filter(Boolean).join('　'));
+                } else dayEnd('我把今天的病人一位一位講給學徒聽。有幾處他問得我答不上來，我才發現自己原來也沒想透。', pk);
+            }
+            else {
+                const p = waiting.slice().sort((x, y) => x.trust - y.trust)[0];
+                addEnergy(-4);
+                p.trust = clamp(p.trust + 8);
+                const kept = p.lost; p.lost = false;
+                dayEnd(`我去探望了${p.c.name}，坐了一會，問了問他吃藥後的情形。${kept ? '他本來不打算再來了，見我上門，神色緩了下來。' : '他有些意外，也有些高興。'}`);
+            }
+        });
+    }
+    function dayEnd(text, perk) {
+        const notes = [], perks = [perk];
+        /* 生計：每個門診日結束時支出。付不出來就傷身耗神，連續幾天便撐不下去 */
+        const cost = LIVING[S.ch] + (S.app.on && !S.app.done ? 1 : 0);
+        if (S.money >= cost) { S.money -= cost; S.poor = 0; notes.push(`<span class="hint">生計支出 ${cost}，餘 ${S.money}。</span>`); }
+        else {
+            S.money = 0; S.poor++; addEnergy(-8); addSpirit(-5);
+            notes.push(`<span class="down">【入不敷出】付不出今天的生計，三餐不繼。精力 −8，心神 −5。${S.poor < POOR_LIMIT ? `已連續 ${S.poor} 天，再 ${POOR_LIMIT - S.poor} 天便無以為繼。` : ''}</span>`);
+        }
+        if (S.money > 100) { addSpirit(-2); notes.push('<span class="down">【守財焦慮】看著滿起來的錢箱，我開始擔憂失去。心神 −2。</span>'); }
+        /* 既濟／未濟：看的是今天收工時的身心 */
+        const bal = evalBalance();
+        if (bal) { notes.push(`<span class="${bal.cls}">${bal.text}</span>`); perks.push(bal.perk); }
+        addEnergy(8); addSpirit(5);         // 夜裡歇息
+        S.study = S.studyNext; S.studyNext = 0;
+        hud();
+        const open = Object.values(P).filter(p => p.status === 'waiting').length;
+        const pk = perks.filter(Boolean).join('　');
+        const broke = S.poor >= POOR_LIMIT;
+        panel(`<h3>${chOf().name}　第 ${S.chDay} 個門診日結束</h3><div>${text}</div>
+            ${pk ? `<div style="margin-top:6px"><b class="name">${pk}</b></div>` : ''}
+            <div class="small" style="margin-top:6px">${notes.join('<br>')}</div>
+            <div class="small hint" style="margin-top:6px">夜裡歇息，精力 +8，心神 +5。治療中的病人還有 ${open} 位。</div>
+            <div class="foot"><button class="btn go px" id="next">${broke ? '撐不下去了' : '天亮了'}</button></div>`);
+        speak(narr(text));
+        $('#next').onclick = () => { if (broke) return ending('poverty'); S.day++; S.chDay++; dayStart(); };
+    }
+
+    /* ================= 章節 ================= */
+    const GOOD4 = GOOD3.concat('好轉');
+    const truthOf = (p) => (p.kind === 'sh' ? `${SH.PATTERNS[p.c.pattern].name}（${SH.PATTERNS[p.c.pattern].alias}）` : `${p.c.disease}（${p.c.modern}）`);
+    const outOf = (p) => (p.status === 'closed' ? p.outcome : (p.status === 'lost' ? '沒有回診，結果不明' : '尚在治療中'));
+    const caseRow = (p) => `<tr><td>${p.c.name}</td><td>${truthOf(p)}<br><span class="${GOOD4.includes(outOf(p)) ? 'up' : 'down'}">${outOf(p)}</span>　<span class="dim">共看了 ${p.visits} 次</span></td></tr>`;
+    function startChapter() {
+        S.chDay = 1;
+        S.arr = planChapter(S.ch);
+        if (S.ch >= 3) S.app.on = true;          // 傳承章起，身邊多了一個學徒
+        chapterTrack();
+        story(`第${CN[S.ch + 1]}章　${chOf().name}`, '', CHAPTERS[S.ch].lines, dayStart);
+    }
+    function chapterEnd() {
+        V = null; hud();
+        const list = Object.values(P).filter(p => p.firstCh === S.ch).sort((a, b) => a.firstDay - b.firstDay);
+        const last = S.ch === CHAPTERS.length - 1;
+        panel(`<h3>第${CN[S.ch + 1]}章　${chOf().name}　終 <span>這一章看了 <span class="px">${list.length}</span> 位病人</span></h3>
+            ${list.length ? `<table class="rec small">${list.map(caseRow).join('')}</table>` : '<div class="dim">這一章沒有病人上門。</div>'}
+            <div class="small hint" style="margin-top:8px">醫術 ${S.skill}　修為 ${S.peace}（${tierOf()}）　聲望 ${S.fame}　金錢 ${S.money}　既濟 ${S.jiji} 天${last ? '' : '<br>歲月流轉，精力與心神各回復 15。'}</div>
+            <div class="foot"><button class="btn go px" id="next">${last ? '回顧這一生' : '歲月流轉'}</button></div>`);
+        speak(narr(CHAPTERS[S.ch].end));
+        $('#next').onclick = () => {
+            S.ch++;
+            if (S.ch >= CHAPTERS.length) return ending();
+            addSpirit(15); addEnergy(15); S.day++;
+            startChapter();
+        };
+    }
+
+    /* ================= 結局：一生回顧、著書、後記 ================= */
+    function ending(reason) {
+        V = null; hud();
+        store.del();                    // 這一輪結束了，不留存檔
+        const poor = reason === 'poverty';          // 連續入不敷出，診間開不下去（第一代的貧病交加）
+        if (poor) S.flags.poverty = true;
+        const list = Object.values(P).sort((a, b) => a.firstDay - b.firstDay);
+        const rows = CHAPTERS.map((ch, i) => {
+            const ps = list.filter(p => p.firstCh === i);
+            return ps.length ? `<tr><td colspan="2"><b class="name">第${CN[i + 1]}章　${ch.name}</b></td></tr>${ps.map(caseRow).join('')}` : '';
+        }).join('');
+        const ok = list.filter(p => GOOD4.includes(p.outcome)).length;
+        panel(`<h3>這一生 <span>${list.length} 位病人，${ok} 位有好結果</span></h3>
+            <table class="rec small">${rows}</table>
+            <div class="small hint" style="margin-top:8px">醫術 ${S.skill}　修為 ${S.peace}（${tierOf()}）　聲望 ${S.fame}　金錢 ${S.money}　既濟 ${S.jiji} 天</div>
+            <div class="foot"><button class="btn go px" id="next">${poor ? "收起診間" : "整理醫案"}</button></div>`);
+        speak(narr(poor ? '米缸空了好幾天。我把診間的門板一塊一塊上好，只帶走了病歷簿。' : '我把病歷簿從頭翻了一遍。每一頁都是一張臉。'));
+        $('#next').onclick = () => (poor ? finale(list, []) : writeBook(list));
+    }
+    /* 著書：從自己的醫案裡選幾則放在卷首 */
+    function writeBook(list) {
+        const closed = list.filter(p => p.status === 'closed');
+        const need = Math.min(3, closed.length);
+        const picks = [];
+        const draw = () => {
+            const btns = closed.map(p => `<button class="btn${picks.includes(p.id) ? ' on' : ''}" data-pick="${p.id}"><b>${p.c.name}案</b><span class="sub">${truthOf(p)}　${p.outcome}</span></button>`).join('');
+            panel(`<h3>著書 <span>選 <span class="px">${need}</span> 則醫案放在卷首，已選 <span class="px">${picks.length}</span> 則</span></h3>
+                <div class="small dim" style="margin-bottom:8px">不必只選治好的。後人讀到的，就是你選的這幾則。</div>
+                <div class="grid">${btns || '<div class="dim">沒有結案的醫案。</div>'}</div>
+                <div class="foot"><button class="btn go px" id="next" ${picks.length === need ? '' : 'disabled'}>成書</button></div>`);
+            $$('#panel [data-pick]').forEach(b => b.onclick = () => {
+                const id = b.dataset.pick, i = picks.indexOf(id);
+                if (i >= 0) picks.splice(i, 1); else if (picks.length < need) picks.push(id);
+                draw();
+            });
+            $('#next').onclick = () => epilogue(list, picks);
+        };
+        draw();
+        speak(narr('晚年，我想把這些醫案理成一部書。'));
+    }
+    function epilogue(list, picks) {
+        const names = picks.map(id => P[id].c.name + '案').join('、');
+        const lines = [];
+        if (names) lines.push({ text: `書成了。卷首的幾則是：${names}。` });
+        lines.push({ text: '五輪八廓之外，我另寫了一篇，談眼睛各部與全身的對應。那是看了一輩子眼睛，才慢慢看出來的。我把它叫做胚胎對應定位法。' });
+        lines.push({ text: '許多年後，一個年輕的弟子在燈下翻開這部書。書頁之間，彷彿有位長者抬起頭來。' });
+        lines.push({ who: '我', text: '看病人，先把他看清楚，再去想方子。' });
+        lines.push({ who: '我', text: '方子開出去，結果不全在你手上。你能做的是看清楚，記下來，等他回來。' });
+        story('', '', lines, () => finale(list, picks));
+    }
+    function finale(list, picks) {
+        const n = list.length, ok = list.filter(p => GOOD3.includes(p.outcome)).length;
+        const lostN = list.filter(p => p.status === 'lost').length;
+        const refN = list.filter(p => p.outcome === '轉介' || (p.referred && p.status === 'closed')).length;
+        const promise = list.some(p => p.promise);
+        const poor = !!S.flags.poverty;
+        const meta = settleMeta(list, poor);          // 這一輪的成就，寫進札記
+        const r = n ? ok / n : 0;
+        const parts = [];
+        parts.push(r >= 0.8 ? `這一生記在簿子上的有 ${n} 位病人，看好了 ${ok} 位。` : (r >= 0.5 ? `這一生記在簿子上的有 ${n} 位病人，看好了 ${ok} 位，一半多一些。` : `這一生記在簿子上的有 ${n} 位病人，看好的只有 ${ok} 位。`));
+        if (refN) parts.push(`有 ${refN} 位，我交給了別的大夫。`);
+        if (lostN) parts.push(`有 ${lostN} 位再也沒有回來，那幾頁病歷只寫到一半。`);
+        if (promise) parts.push('我曾經答應過一件自己做不到的事。');
+        if (S.flags.letter) parts.push('那位故人走之前，託人帶來一句話：多謝大夫說了實話。');
+        if (S.flags.farewell) parts.push('那位故人，我陪他走到了最後。');
+        if (S.flags.guilt) parts.push('那位故人，我始終覺得是自己沒有救回來。');
+        if (S.flags.handover) parts.push('眼睛花了之後，看不清的地方，我交給了後輩。');
+        if (S.app.done) parts.push('我帶出了一個徒弟。他如今也有自己的病歷簿了。');
+        else if (S.app.on && !poor) parts.push('學徒還沒出師，診間就交到了他手上。往後的路，他得自己走。');
+        parts.push(poor ? '我付不出診間的開銷，把門板上好了。書沒有寫成，病歷簿我還留著。' : '沒有哪一個醫者是十全的。治好的和沒治好的，我都留在書裡。');
+        /* 身心的回顧與留給自己的一問（沿用第一代的結局回顧） */
+        const names = S.epi.map(id => EPI.find(e => e.id === id).name);
+        const mirror = [`身心相濟的日子有 <b>${S.jiji}</b> 天，把精力用到見底 <b>${S.over}</b> 次。`,
+                        `修為到了「${tierOf()}」${names.length ? '，領悟了' + names.join('、') : '，還沒有領悟任何心法'}。`];
+        let q = '這一生裡，哪一個選擇最像現實中的我？';
+        if (S.over >= 3) q = '現實裡，我上一次明知該停卻仍硬撐，是什麼時候？';
+        else if (poor) q = '我把什麼看得比自己的生計還重？那樣東西，現實裡值得嗎？';
+        else if (promise) q = '現實裡，我答應過哪一件其實做不到的事？';
+        else if (refN === 0 && n >= 8) q = '現實裡，有哪一件事是我其實做不到，卻說不出口的？';
+        else if (S.jiji >= 10) q = '是什麼讓我在這一生裡照顧得好自己？現實中少了哪一樣？';
+        hud();
+        panel(`<h3>${poor ? "貧病交加" : "全書完"} <span>醫術 ${S.skill}　修為 ${S.peace}（${tierOf()}）　聲望 ${S.fame}　金錢 ${S.money}</span></h3>
+            <div>${parts.join('<br>')}</div>
+            ${picks.length ? `<div class="quote small" style="margin-top:10px">卷首：${picks.map(id => `${P[id].c.name}案（${truthOf(P[id])}，${P[id].outcome}）`).join('；')}</div>` : ''}
+            ${S.dilLog.length ? `<div class="small hint" style="margin-top:8px">一生的抉擇：${S.dilLog.join('、')}</div>` : ''}
+            <div class="quote small" style="margin-top:10px">${mirror.join('<br>')}<div class="name" style="margin-top:6px;font-weight:700">留給自己的一問：${q}</div></div>
+            <div class="small" style="margin-top:10px"><b class="hint">這一輪的成就</b>　${meta.earned.length ? meta.earned.map(id => { const a = ACH.find(z => z.id === id);
+                return `<span class="tag${meta.fresh.includes(id) ? ' back' : ' done'}" title="${a.desc}">${a.name}${meta.fresh.includes(id) ? '　新' : ''}</span>`; }).join(' ') : '<span class="dim">沒有</span>'}
+                <div class="dim" style="margin-top:4px">成就與看過的病人都記在標題畫面的「杏林札記」。</div></div>
+            <div class="note small">病例會陸續增加，每一輪遇到的病人會不同。結局裡的胚胎對應定位法只提了名字，內容待中醫師審定後再放。</div>
+            <div class="foot"><button class="btn go px" id="home">回到標題</button></div>`);
+        speak(narr(poor ? '（這一生，停在這裡）' : '（全書完）'));
+        $('#home').onclick = showTitle;
+    }
+
+    /* ================= 病歷簿 ================= */
+    function bookHTML() {
+        const list = Object.values(P).sort((a, b) => a.firstDay - b.firstDay);
+        if (!list.length) return '<div class="dim">還沒有病人。</div>';
+        return list.map(p => {
+            const st = p.status === 'closed' ? `<span class="tag done">已結案：${p.outcome}</span>`
+                : p.status === 'lost' ? '<span class="tag lost">沒有回診</span>'
+                : p.status === 'waiting' ? `<span class="tag back">治療中，第 ${p.due} 個門診日回診</span>` : '<span class="tag">診間中</span>';
+            const pats = p.kind === 'sh' ? SH.PATTERNS : EY.PATTERNS;
+            const mine = p.pattern ? `我定的證：${pats[p.pattern].name}` : '尚未定證';
+            const res = (x) => (x.shown ? `　<span class="${rCls(x.r)}">${R_NAME[x.r]}</span>` : '　<span class="dim">結果未明</span>');
+            const hist = p.kind === 'sh'
+                ? p.results.map((r, i) => `<li>${i === 0 ? '初診' : '複診'}：${r.rx}${res(r)}</li>`).join('')
+                : p.log.map(l => `<li>${l.title}：${l.what}${res(l)}</li>`).join('');
+            const truth = p.status === 'closed' ? `<div class="small hint">${p.kind === 'sh' ? '實際的證：' + SH.PATTERNS[p.c.pattern].name : '病名：' + p.c.disease + '（' + p.c.modern + '）'}</div>` : '';
+            return `<div class="bk"><div><span class="name">${p.c.name}</span> <span class="small hint">${p.c.type}</span>　${st}</div>
+                <div class="small">第 ${p.firstDay} 個門診日初診　${mine}　信任 ${p.trust}</div>${truth}${hist ? `<ul class="small">${hist}</ul>` : ''}</div>`;
+        }).join('');
+    }
+
+    /* ================= 系統選單 =================
+       照樣張：左邊是選單列，右邊是內容。狀態、病歷、心法、札記、系統。 */
+    const MENU = ['狀態', '病歷', '心法', '札記', '系統'];
+    let mSel = 0, subSel = 0, armed = false;         // armed：回到標題要點兩次才生效
+    function openMenu() { subSel = 0; armed = false; renderMenu(); $('#book').classList.remove('hidden'); }
+    function closeMenu() { $('#book').classList.add('hidden'); }
+    function renderMenu() {
+        $('#m-list').innerHTML = MENU.map((t, i) => `<li class="${i === mSel ? 'sel' : ''}" data-m="${i}">${t}</li>`).join('');
+        $('#m-money').textContent = S.money;
+        const R = $('#m-right');
+        const sub = (title, arr, html, desc) => {
+            R.innerHTML = `<h3>${title}</h3><ul class="list" id="sub">${arr.map((it, i) => `<li class="${i === subSel ? 'sel' : ''}${it.off ? ' off' : ''}" data-s="${i}">${html(it)}</li>`).join('')}</ul>
+                ${desc ? `<div class="desc">${desc(arr[subSel])}</div>` : ''}`;
+        };
+        if (mSel === 0) {
+            const warn = [S.energy < 30 ? '精力不足 30：眼壓飆高，視物模糊，讀不下書。' : '', S.spirit < 30 ? '心神不足 30：心悸失眠，休養的效果減半。' : '',
+                          S.spirit < 20 ? '心神不足 20：每一診能問的少一項。' : '', S.poor ? `已連續 ${S.poor} 天入不敷出，滿 ${POOR_LIMIT} 天便無以為繼。` : ''].filter(Boolean);
+            const bal = S.bal === 'jiji' ? '<span class="up">既濟</span>。精力與心神相濟，不偏不倚。'
+                : (S.bal === 'body' ? '<span class="down">未濟</span>。身強而神疲，宜靜坐養神。'
+                : (S.bal === 'mind' ? '<span class="down">未濟</span>。神清而身疲，宜休養生息。' : '每天收工時判定。精力與心神都在五成以上且相差不大，就是既濟。'));
+            const over = S.ch >= CHAPTERS.length;
+            R.innerHTML = `<h3>狀態</h3>
+                <div class="st-top"><div class="face">${HERO_SVG}</div>
+                    <div><span class="name">${$('#me-name').textContent}</span><br>業師：張仲景　書中師：黃庭鏡<br>${over ? '終章' : `第${CN[S.ch + 1]}章　${chOf().name}　第 ${S.chDay} 個門診日`}　${isEasy() ? '入門' : '專業'}</div></div>
+                <div class="row"><span class="k">精力</span><span class="gauge"><i style="width:${S.energy}%"></i></span><span class="v px">${S.energy}<small>/100</small></span></div>
+                <div class="row"><span class="k">心神</span><span class="gauge sp"><i style="width:${S.spirit}%"></i></span><span class="v px">${S.spirit}<small>/100</small></span></div>
+                <div class="stats4"><span>醫術 <span class="name px">${S.skill}</span></span><span>修為 <span class="name px">${S.peace}</span>　${tierOf()}</span>
+                    <span>聲望 <span class="name px">${S.fame}</span></span><span>金錢 <span class="name px">${S.money}</span></span></div>
+                <div class="stats4 small"><span>既濟 <span class="px">${S.jiji}</span> 天</span><span>透支 <span class="px">${S.over}</span> 次</span>
+                    ${S.app.on ? `<span>學徒：${S.app.done ? '已出師' : `歷練 ${S.app.exp}/3`}</span>` : ''}</div>
+                <div class="desc">身心：${bal}<br>肉身警訊：${warn.length ? '<span class="down">' + warn.join('<br>　　　　　') + '</span>' : '無。'}</div>`;
+        } else if (mSel === 1) {
+            R.innerHTML = `<h3>病歷簿</h3>${bookHTML()}`;
+        } else if (mSel === 2) {
+            sub('心法', EPI.map(e => ({ e, off: !S.epi.includes(e.id) })), (x) => `${x.e.name}<span class="qty${x.off ? '' : ' up'}">${x.off ? `修為 ${x.e.req} 可悟` : '已悟'}</span>`, (x) => x.e.desc);
+        } else if (mSel === 3) {
+            R.innerHTML = `<h3>札記</h3>
+                <div class="small"><b class="hint">這一輪的抉擇</b>　${S.dilLog.length ? S.dilLog.join('、') : '<span class="dim">還沒有遇到困境。</span>'}</div>
+                <div class="desc" style="color:#fff">${notesHTML()}</div>`;
+        } else {
+            const items = [{ n: '聲音', v: muted ? '關' : '開', act: () => setMuted(!muted) }, { n: '難度', v: isEasy() ? '入門' : '專業', off: true },
+                           { n: '存檔', v: '每個門診日開始時自動', off: true }, { n: '回到標題', v: armed ? '再點一次確定' : '', act: () => { if (armed) { closeMenu(); showTitle(); } else armed = true; } }];
+            sub('系統', items, (it) => `${it.n}<span class="qty name">${it.v}</span>`, () => '回到標題後，可以從「重溫舊夢」回到今天這個門診日的開頭。');
+            $$('#sub li').forEach(li => li.onclick = () => { const it = items[+li.dataset.s]; subSel = +li.dataset.s; if (it.act) it.act(); else armed = false; if (!$('#book').classList.contains('hidden')) renderMenu(); });
+        }
+        if (mSel === 2) $$('#sub li').forEach(li => li.onclick = () => { subSel = +li.dataset.s; renderMenu(); });
+        $$('#m-list li').forEach(li => li.onclick = () => { mSel = +li.dataset.m; subSel = 0; armed = false; beep(880, 0.03, 0.03, 'sine'); renderMenu(); $('#m-right').scrollTop = 0; });
+    }
+    $$('.menubtn').forEach(b => { b.onclick = openMenu; });
+    $('#book-x').onclick = closeMenu;
+    $('#book').onclick = (e) => { if (e.target === $('#book')) closeMenu(); };       // 點視窗外面的暗處也會關
+
+    /* =====================================================================
+       外感病（張仲景）：問診、八綱、定證、君臣佐使
+       ===================================================================== */
+    const shAnswers = (cls) => { const li = V.asked.map(id => { const q = SH.QUESTIONS.find(x => x.id === id); return `<li><b>${q.g}</b>${V.c.a[id]}</li>`; }).join(''); return li ? `<ul class="ans${cls ? ' ' + cls : ''}">${li}</ul>` : ''; };
+    function shStart() {
+        hub([narr(V.c.intro)].concat(tips(V.c.tip || '外感初起，先問寒熱，再問有汗無汗，最後憑脈。問得多不如問得準。')));
+    }
+    function shAsk() {
+        const left = maxAsk() - V.asked.length;
+        const groups = ['望', '聞', '問', '切'].map(g => {
+            const btns = SH.QUESTIONS.filter(q => q.g === g).map(q => {
+                const done = V.asked.includes(q.id);
+                return `<button class="btn${done ? ' on' : ''}" data-q="${q.id}" ${done || left <= 0 ? 'disabled' : ''}>${q.q}</button>`;
+            }).join('');
+            return `<div class="askg"><b>${g}</b><div class="grid">${btns}</div></div>`;
+        }).join('');
+        panel(`<h3>四診蒐集 <span>還可以問 <span class="px">${left}</span> 項，每問一項耗心神 ${askCost()}</span></h3>
+            <div class="see small" style="margin-bottom:8px">${V.c.intro}</div>
+            ${groups}${shAnswers()}
+            <div class="foot"><button class="btn go px" id="next" ${V.asked.length ? '' : 'disabled'}>先問到這裡</button></div>`);
+        $$('#panel [data-q]').forEach(b => b.onclick = () => {
+            V.asked.push(b.dataset.q);
+            addSpirit(-askCost()); hud();
+            const q = SH.QUESTIONS.find(x => x.id === b.dataset.q);
+            speak({ who: q.g === '問' ? 'patient' : '', text: V.c.a[q.id] });
+            shAsk();
+        });
+        $('#next').onclick = () => hub(isEasy() ? [Mt('先定八綱。病在肌表還是臟腑？是寒是熱？正氣虛還是邪氣實？')] : [narr('線索就是這些了。')]);
+    }
+    const AXES = [['表', '裡'], ['寒', '熱'], ['虛', '實']];
+    const AXIS_NAME = ['病位', '病性', '邪正'];
+    function shBagang() {
+        const rows = AXES.map((pair, i) => `<div class="axis"><span class="lbl">${AXIS_NAME[i]}</span>${pair.map(v =>
+            `<button class="btn${V.bagang[i] === v ? ' on' : ''}" data-ax="${i}" data-v="${v}">${v}</button>`).join('')}</div>`).join('');
+        panel(`<h3>八綱定位</h3>${shAnswers('small')}${rows}
+            <div class="foot"><button class="btn" id="back">回診間</button><button class="btn go px" id="next" ${V.bagang.every(Boolean) ? '' : 'disabled'}>定下八綱</button></div>`);
+        $$('#panel [data-ax]').forEach(b => b.onclick = () => { V.bagang[+b.dataset.ax] = b.dataset.v; shBagang(); });
+        $('#back').onclick = () => hub();
+        $('#next').onclick = () => hub(isEasy() ? [Mt('同是風寒在表，有汗為虛，無汗為實。若是大熱、大汗、大渴、脈洪大，那已是陽明裡熱。'), Mt('同是裡熱，要再分有形無形。腹滿硬痛、大便不通，是燥屎結住了。若是腹冷喜按、下利清稀，那是裡寒，不是熱。')] : []);
+    }
+    function shPattern() {
+        const btns = Object.keys(SH.PATTERNS).map(k => { const p = SH.PATTERNS[k];
+            return `<button class="btn${V.pattern === k ? ' on' : ''}" data-p="${k}"><b>${p.name}</b>　${p.alias}${isEasy() ? `<span class="sub">治法：${p.law}</span>` : ''}</button>`; }).join('');
+        panel(`<h3>定證 <span>我判斷：${V.bagang.join('、')}</span></h3><div class="grid">${btns}</div>
+            <div class="small dim" style="margin-top:8px">定證耗心神 ${patCost()}。之後回頭改證，要再耗一次。</div>
+            <div class="foot"><button class="btn" id="back">回診間</button><button class="btn go px" id="next" ${V.pattern ? '' : 'disabled'}>就定此證</button></div>`);
+        $$('#panel [data-p]').forEach(b => b.onclick = () => { V.pattern = b.dataset.p; shPattern(); });
+        $('#back').onclick = () => hub();
+        $('#next').onclick = () => {
+            if (!paid()) { addSpirit(-patCost()); hud(); V.paidPattern = V.pattern; newRx(); }
+            hub(isEasy() ? [Mt('方從法出。表實當發汗，表虛當解肌，裡熱當清，腑實當下，裡寒當溫。君藥對主證，臣藥助君，佐藥兼顧，使藥調和。')] : []);
+        };
+    }
+    let rx = null, curSlot = 'jun';
+    function newRx() { rx = { jun: [], chen: [], zuo: [], shi: [] }; curSlot = 'jun'; }
+    const rxHerbs = (r) => [].concat(r.jun, r.chen, r.zuo, r.shi);
+    function rxText(r) {
+        const parts = Object.keys(SH.SLOT_NAMES).filter(k => r[k].length).map(k => `${SH.SLOT_NAMES[k]}：${r[k].map(h => SH.HERBS[h].name).join('、')}`);
+        return parts.length ? parts.join('　') : '未用藥';
+    }
+    const qClass = (q) => (/寒/.test(q) ? 'cold' : (/溫|熱/.test(q) ? 'hot' : 'even'));
+    function shRx() {
+        const used = rxHerbs(rx), N = SH.SLOT_NAMES, MX = SH.SLOT_MAX;
+        const slots = Object.keys(N).map(k => `<div class="slot${curSlot === k ? ' cur' : ''}" data-slot="${k}">
+            <div class="t">${N[k]}藥${MX[k] > 1 ? '　二味' : ''}</div>
+            <div class="h">${rx[k].map(h => SH.HERBS[h].name).join('、') || '<span class="dim">點此，再選藥</span>'}</div></div>`).join('');
+        const herbs = Object.keys(SH.HERBS).map(k => { const h = SH.HERBS[k];
+            return `<button class="herb${used.includes(k) ? ' used' : ''}" data-h="${k}"><span class="n">${h.name}</span><span class="q ${qClass(h.q)}">${h.q}</span>
+                <span class="d">${h.flavor}　歸${h.meridian}${isEasy() ? `<br>${h.use}` : ''}</span></button>`; }).join('');
+        const formulas = isEasy() ? `<div class="grp"><b>成方</b><span class="small hint">點一下直接套用，之後仍可增減</span><div class="grid" style="margin-top:4px">${
+            Object.keys(SH.FORMULAS).map(k => `<button class="btn" data-f="${k}"><b>${SH.FORMULAS[k].name}</b><span class="sub">${SH.FORMULAS[k].note}</span></button>`).join('')}</div></div>` : '';
+        panel(`<h3>${V.round === 1 ? '處方' : '複診處方'} <span>我定的證：${SH.PATTERNS[V.pattern].name}</span></h3>
+            ${formulas}<div class="slots">${slots}</div><div class="herbs">${herbs}</div>
+            <div class="foot"><button class="btn" id="clear">清空</button>${V.round === 1 ? '<button class="btn" id="back">回診間</button>' : ''}<button class="btn go px" id="next" ${rx.jun.length ? '' : 'disabled'}>交付藥方</button></div>`);
+        $$('#panel [data-slot]').forEach(el => el.onclick = () => { curSlot = el.dataset.slot; shRx(); });
+        $$('#panel [data-h]').forEach(el => el.onclick = () => {
+            const h = el.dataset.h;
+            const inSlot = Object.keys(rx).find(k => rx[k].includes(h));
+            if (inSlot) rx[inSlot] = rx[inSlot].filter(x => x !== h);
+            else {
+                if (rx[curSlot].length >= MX[curSlot]) rx[curSlot].shift();
+                rx[curSlot].push(h);
+                const order = Object.keys(N);
+                if (rx[curSlot].length >= MX[curSlot]) curSlot = order[Math.min(order.length - 1, order.indexOf(curSlot) + 1)];
+            }
+            shRx();
+        });
+        $$('#panel [data-f]').forEach(el => el.onclick = () => { rx = clone(SH.FORMULAS[el.dataset.f].slots); shRx(); });
+        $('#clear').onclick = () => { newRx(); shRx(); };
+        if ($('#back')) $('#back').onclick = () => hub();
+        $('#next').onclick = shSubmit;
+    }
+    function classify(r) {
+        const all = rxHerbs(r);
+        const has = (h) => all.includes(h);
+        const cold = has('shigao') || has('zhimu') || has('dahuang') || has('mangxiao');
+        const warm = has('mahuang') || has('guizhi') || has('ganjiang');
+        if (cold && warm) return { cls: 'other', full: false, why: '寒涼與辛溫同用，方向互相牴觸' };
+        if (has('mahuang')) return { cls: 'mahuang', full: r.jun[0] === 'mahuang' && has('guizhi') && has('xingren') && has('gancao'), why: '' };
+        if (r.jun[0] === 'guizhi') return { cls: 'guizhi', full: has('shaoyao') && has('gancao') && (has('shengjiang') || has('dazao')), why: '' };
+        if (r.jun[0] === 'shigao') return { cls: 'baihu', full: has('zhimu') && has('gancao'), why: '' };
+        if (r.jun[0] === 'dahuang') return { cls: 'chengqi', full: has('mangxiao') && has('zhishi') && has('houpo'), why: '' };
+        if (r.jun[0] === 'ganjiang') return { cls: 'lizhong', full: has('renshen') && has('baizhu') && has('gancao'), why: '' };
+        return { cls: 'other', full: false, why: '君藥未能針對主證' };
+    }
+    function shSubmit() {
+        const k = classify(rx);
+        const o = SH.OUTCOME[V.c.pattern][k.cls] || SH.OUTCOME[V.c.pattern].other;     // 沒有特別寫的組合，一律當成藥不對證
+        const res = { rx: rxText(rx), cls: k.cls, r: o.r, t: o.t, q: o.q || '', fate: false, why: k.why, shown: false };
+        if (o.r === 'cured' && !k.full) { res.r = 'better'; res.t = '方向是對的，症狀減了幾分，卻沒有全退。配伍不全，藥力未到。'; }
+        else if (o.r === 'cured' && V.round === 1 && Math.random() < 0.12) { res.r = 'better'; res.fate = true; res.t = '方證相應，症狀減了大半，卻還有些纏綿未解。'; }
+        V.results.push(res);
+        V.lastRx = clone(rx);
+        if ((res.r === 'none' || res.r === 'worse') && V.trust < 40) V.lost = true;     // 信任不足又沒治好的病人，不一定會回來
+        speak(narr('我把藥包好，囑咐了煎服的方法。'));
+        leave(`藥方　${res.rx}`);
+    }
+    const SH_TRUST = { cured: [30, 12], better: [8, 4], none: [-12, -15], worse: [-25, -25] };
+    function shRevisit() {
+        const res = V.results[V.results.length - 1];
+        res.shown = true;
+        const d = SH_TRUST[res.r][V.round - 1];
+        addTrust(d); hud();
+        const body = resultHead(res.r, d) + `<div style="margin-top:6px">${res.t}</div>`;
+        const lines = [{ who: 'patient', text: res.r === 'cured' ? '大夫，我好了。' : (res.r === 'better' ? '大夫，好些了，可是還沒全好。' : (res.r === 'none' ? '大夫，藥吃完了，還是老樣子。' : '大夫，吃了藥反而更難受了。')) }];
+        if (res.r === 'cured' || V.round >= 2) {
+            panel(`<h3>${V.round >= 2 ? '再次回診' : '回診'}　${V.c.name}</h3>${body}<div class="foot"><button class="btn go px" id="next">寫下醫案</button></div>`);
+            if (res.r === 'cured') lines.push(narr(V.c.thanks)); else if (res.r !== 'better') lines.push(narr(V.c.angry));
+            $('#next').onclick = shRecord;
+        } else {
+            const keep = res.r === 'better' ? '<button class="octw" id="keep"><span class="oct"><b>守方</b></span><span class="sub">效不更方，原方再進幾帖</span></button>' : '';
+            panel(`<h3>回診　${V.c.name}</h3>${body}
+                <div class="octs">${keep}
+                    <button class="octw" id="redo"><span class="oct"><b>更方</b></span><span class="sub">回頭檢視判斷，重新辨證處方</span></button>
+                    <button class="octw" id="refer"><span class="oct"><b>轉介</b></span><span class="sub">坦承力有未逮，轉介他醫</span></button>
+                </div>`);
+            if (res.fate) lines.push(...tips('方證既然相應，就不要因為一時未癒而動搖。'));
+            else if (res.r === 'better') lines.push(...tips('方向沒有錯，是配伍還不周全。想想這張方子少了誰。'));
+            else lines.push(...tips('先別急著換藥。回頭想想：當初哪一個線索沒問，或是問了卻沒放在心上？'));
+            if ($('#keep')) $('#keep').onclick = () => {
+                V.round = 2;
+                const ok = res.fate;
+                V.results.push({ rx: '守原方', cls: res.cls, r: ok ? 'cured' : 'better', t: ok ? '又服了幾帖，餘症盡退。原來只是時候未到。' : '原方再服，仍是減而未盡。方子本身缺了東西，守著它也補不回來。', q: '', kept: true, shown: false });
+                speak(narr('我請病人照原方再服幾帖。'));
+                leave('守原方，再服幾帖');
+            };
+            $('#redo').onclick = () => {
+                V.round = 2;
+                rx = clone(V.lastRx); curSlot = 'jun';
+                speak(narr('我請病人坐下，重新看過一遍。'));
+                shRx();
+            };
+            $('#refer').onclick = () => {
+                V.round = 2; V.referred = true;
+                addTrust(5); hud();
+                speak([narr('我向病人說明，這個病我目前沒有把握，並為他寫了一封引薦信。'), { who: 'patient', text: '……多謝大夫說實話。' }]);
+                shRecord();
+            };
+        }
+        speak(lines);
+    }
+    function shRecord() {
+        const c = V.c, p = SH.PATTERNS[c.pattern];
+        const mark = (ok) => (ok ? '<span class="up">相符</span>' : '<span class="down">不符</span>');
+        const bagangOk = V.bagang.map((v, i) => v === p.bagang[i]);
+        const keyAsked = (c.keyQ || ['sweat', 'pulse', 'chill']).filter(k => V.asked.includes(k)).length;
+        const rows = V.results.map((r, i) => `<tr><td>${i === 0 ? '初診處方' : '複診處方'}</td><td>${r.rx}<br><span class="${rCls(r.r)}">${R_NAME[r.r]}</span>${r.fate ? '　<span class="hint">（無常）</span>' : ''}${r.why ? `　<span class="dim">${r.why}</span>` : ''}</td></tr>`).join('');
+        const last = V.results[V.results.length - 1];
+        const firstRight = V.results[0].cls === p.formula;
+        const quote = V.results.map(r => r.q).filter(Boolean)[0];
+        let comment;
+        if (V.referred) comment = '知道自己的極限在哪裡，也是醫道的一部分。只是下一次，要比這一次多看清一分。';
+        else if (V.results[0].fate) comment = '方證相應，病卻未即時而解。盡了人事，其餘不在醫者手中。能守得住，比開得出方子更難。';
+        else if (firstRight && last.r === 'cured' && V.results.length === 1) comment = keyAsked >= 2 ? '問得準，辨得清，方子自然就對了。' : '這次對了，但關鍵的幾問沒有問到。是辨出來的，還是碰上的，自己心裡要明白。';
+        else if (last.r === 'cured') comment = '第一次錯了不要緊，要緊的是肯回頭檢視自己的判斷。病人給了第二次機會，這份信任要記得。';
+        else comment = '這一案沒有治好。把它原原本本記下來，不要替自己開脫，也不要苛責自己。';
+        closeCase(V.referred ? '轉介' : R_NAME[last.r]);
+        panel(`<h3>醫案　${c.name}</h3>
+            <table class="rec small">
+                <tr><td>實際的證</td><td><b class="name">${p.name}</b>（${p.alias}）　治法：${p.law}　主方：${SH.FORMULAS[p.formula].name}</td></tr>
+                <tr><td>我問了</td><td>${V.asked.map(id => SH.QUESTIONS.find(q => q.id === id).q).join('、')}（三個關鍵問題問到 ${keyAsked} 個）</td></tr>
+                <tr><td>我的八綱</td><td>${V.bagang.map((v, i) => `${v} ${mark(bagangOk[i])}`).join('　')}</td></tr>
+                <tr><td>我定的證</td><td>${SH.PATTERNS[V.pattern].name}　${mark(V.pattern === c.pattern)}</td></tr>
+                ${rows}
+                <tr><td>結案時</td><td>病人信任 ${V.trust}　共看了 ${V.visits} 次，耗去心神 ${V.spiritUsed}</td></tr>
+                ${gainHTML()}
+            </table>
+            ${quote ? `<div class="quote small">《傷寒論》：「${quote}」</div>` : ''}
+            <div class="foot"><button class="btn go px" id="next">${nextLabel()}</button></div>`);
+        speak(Mt(comment));
+        $('#next').onclick = nextPatient;
+    }
+
+    /* =====================================================================
+       眼病（黃庭鏡）：察目、問診、辨證、治法
+       ===================================================================== */
+    const eyAnswers = (cls) => { const li = V.asked.map(id => { const q = EY.QUESTIONS.find(x => x.id === id); return `<li><b>${q.q}</b>${V.c.a[id]}</li>`; }).join(''); return li ? `<ul class="ans${cls ? ' ' + cls : ''}">${li}</ul>` : ''; };
+    function eyStart() {
+        const c = V.c;
+        const lines = [narr(c.intro)];
+        if (!S.metEye) {
+            S.metEye = true;
+            lines.push(narr('眼病，師父沒有教過我。我想起昨夜讀的《目經大成》，書頁之間彷彿有位清瘦的長者抬起頭來。'));
+            lines.push({ who: EYM, text: '目為人身至寶，匪明則無以作哲。' });
+            lines.push({ who: EYM, text: '看眼病，先把眼睛看清楚，再去問他這個人。不要只憑脈象就下判斷。' });
+        }
+        lines.push(...tips('先察目。紅在哪裡，濁在哪裡，就先記在哪一輪。'));
+        hub(lines);
+    }
+    function eyEye() {
+        const c = V.c, sel = V.wheel;
+        panel(`<h3>察目 <span>病變主要在哪裡？點眼睛上的部位</span></h3>
+            <div class="see">${c.eyeText}</div>
+            <div class="eyebox">${eyeSVG(c.eye, sel)}</div>
+            <div id="pick">${sel ? pickText(sel) : '<span class="dim">還沒有選。</span>'}</div>
+            ${isEasy() ? LEGEND : ''}
+            <div class="foot"><button class="btn go px" id="next" ${sel ? '' : 'disabled'}>就是這裡</button></div>`);
+        $$('#panel .zone').forEach(el => el.onclick = () => { V.wheel = el.dataset.w; eyEye(); });
+        $('#next').onclick = () => {
+            V.wheelOk = V.wheel === c.wheel;
+            if (isEasy()) {
+                if (!V.wheelOk) { addSpirit(-4); hud(); }
+                hub([Mt(V.wheelOk ? c.eyeRight : c.eyeWrong), Mt('眼睛多半是受害的一方，病根常在別處。問問他怎麼過日子。')]);
+            } else hub([narr('我把所見記了下來。')]);
+        };
+    }
+    function eyAsk() {
+        const left = maxAsk() - V.asked.length;
+        const btns = EY.QUESTIONS.map(q => {
+            const done = V.asked.includes(q.id);
+            return `<button class="btn${done ? ' on' : ''}" data-q="${q.id}" ${done || left <= 0 ? 'disabled' : ''}>${q.q}</button>`;
+        }).join('');
+        panel(`<h3>問診 <span>還可以問 <span class="px">${left}</span> 項，每問一項耗心神 ${askCost()}</span></h3>
+            <div class="see small" style="margin-bottom:8px">${V.c.intro}</div>
+            <div class="grid">${btns}</div>${eyAnswers()}
+            <div class="foot"><button class="btn go px" id="next" ${V.asked.length ? '' : 'disabled'}>先問到這裡</button></div>`);
+        $$('#panel [data-q]').forEach(b => b.onclick = () => {
+            const q = EY.QUESTIONS.find(x => x.id === b.dataset.q);
+            V.asked.push(q.id);
+            V.keyHit = V.c.keyQ.filter(k => V.asked.includes(k)).length;
+            addSpirit(-askCost()); hud();
+            speak({ who: q.narr ? '' : 'patient', text: V.c.a[q.id] });
+            eyAsk();
+        });
+        $('#next').onclick = () => hub(isEasy() ? [Mt('起病急、紅腫眵多的，多是外來的風熱。慢慢來、不紅不痛的，多是裡頭的虧虛。暴痛、嘔吐、看東西驟然變差的，是急症。')] : [narr('線索就是這些了。')]);
+    }
+    function eyPattern() {
+        const btns = Object.keys(EY.PATTERNS).map(k => { const p = EY.PATTERNS[k];
+            return `<button class="btn${V.pattern === k ? ' on' : ''}" data-p="${k}"><b>${p.name}</b>${isEasy() ? `<span class="sub">${p.alias}</span>` : ''}</button>`; }).join('');
+        panel(`<h3>辨證 <span>察目所見加上問診所得</span></h3>${eyAnswers('small')}
+            <div class="grid" style="margin-top:8px">${btns}</div>
+            <div class="small dim" style="margin-top:8px">定證耗心神 ${patCost()}。之後回頭改證，要再耗一次。</div>
+            <div class="foot"><button class="btn" id="back">回診間</button><button class="btn go px" id="next" ${V.pattern ? '' : 'disabled'}>就定此證</button></div>`);
+        $$('#panel [data-p]').forEach(b => b.onclick = () => { V.pattern = b.dataset.p; eyPattern(); });
+        $('#back').onclick = () => hub();
+        $('#next').onclick = () => {
+            if (!paid()) { addSpirit(-patCost()); hud(); V.paidPattern = V.pattern; V.plan = null; }
+            hub(isEasy() ? [Mt('法隨證立。下藥之前先問自己一句：這個病，等得起湯藥嗎？')] : [narr('該決定怎麼處置了。')]);
+        };
+    }
+    function eyPlan() {
+        const keys = Object.keys(EY.PLANS).filter(k => !(k === 'refer' && V.noRefer));
+        const btns = keys.map(k => { const p = EY.PLANS[k];
+            return `<button class="btn${V.plan === k ? ' on' : ''}" data-plan="${k}"><b>${p.name}</b>${isEasy() || k === 'refer' ? `<span class="sub">${p.sub}</span>` : ''}</button>`; }).join('');
+        panel(`<h3>${V.round === 1 ? '處置' : '複診處置'} <span>我定的證：${EY.PATTERNS[V.pattern].name}</span></h3>
+            <div class="grid">${btns}</div>
+            <div class="foot">${V.round === 1 && !V.noRefer ? '<button class="btn" id="back">回診間</button>' : ''}<button class="btn go px" id="next" ${V.plan ? '' : 'disabled'}>就這麼辦</button></div>`);
+        $$('#panel [data-plan]').forEach(b => b.onclick = () => { V.plan = b.dataset.plan; eyPlan(); });
+        if ($('#back')) $('#back').onclick = () => hub();
+        $('#next').onclick = eySubmit;
+    }
+    const eyTitle = () => (V.round === 1 ? '初診處置' : '複診處置');
+    function eySubmit() {
+        const c = V.c, k = V.plan, name = EY.PLANS[k].name;
+        if (k === 'refer') {
+            const f = c.refer;
+            if (f.back) {                               // 先請專科確認無險，當天回來再處置
+                V.log.push({ title: eyTitle(), k, what: name, r: f.r, t: f.t, shown: true });
+                V.noRefer = true; V.plan = null;
+                speak([narr('我陪病人去了一趟專科。'), narr(f.t)].concat(tips(f.m)));
+                eyPlan();
+                return;
+            }
+            V.log.push({ title: eyTitle(), k, what: name, r: f.r, t: f.t, shown: false });
+            V.referred = true; V.pending = f;
+            speak(narr('我扶著病人，立刻送往城裡專治眼病的大夫那裡。'));
+            leave('急送專科');
+            return;
+        }
+        const o = c.out[k] || { r: 'none', t: '藥不對證。吃了幾帖，不見起色。' };       // 沒有特別寫的治法，一律當成無效
+        V.log.push({ title: eyTitle(), k, what: name, r: o.r, t: o.t, shown: false });
+        if (o.r === 'chain') { V.inChain = true; V.chainIdx = 0; V.pending = null; }
+        else V.pending = o;
+        speak(narr('我把藥包好，囑咐了煎服的方法。'));
+        leave(`處置　${name}`);
+    }
+    function eyReturn() {
+        V.log.forEach(l => { l.shown = true; });
+        if (V.inChain) eyChain(V.chainIdx); else eyRevisit(V.pending);
+    }
+    const EY_TRUST = { cured: [25, 12], saved: [20, 20], better: [8, 4], none: [-12, -15], worse: [-25, -25], unneeded: [-5, -5] };
+    const EY_SAY = { cured: '大夫，我好了。', saved: '大夫，多虧您當機立斷。', better: '大夫，好些了，可是還沒全好。', none: '大夫，藥吃完了，還是老樣子。', worse: '大夫，吃了藥反而更難受了。', unneeded: '大夫，那邊的大夫說這是尋常的病。' };
+    function eyRevisit(o) {
+        const c = V.c;
+        const d = (o.trust !== undefined) ? o.trust : EY_TRUST[o.r][V.round - 1];
+        addTrust(d); hud();
+        const body = resultHead(o.r, d) + `<div style="margin-top:6px">${o.t}</div>`;
+        const lines = [{ who: 'patient', text: (c.say && c.say[o.r]) || EY_SAY[o.r] }];
+        const done = (title, extra) => {
+            panel(`<h3>${title}　${c.name}</h3>${body}<div class="foot"><button class="btn go px" id="next">寫下醫案</button></div>`);
+            if (extra) lines.push(narr(extra));
+            $('#next').onclick = eyRecord;
+        };
+        if (o.r === 'cured' || o.r === 'saved') done('回診', c.thanks);
+        else if (o.r === 'unneeded') done('回診', '');
+        else if (V.round >= 2) done('再次回診', o.r === 'better' ? '' : c.angry);
+        else {
+            const keep = o.r === 'better' ? '<button class="octw" id="keep"><span class="oct"><b>守方</b></span><span class="sub">效不更方，原方減量再進幾帖</span></button>' : '';
+            const redo = c.onlyLate ? '' : '<button class="octw" id="redo"><span class="oct"><b>更方</b></span><span class="sub">回頭檢視判斷，換一個治法</span></button>';
+            const late = `<button class="octw" id="late"><span class="oct"><b>${c.onlyLate ? '急送' : '轉介'}</b></span><span class="sub">${c.onlyLate ? '立刻送專科，不能再等了' : '坦承力有未逮，轉請專治眼病的大夫'}</span></button>`;
+            panel(`<h3>回診　${c.name}</h3>${body}<div class="octs">${keep}${redo}${late}</div>`);
+            if (c.onlyLate) lines.push(...tips('現在不是檢討方子的時候。'));
+            else if (o.r === 'better') lines.push(...tips('方向沒有錯，是藥下得太重。'));
+            else lines.push(...tips('先別急著換藥。回頭想想：察目看到了什麼，問診又問到了什麼？'));
+            if ($('#keep')) $('#keep').onclick = () => {
+                V.round = 2;
+                V.log.push({ title: '複診處置', what: '效不更方', r: 'cured', t: c.keep, shown: false });
+                V.pending = { r: 'cured', t: c.keep };
+                speak(narr('我請病人照原方減量再服幾帖。'));
+                leave('效不更方，原方減量');
+            };
+            if ($('#redo')) $('#redo').onclick = () => {
+                V.round = 2; V.plan = null;
+                speak(narr('我請病人坐下，重新看過一遍。'));
+                eyPlan();
+            };
+            $('#late').onclick = () => {
+                V.round = 2; V.referred = true;
+                addTrust(c.late.trust); hud();
+                V.log.push({ title: '複診處置', what: '轉請專科', r: 'handed', t: c.late.t, shown: true });
+                speak([narr(c.late.t), { who: 'patient', text: c.onlyLate ? '……' : '……多謝大夫說實話。' }]);
+                eyRecord();
+            };
+        }
+        speak(lines);
+    }
+    /* 慢性病：每個門診日回來一次，每一次都要分辨、要選擇 */
+    function eyChain(i) {
+        const c = V.c, st = c.chain[i], n = c.chain.length;
+        const title = `第 ${i + 1} 次回診`;
+        const first = i === 0 ? `<div class="small hint" style="margin-bottom:6px">${c.out[c.right].t}</div>` : '';
+        const btns = st.opts.map((o, j) => `<button class="btn" data-o="${j}"><b>${o.name}</b><span class="sub">${o.sub}</span></button>`).join('');
+        panel(`<h3>${title}　${c.name} <span>${c.chainLabel || '慢性病'}，共要回診 <span class="px">${n}</span> 次</span></h3>${first}
+            <div class="see">${st.see}</div>
+            <div class="grid" style="margin-top:10px">${btns}</div>`);
+        speak([{ who: 'patient', text: st.say }].concat(tips(st.hint)));
+        $$('#panel [data-o]').forEach(b => b.onclick = () => {
+            const o = st.opts[+b.dataset.o];
+            addTrust(o.trust); addSpirit(o.spirit); hud();
+            if (o.right) V.chainRight++;
+            if (o.flag) V[o.flag] = true;
+            const r = o.right ? 'good' : (o.neutral ? 'ok' : 'bad');
+            V.log.push({ title, what: o.name, r, t: o.t, shown: true });
+            const delta = [o.trust ? `信任 ${o.trust > 0 ? '+' : '−'}${Math.abs(o.trust)}` : '', o.spirit ? `心神 ${o.spirit > 0 ? '+' : '−'}${Math.abs(o.spirit)}` : ''].filter(Boolean).join('　');
+            speak([narr(o.t)].concat(tips(o.m)));
+            if (i + 1 < n) {
+                V.chainIdx = i + 1;
+                leave(`<b class="name">${o.name}</b>${isEasy() ? `　<span class="${rCls(r)} px">${R_NAME[r]}</span>` : ''}　<span class="small hint">${delta}</span><div style="margin-top:6px">${o.t}</div>`);
+            } else {
+                V.chainDone = true;
+                /* 全對是明顯改善；錯一次（回診兩次以上的病）是好轉；其餘是時好時壞 */
+                const rr = V.chainRight >= n ? 'well' : (n > 1 && V.chainRight === n - 1 ? 'better' : 'wobble');
+                V.log.push({ title: '這段日子', what: `${CN[n] || n}次回診，處置得當 ${V.chainRight} 次`, r: rr, t: c.chainEnd[rr], shown: true });
+                panel(`<h3>${title}　${c.name}</h3><div><b class="name">${o.name}</b>　<span class="small hint">${delta}</span></div><div style="margin-top:6px">${o.t}</div>
+                    <div style="margin-top:10px">${resultHead(rr, 0)}<div style="margin-top:4px">${c.chainEnd[rr]}</div></div>
+                    <div class="foot"><button class="btn go px" id="next">寫下醫案</button></div>`);
+                $('#next').onclick = eyRecord;
+            }
+        });
+    }
+    /* 醫案評語：依這一案怎麼走的，從病例的 cmt 裡挑一句。病例資料只放文字，判斷都在這裡。
+       best 最佳；lucky 對了但關鍵問診不足；refer 不必轉介卻一開始就轉；xie 誤用苦寒；
+       done 回診走完但有失誤；referred 中途轉介；promise 許了做不到的諾；fail 其餘。 */
+    function eyComment(v) {
+        const c = v.c, m = c.cmt || {};
+        const first = (v.log.find(l => l.r !== 'checked') || {}).k || '';      // 先請專科確認無險的那一步不算
+        if (v.promise && m.promise) return m.promise;
+        if (c.chain && v.chainDone) return v.chainRight >= c.chain.length ? m.best : (m.done || m.fail);
+        if (!c.chain && first === c.right) return (v.keyHit >= 2 || !m.lucky) ? m.best : m.lucky;
+        if (first === 'refer' && m.refer) return m.refer;
+        if (first === 'xie' && m.xie) return m.xie;
+        if (v.referred && m.referred) return m.referred;
+        return m.fail;
+    }
+    function eyRecord() {
+        const c = V.c, p = EY.PATTERNS[c.pattern];
+        const mark = (ok) => (ok ? '<span class="up">相符</span>' : '<span class="down">不符</span>');
+        const w = WHEELS[V.wheel], rw = WHEELS[c.wheel];
+        const rows = V.log.map(l => `<tr><td>${l.title}</td><td>${l.what}　<span class="${rCls(l.r)}">${R_NAME[l.r]}</span><br><span class="dim">${l.t}</span></td></tr>`).join('');
+        const comment = eyComment(V);
+        const last = V.log[V.log.length - 1];
+        closeCase(R_NAME[last.r]);
+        panel(`<h3>醫案　${c.name}</h3>
+            <table class="rec small">
+                <tr><td>病名</td><td><b class="name">${c.disease}</b>（${c.modern}）</td></tr>
+                <tr><td>實際的證</td><td>${p.name}　合適的處置：${EY.PLANS[c.right].name}</td></tr>
+                <tr><td>察目</td><td>我看的是${w.name}（${w.part}）　${mark(V.wheelOk)}${V.wheelOk ? '' : `　病在${rw.name}（${rw.part}），屬${rw.organ}`}</td></tr>
+                <tr><td>我問了</td><td>${V.asked.map(id => EY.QUESTIONS.find(q => q.id === id).q).join('、')}（三個關鍵問題問到 ${V.keyHit} 個）</td></tr>
+                <tr><td>我定的證</td><td>${EY.PATTERNS[V.pattern].name}　${mark(V.pattern === c.pattern)}</td></tr>
+                ${rows}
+                <tr><td>結案時</td><td>病人信任 ${V.trust}　共看了 ${V.visits} 次，耗去心神 ${V.spiritUsed}</td></tr>
+                ${gainHTML()}
+            </table>
+            <div class="quote small">${c.quote.src}：「${c.quote.text}」</div>
+            <div class="note small"><b class="hint">給病人的叮嚀</b>（取自林佑彥《眼癒力》）　${c.advice}${c.modernNote ? `<br>${c.modernNote}` : ''}</div>
+            <div class="foot"><button class="btn go px" id="next">${nextLabel()}</button></div>`);
+        speak(Mt(comment));
+        $('#next').onclick = nextPatient;
+    }
+
+    /* ================= 開場 ================= */
+    $$('#opt-diff .btn').forEach(b => b.onclick = () => { S.diff = b.dataset.diff; $$('#opt-diff .btn').forEach(x => x.classList.toggle('on', x === b)); });
+    function showTitle() {
+        clearInterval(typing); typing = null; queue = []; after = null;
+        clearTimeout(veilTimer);
+        playTrack('');
+        ['#ui', '#book', '#veil', '#t-new', '#t-notes'].forEach(s => $(s).classList.add('hidden'));
+        const mm = loadMeta();
+        $('#t-notes-info').textContent = mm.runs ? `行醫 ${mm.runs} 輪　成就 ${mm.ach.length}/${ACH.length}` : '還是空白的';
+        $('#ui').classList.remove('story');
+        $('#t-main').classList.remove('hidden'); $('#title').classList.remove('hidden');
+        const d = readSave();
+        $('#t-load').disabled = !d;
+        $('#t-load-info').textContent = d ? `${(CHAPTERS[d.S.ch] || {}).name || ''}　第 ${d.S.chDay} 個門診日　${d.S.diff === 'easy' ? '入門' : '專業'}` : '還沒有紀錄';
+        $('#t-warn').classList.toggle('hidden', !d);
+    }
+    /* go：進到遊戲畫面後要從哪裡開始（新遊戲是開場，讀檔是當天的候診室） */
+    function enter(go) {
+        ['#title', '#book'].forEach(s => $(s).classList.add('hidden'));
+        $('#ui').classList.remove('hidden');
+        chapterTrack();
+        go();
+    }
+    /* 開場：拜師。之後接第一章 */
+    function opening() {
+        story('杏林問診', '', [
+            { text: '那一年疫病過境，村裡的大夫也倒下了。' },
+            { text: '我背著昏沉的母親走了三十里路，敲開了一位大夫的門。' },
+            { text: '母親的病好了。我沒有走。' },
+            { who: SHM, text: '想學醫？先學會坐著，看我怎麼看病人。' },
+            { text: '我坐著看了三年。' }
+        ], startChapter);
+    }
+    $('#t-go-new').onclick = () => { $('#t-main').classList.add('hidden'); $('#t-new').classList.remove('hidden'); };
+    $('#t-back').onclick = () => { $('#t-new').classList.add('hidden'); $('#t-main').classList.remove('hidden'); };
+    $('#t-notes-btn').onclick = () => { $('#t-notes-body').innerHTML = notesHTML(); $('#t-main').classList.add('hidden'); $('#t-notes').classList.remove('hidden'); };
+    $('#t-notes-back').onclick = () => { $('#t-notes').classList.add('hidden'); $('#t-main').classList.remove('hidden'); };
+    $('#t-load').onclick = () => { if (loadGame()) enter(dayStart); else showTitle(); };
+    $$('.snd').forEach(b => { b.textContent = muted ? '聲音：關' : '聲音：開'; b.onclick = () => setMuted(!muted); });
+    $('#start').onclick = () => {
+        Object.keys(P).forEach(k => delete P[k]);
+        Object.assign(S, fresh());
+        enter(opening);
+    };
+    showTitle();
+
+    /* 圖片預先載入：標題畫面出現後，趁空檔把病人與困境的圖先抓下來，看診時不會慢一拍 */
+    setTimeout(() => {
+        const list = [...new Set(SH.CASES.concat(EY.CASES).map(c => c.img).concat(Object.values(DIL_IMG)).filter(Boolean))];
+        list.forEach((f, i) => setTimeout(() => { const im = new Image(); im.src = IMG + f; }, i * 150));
+    }, 1200);
+
+    /* 供測試用 */
+    window.__clinic = { loadMeta, saveMeta, ACH, S, P, get V() { return V; }, SH, EY, classify, saveGame, loadGame, readSave, showTitle, setMuted, DILEMMAS,
+                        get track() { return wantTrack; }, get muted() { return muted; } };
+})();
+</script>
+<script>
+/* 自動試玩（只供測試）：在瀏覽器主控台執行 __bot.play({ good: true, key: true, act: 'smart' }) 會從新遊戲玩到結局。
+   good 每位都看對；key 只問關鍵問診；act 門診後做什麼（smart 依身心狀況）；redo、keep、plan、dil 控制回診與困境的選法。 */
+window.__bot = (function () {
+    const $ = (s) => document.querySelector(s), $$ = (s) => [...document.querySelectorAll(s)];
+    const C = () => window.__clinic;
+    const click = (el) => { if (!el) return false; if (el.click) el.click(); else el.dispatchEvent(new MouseEvent('click', { bubbles: true })); return true; };
+    const other = (obj, k, skip) => Object.keys(obj).find(x => x !== k && x !== skip);
+    const h3 = () => { const h = $('#panel h3'); return h ? h.innerText : ''; };
+    const inHub = () => !$('#scene').classList.contains('hidden') && !$('#scene').classList.contains('bare');
+    let st = {};
+    function ask(pol) {
+        const V = C().V; let qs = $$('#panel [data-q]:not(:disabled)');
+        if (pol.key) { const keys = V.c.keyQ || ['sweat', 'pulse', 'chill']; qs = qs.filter(b => keys.includes(b.dataset.q)); }
+        if (qs.length) { click(qs[0]); return 'q'; }
+        click($('#next')); return 'ask-done';
+    }
+    function pickAct(pol) {
+        const S = C().S, has = (a) => { const b = $(`#panel [data-act="${a}"]`); return b && !b.disabled; };
+        if (pol.act === 'smart') {
+            if (S.energy < 50) return 'rest';
+            if (S.spirit < 50) return 'sit';
+            if (has('teach')) return 'teach';
+            if (S.money > 70 && has('give')) return 'give';
+            if (Math.abs(S.energy - S.spirit) > 25) return S.energy < S.spirit ? 'rest' : 'sit';
+            return has('study') ? 'study' : 'sit';
+        }
+        return has(pol.act) ? pol.act : 'rest';
+    }
+    function step(pol) {
+        const V = C().V, S = C().S, t = h3();
+        st.minEn = Math.min(st.minEn, S.energy); st.minSp = Math.min(st.minSp, S.spirit);
+        if (!$('#title').classList.contains('hidden')) return 'title';
+        if ($('#ui').classList.contains('story')) { click($('#dlg')); return 'story'; }
+        if (inHub()) { const c = $('#sc-cmds .octw.cur'); if (!c) return 'stuck:hub'; click(c); return 'hub'; }
+        if (/^(全書完|貧病交加)/.test(t) && $('#home')) return 'end';
+        if ($('#panel [data-d]')) { const en = $$('#panel [data-d]').filter(b => !b.disabled); click(pol.dil === 'first' ? en[0] : en[Math.floor(Math.random() * en.length)]); return 'dilemma'; }
+        if ($('#panel [data-pick]')) { $$('#panel [data-pick]').slice(0, 3).forEach(b => click($(`#panel [data-pick="${b.dataset.pick}"]`))); click($('#next')); return 'book'; }
+        if ($('#panel [data-act]')) { const a = pickAct(pol); st.acts[a] = (st.acts[a] || 0) + 1; click($(`#panel [data-act="${a}"]`)); return 'act'; }
+        if (V && V.kind === 'sh') {
+            const p = pol.good ? V.c.pattern : other(C().SH.PATTERNS, V.c.pattern);
+            if (/四診蒐集/.test(t)) return ask(pol);
+            if (/八綱定位/.test(t)) { C().SH.PATTERNS[p].bagang.forEach((v, i) => click($(`#panel [data-ax="${i}"][data-v="${v}"]`))); click($('#next')); return 'bagang'; }
+            if (/^定證/.test(t)) { click($(`#panel [data-p="${p}"]`)); click($('#next')); return 'pattern'; }
+            if (/處方/.test(t) && $('#clear')) {
+                const f = C().SH.PATTERNS[p].formula, fb = $(`#panel [data-f="${f}"]`);
+                if (fb) click(fb);
+                else { click($('#clear')); const sl = C().SH.FORMULAS[f].slots; Object.keys(sl).forEach(k => sl[k].forEach(h => { click($(`#panel [data-slot="${k}"]`)); click($(`#panel [data-h="${h}"]`)); })); }
+                click($('#next')); return 'rx';
+            }
+        }
+        if (V && V.kind === 'eye') {
+            if (/^察目/.test(t)) { click($(`#panel .zone[data-w="${pol.good ? V.c.wheel : other(C().EY.WHEELS, V.c.wheel)}"]`)); click($('#next')); return 'eye'; }
+            if (/^問診/.test(t)) return ask(pol);
+            if (/^辨證/.test(t)) { click($(`#panel [data-p="${pol.good ? V.c.pattern : other(C().EY.PATTERNS, V.c.pattern)}"]`)); click($('#next')); return 'epattern'; }
+            if ($('#panel [data-plan]')) { const k = pol.good ? V.c.right : (pol.plan || other(C().EY.PLANS, V.c.right, 'refer')); click($(`#panel [data-plan="${k}"]`) || $('#panel [data-plan]')); click($('#next')); return 'plan'; }
+            if ($('#panel [data-o]')) { const o = V.c.chain[V.chainIdx].opts; let i = pol.good ? o.findIndex(x => x.right) : o.findIndex(x => !x.right && !x.neutral); if (i < 0) i = 0; click($(`#panel [data-o="${i}"]`)); return 'chain'; }
+        }
+        if ($('#keep') && pol.keep) { click($('#keep')); return 'keep'; }
+        if ($('#redo') && pol.redo) { click($('#redo')); return 'redo'; }
+        if ($('#refer')) { click($('#refer')); return 'refer'; }
+        if ($('#late')) { click($('#late')); return 'late'; }
+        if ($('#next') && !$('#next').disabled) { click($('#next')); return 'next'; }
+        return 'stuck:' + t;
+    }
+    function run(pol, until, max) {
+        st = { minEn: 100, minSp: 100, acts: {}, steps: 0 };
+        let r = '';
+        for (let i = 0; i < (max || 4000); i++) { if (until && until()) { r = 'until'; break; } r = step(pol || {}); st.steps++; if (r === 'end' || r === 'title' || r.indexOf('stuck') === 0) break; }
+        return r;
+    }
+    function fresh(diff) { C().setMuted(true); C().showTitle(); click($('#t-go-new')); click($(`#opt-diff [data-diff="${diff || 'easy'}"]`)); click($('#start')); }
+    /* 從新遊戲玩到結局，回傳一行摘要 */
+    function play(pol, diff) {
+        fresh(diff);
+        const r = run(pol), S = C().S, P = Object.values(C().P);
+        const ok = P.filter(p => ['痊癒', '明顯改善', '保住視力'].includes(p.outcome)).length;
+        return `${r} ${($('#panel h3') || {}).innerText.split('\n')[0]} 章${S.ch + 1} 好${ok}/${P.length} 精${st.minEn} 神${st.minSp} 修${S.peace} 醫${S.skill} 望${S.fame} 錢${S.money} 既濟${S.jiji} 透支${S.over} 心法${S.epi.length} 步${st.steps} ${JSON.stringify(st.acts)}`;
+    }
+    return { step, run, fresh, play, stat: () => st };
+})();
+</script>
+</body>
+</html>
