@@ -400,12 +400,12 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 .btn.go:disabled { filter: grayscale(1) brightness(0.62); color: var(--dim); background: linear-gradient(180deg, var(--gold-hi), #b8892e 50%, var(--gold-dark)); }
 
 /* 小按鈕：病歷簿、聲音、跳過、合上 */
-.bookbtn, .skip, .snd, #book-x {
+.bookbtn, .skip, .snd, #book-x, #t-intro {
     padding: 3px 11px; border: 1px solid var(--gold); background: linear-gradient(180deg, rgba(47, 64, 154, 0.9), rgba(10, 16, 54, 0.92));
     box-shadow: 0 0 0 1px var(--gold-dark); color: var(--name);
 }
-.bookbtn::before, .skip::before, .snd::before, #book-x::before { display: none; }
-.bookbtn:hover, .skip:hover, .snd:hover, #book-x:hover { background: linear-gradient(180deg, rgba(70, 90, 190, 0.95), rgba(20, 30, 90, 0.95)); }
+.bookbtn::before, .skip::before, .snd::before, #book-x::before, #t-intro::before { display: none; }
+.bookbtn:hover, .skip:hover, .snd:hover, #book-x:hover, #t-intro:hover { background: linear-gradient(180deg, rgba(70, 90, 190, 0.95), rgba(20, 30, 90, 0.95)); }
 
 /* 八綱：每一綱是一對八角鈕 */
 .axis { gap: 14px; margin: 10px 0; justify-content: center; }
@@ -650,7 +650,10 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                 <button id="t-load" disabled>重溫舊夢<small id="t-load-info">還沒有紀錄</small></button>
                 <button id="t-notes-btn">杏林札記<small id="t-notes-info"></small></button>
             </div>
-            <button class="btn snd" style="font-size:0.86em;padding:3px 12px">聲音：開</button>
+            <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+                <button class="btn snd" style="font-size:0.86em;padding:3px 12px">聲音：開</button>
+                <button class="btn" id="t-intro" style="font-size:0.86em;padding:3px 12px">重看片頭</button>
+            </div>
             <div class="tver">試玩版 0.7　向早年的國產角色扮演遊戲致意<br>內容僅供體驗玩法，不能作為診療依據。病人皆為虛構。</div>
         </div>
         <div class="win hidden" id="t-notes">
@@ -4530,6 +4533,11 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     $('#t-back').onclick = () => { $('#t-new').classList.add('hidden'); $('#t-main').classList.remove('hidden'); };
     $('#t-notes-btn').onclick = () => { $('#t-notes-body').innerHTML = notesHTML(); $('#t-main').classList.add('hidden'); $('#t-notes').classList.remove('hidden'); };
     $('#t-notes-back').onclick = () => { $('#t-notes').classList.add('hidden'); $('#t-main').classList.remove('hidden'); };
+    /* 重看片頭：在網站上回到 /xinglin?intro=1（載入頁會先播片頭，播完再進遊戲）；在本機測試時打開同資料夾的 intro.html */
+    $('#t-intro').onclick = () => {
+        const local = /^(file:|data:|https?:\/\/(127\.0\.0\.1|localhost)[:/])/.test(location.href);
+        location.href = local ? 'intro.html' : location.pathname + '?intro=1';
+    };
     $('#t-load').onclick = () => { if (loadGame()) enter(dayStart); else showTitle(); };
     $$('.snd').forEach(b => { b.textContent = muted ? '聲音：關' : '聲音：開'; b.onclick = () => setMuted(!muted); });
     $('#start').onclick = () => {
