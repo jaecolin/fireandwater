@@ -183,6 +183,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 .title h2 { margin: 12px 0 6px; font-size: 1em; color: var(--hint); font-weight: 500; }
 .opt { display: flex; gap: 8px; flex-wrap: wrap; }
 .opt .btn { flex: 1 1 200px; }
+.opt .hface { float: left; width: 3.6em; height: 3.6em; margin: 0 10px 2px 0; border: 2px solid var(--gold); background: #1a2350 center top / cover no-repeat; }
+.ph { display: block; width: 100%; height: 100%; background: center top / cover no-repeat; }
 .opt .btn small { display: block; color: var(--hint); font-size: 0.82em; line-height: 1.45; }
 .disclaimer { font-size: 0.8em; color: var(--dim); margin-top: 12px; line-height: 1.55; }
 
@@ -268,6 +270,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
    對手是病，不是病人，所以沒有攻擊與血條，只有「下一步要做什麼」。 */
 .scene { flex: 1; min-height: 0; position: relative; }
 .fig { position: absolute; pointer-events: none; }
+.fig img.back { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.35)); }
 .fig > div { position: absolute; inset: 0; background: center bottom / contain no-repeat; }
 .fig > div svg { width: 100%; height: 100%; display: block; }
 .fig > i { position: absolute; left: 10%; right: 10%; bottom: -8px; height: 20px; border-radius: 50%; background: radial-gradient(ellipse, rgba(0, 0, 0, 0.6), transparent 70%); }
@@ -686,6 +689,12 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                 <button class="btn" data-diff="hard">專業<small>問診項數較少，沒有提點，方子自己配，對錯到醫案才揭曉。</small></button>
             </div>
 
+            <h2>主角</h2>
+            <div class="opt" id="opt-hero">
+                <button class="btn on" data-hero="m"><i class="hface"></i>男醫者<small>劇情相同，只有外觀不同。</small></button>
+                <button class="btn" data-hero="f"><i class="hface"></i>女醫者<small>立繪會隨年紀，從青年、中年走到晚年。</small></button>
+            </div>
+
             <div class="foot"><button class="btn" id="t-back">返回</button><button class="btn go px" id="start">開始坐診</button></div>
             <div class="disclaimer">內容經過大幅簡化，僅供體驗玩法，不能作為診療依據；藥材份數並非真實劑量。病人皆為虛構。證型、方藥、病名對照與原文引用皆待中醫師審定。</div>
         </div>
@@ -697,6 +706,22 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const $ = (s) => document.querySelector(s);
     const $$ = (s) => [...document.querySelectorAll(s)];
     const IMG = 'https://yylin.tw/images/yylin.tw/upload_file/';
+    /* 立繪（2026-11-15 起）：新的立繪放在 GitHub 的 xinglin/art/，和遊戲檔放一起；還沒有新圖的病人沿用媒體庫的舊圖。
+       c.img 不改，因為診金倍數（PAY_MULT）靠它分辨權貴與窮苦。線上由載入頁的 XL 指出遊戲檔的位置，本機就用旁邊的 art/ 資料夾。 */
+    const ART = ((window.XL && window.XL.game && window.XL.game[0]) || '').replace(/[^/]*$/, '') + 'art/';
+    const FACE = { quan: 'p-quan.webp', han: 'p-han.webp', hu: 'p-hu.webp', shui: 'p-shui.webp', tao: 'p-tao.webp',
+                   c1: 'p-ashun.webp', c2: 'p-zhongan.webp', c3: 'p-wan.webp', c5: 'p-akuan.webp', c6: 'p-xu.webp' };
+    const faceUrl = (c) => (FACE[c.id] ? ART + FACE[c.id] : IMG + c.img);
+    /* 病好版：回診時改善或痊癒（cured、saved、better；慢性病回診走完是 well、better），換上氣色轉好的立繪，和「大夫，我好了」對得上。V.well 每次進診間先歸零 */
+    const FACE_WELL = { quan: 'p-quan-w.webp', han: 'p-han-w.webp', hu: 'p-hu-w.webp', shui: 'p-shui-w.webp', tao: 'p-tao-w.webp',
+                        c1: 'p-ashun-w.webp', c2: 'p-zhongan-w.webp', c3: 'p-wan-w.webp', c5: 'p-akuan-w.webp', c6: 'p-xu-w.webp' };
+    const WELL_R = ['cured', 'saved', 'better', 'well'];
+    const ptFace = () => (V.well && FACE_WELL[V.c.id] ? ART + FACE_WELL[V.c.id] : faceUrl(V.c));
+    const MASTER_FACE = ART + 'm-master.webp';
+    /* 主角：玩家在「初入杏林」選男或女；立繪依章節分三個年紀（佑彥 2026-11-15 定）：青年＝習醫、立業，中年＝盛年、傳承，晚年＝晚年與結局 */
+    const heroStage = (ch) => (ch <= 1 ? 'y' : (ch <= 3 ? 'mid' : 'old'));
+    const heroFace = (sex, ch) => `${ART}h-${(sex || S.hero) === 'f' ? 'f' : 'm'}-${heroStage(ch == null ? S.ch : ch)}.webp`;
+    const heroImg = () => `<i class="ph" style="background-image:url('${heroFace()}')"></i>`;
     $('#stage').style.backgroundImage = `url('${IMG}ab8fdfe7-fb59-4655-843a-35fe9ae6ba5b.png')`;
     const HERO_SVG = '<svg viewBox="34 20 52 52" xmlns="http://www.w3.org/2000/svg"><rect x="34" y="20" width="52" height="52" fill="#22306e"/><path d="M40 157 L44 78 Q60 66 76 78 L80 157 Z" fill="#2C4F3E"/><circle cx="60" cy="50" r="19" fill="#DFC8A0"/><path d="M42 46 Q60 26 78 46 Q78 34 60 31 Q42 34 42 46 Z" fill="#3a3a3a"/><circle cx="60" cy="28" r="6" fill="#3a3a3a"/><path d="M50 52 Q54 55 58 52" stroke="#3a3a3a" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M62 52 Q66 55 70 52" stroke="#3a3a3a" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>';
     /* 書中師：黃庭鏡 */
@@ -2917,6 +2942,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const SHM = '師父';        // 業師張仲景，帶外感病
     const EYM = '黃庭鏡';      // 書中師，帶眼病
     const APP = '小滿';        // 學徒（傳承章起）。頭像沿用主角的畫法，換一身衣色
+    /* 有新立繪的角色，對話時用立繪；其餘沿用程式畫的頭像 */
+    const NPC_FACE = { [SHM]: MASTER_FACE, [EYM]: ART + 'm-huang.webp', [APP]: ART + 'm-xiaoman.webp', 母親: ART + 'm-mother.webp' };
+    const npcFace = (who) => NPC_FACE[who] || '';
     const APP_SVG = HERO_SVG.replace('#22306e', '#2e4a3a').replace('#2C4F3E', '#7a6230');
 
     /* ================= 一生的骨架 =================
@@ -2993,7 +3021,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const fresh = () => ({ energy: 70, peace: 0, money: 20, jiji: 0, bal: '', over: 0, poor: 0, epi: [], gives: 0,
                            day: 1, ch: 0, chDay: 1, arr: {}, spirit: 70, skill: 0, fame: 0, study: 0, studyNext: 0, queue: [], news: [], metEye: false, dil: [], echo: [], flags: {}, dilLog: [],
                            app: { on: false, exp: 0, done: false } });       // app：學徒（第四章起）
-    const S = Object.assign({ diff: 'easy' }, fresh());
+    const S = Object.assign({ diff: 'easy', hero: 'm' }, fresh());       // hero：主角 m 男、f 女（舊存檔沒有這一欄就當男）
     const P = {};               // 病歷簿：每位病人一筆，跨門診日保存
     let V = null;               // 目前在診間的病人
     const isEasy = () => S.diff === 'easy';
@@ -3150,7 +3178,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         face.style.backgroundImage = ''; face.innerHTML = '';
         const fig = who === EYM ? MENTOR_SVG : (who === SHM ? MASTER_SVG : (who === APP ? APP_SVG : (who && who !== 'patient' ? HERO_SVG : '')));
         face.classList.toggle('fig', !!fig);
-        if (who === 'patient' && V) { face.style.backgroundImage = `url('${IMG}${V.c.img}')`; face.classList.remove('hidden'); }
+        if (who === 'patient' && V) { face.style.backgroundImage = `url('${ptFace()}')`; face.classList.remove('hidden'); }
+        else if (who === '我') { face.classList.remove('fig'); face.style.backgroundImage = `url('${heroFace()}')`; face.classList.remove('hidden'); }
+        else if (npcFace(who)) { face.classList.remove('fig'); face.style.backgroundImage = `url('${npcFace(who)}')`; face.classList.remove('hidden'); }
         else if (fig) { face.innerHTML = bustSVG(fig); face.classList.remove('hidden'); }
         else { face.classList.add('hidden'); }
         $('#dlg-name').textContent = who === 'patient' ? (V ? V.c.name + '：' : '') : (who ? who + '：' : '');
@@ -3214,7 +3244,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     function hud() {
         const face = $('#pt-face');
         if (V) {
-            face.style.backgroundImage = `url('${IMG}${V.c.img}')`;
+            face.style.backgroundImage = `url('${ptFace()}')`;
             $('#pt-name').textContent = V.c.name; $('#pt-type').textContent = V.c.type;
             $('#tr-row').classList.remove('hidden');
             $('#g-tr').style.width = V.trust + '%'; $('#v-tr').innerHTML = `${V.trust}<small>/100</small>`;
@@ -3223,7 +3253,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             $('#pt-name').textContent = '候診室'; $('#pt-type').textContent = '';
             $('#tr-row').classList.add('hidden');
         }
-        $('#me-face').innerHTML = HERO_SVG;
+        $('#me-face').innerHTML = heroImg();
         face.classList.toggle('hidden', !V);
         const over = S.ch >= CHAPTERS.length;      // 五章走完，進入結局
         $('#me-name').textContent = `我（${['弟子', '醫者', '醫者', '師者', '老醫者'][S.ch] || '著書人'}）`;
@@ -3241,12 +3271,16 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         $('#ui').classList.toggle('clinic', !!V);
         if (V) $('#sc-tag').innerHTML = `<span class="name">${V.c.name}</span>　${V.c.type}　信任 <span class="px">${V.trust}</span>`;
     }
+    /* 回診揭曉結果時：改善或痊癒就換上病好版立繪 */
+    function markWell(r) { V.well = WELL_R.includes(r); $('#sc-pt').style.backgroundImage = `url('${ptFace()}')`; hud(); }
     /* 病人進診間：擺好病人、我與師父，清掉上一位的指令 */
+    /* 診間右側的背影（2026-11-15 起是畫的，主角分男女）；圖片讀不到時退回原本的剪影 */
+    const backImg = (n, sil) => `<img class="back" src="${ART}${n}.webp" alt="" onerror="this.outerHTML=this.dataset.sil" data-sil="${sil.replace(/"/g, '&quot;')}">`;
     function sceneSetup() {
-        $('#sc-pt').style.backgroundImage = `url('${IMG}${V.c.img}')`;
-        $('#sc-mt').innerHTML = V.kind === 'sh' ? SIL.master : SIL.mentor;
-        $('#sc-me').innerHTML = SIL.hero;
-        $('#cs-face').innerHTML = HERO_SVG;
+        $('#sc-pt').style.backgroundImage = `url('${ptFace()}')`;
+        $('#sc-mt').innerHTML = backImg(V.kind === 'sh' ? 'b-master' : 'b-huang', V.kind === 'sh' ? SIL.master : SIL.mentor);
+        $('#sc-me').innerHTML = backImg(S.hero === 'f' ? 'b-hero-f' : 'b-hero-m', SIL.hero);
+        $('#cs-face').innerHTML = heroImg();
         $('#sc-cmds').innerHTML = ''; $('#sc-steps').innerHTML = '';
     }
     /* 數值變動時，在病人或狀態窗上飄一行字（只在看診畫面） */
@@ -3459,7 +3493,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const echoes = S.echoNote || [];
         hud();
         showVeil(`${chOf().name}　第${CN[S.chDay] || S.chDay}個門診日`, S.queue.length ? `候診 ${S.queue.length} 位` : '今天沒有病人上門');
-        const li = S.queue.map(p => `<li><div class="face" style="background-image:url('${IMG}${p.c.img}')"></div>
+        const li = S.queue.map(p => `<li><div class="face" style="background-image:url('${faceUrl(p.c)}')"></div>
             <div class="who"><span class="name">${p.c.name}</span> <span class="small hint">${p.c.type}</span></div>
             <span class="tag${p.status === 'waiting' ? ' back' : ''}">${p.status === 'waiting' ? '回診' : '新病人'}</span></li>`).join('');
         const news = S.news.map(t => `<div class="down small" style="margin-top:6px">${t}</div>`).join('');
@@ -3482,6 +3516,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             return (S.chDay === 2 && !S.dil[S.ch]) ? dilemma() : freeAction();                       // 每章第二天看完診，遇上一次困境
         }
         V = S.queue.shift();
+        V.well = false;
         sceneSetup();
         V.visits++;
         V.spiritStart = S.spirit;
@@ -4115,7 +4150,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                 : (S.bal === 'mind' ? '<span class="down">未濟</span>。神清而身疲，宜休養生息。' : '每天收工時判定。精力與心神都在五成以上且相差不大，就是既濟。'));
             const over = S.ch >= CHAPTERS.length;
             R.innerHTML = `<h3>狀態</h3>
-                <div class="st-top"><div class="face">${HERO_SVG}</div>
+                <div class="st-top"><div class="face">${heroImg()}</div>
                     <div><span class="name">${$('#me-name').textContent}</span><br>業師：張仲景　書中師：黃庭鏡<br>${over ? '終章' : `第${CN[S.ch + 1]}章　${chOf().name}　第 ${S.chDay} 個門診日`}　${isEasy() ? '入門' : '專業'}</div></div>
                 <div class="row"><span class="k">精力</span><span class="gauge"><i style="width:${S.energy}%"></i></span><span class="v px">${S.energy}<small>/100</small></span></div>
                 <div class="row"><span class="k">心神</span><span class="gauge sp"><i style="width:${S.spirit}%"></i></span><span class="v px">${S.spirit}<small>/100</small></span></div>
@@ -4349,6 +4384,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     function shRevisit() {
         const res = V.results[V.results.length - 1];
         res.shown = true;
+        markWell(res.r);
         const d = SH_TRUST[res.r][V.round - 1];
         addTrust(d); hud();
         const body = resultHead(res.r, d) + `<div style="margin-top:6px">${res.t}</div>`;
@@ -4535,6 +4571,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const EY_SAY = { cured: '大夫，我好了。', saved: '大夫，多虧您當機立斷。', better: '大夫，好些了，可是還沒全好。', none: '大夫，藥吃完了，還是老樣子。', worse: '大夫，吃了藥反而更難受了。', unneeded: '大夫，那邊的大夫說這是尋常的病。' };
     function eyRevisit(o) {
         const c = V.c;
+        markWell(o.r);
         const d = (o.trust !== undefined) ? o.trust : EY_TRUST[o.r][V.round - 1];
         addTrust(d); hud();
         const body = resultHead(o.r, d) + `<div style="margin-top:6px">${o.t}</div>`;
@@ -4603,6 +4640,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                 V.chainDone = true;
                 /* 全對是明顯改善；錯一次（回診兩次以上的病）是好轉；其餘是時好時壞 */
                 const rr = V.chainRight >= n ? 'well' : (n > 1 && V.chainRight === n - 1 ? 'better' : 'wobble');
+                markWell(rr);
                 V.log.push({ title: '這段日子', what: `${CN[n] || n}次回診，處置得當 ${V.chainRight} 次`, r: rr, t: c.chainEnd[rr], shown: true });
                 panel(`<h3>${title}　${c.name}</h3><div><b class="name">${o.name}</b>　<span class="small hint">${delta}</span></div><div style="margin-top:6px">${o.t}</div>
                     <div style="margin-top:10px">${resultHead(rr, 0)}<div style="margin-top:4px">${c.chainEnd[rr]}</div></div>
@@ -4653,6 +4691,10 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 
     /* ================= 開場 ================= */
     $$('#opt-diff .btn').forEach(b => b.onclick = () => { S.diff = b.dataset.diff; $$('#opt-diff .btn').forEach(x => x.classList.toggle('on', x === b)); });
+    $$('#opt-hero .btn').forEach(b => {
+        b.querySelector('.hface').style.backgroundImage = `url('${heroFace(b.dataset.hero, 0)}')`;
+        b.onclick = () => { S.hero = b.dataset.hero; $$('#opt-hero .btn').forEach(x => x.classList.toggle('on', x === b)); };
+    });
     function showTitle() {
         clearInterval(typing); typing = null; queue = []; after = null;
         clearTimeout(veilTimer);
@@ -4725,8 +4767,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 
     /* 圖片預先載入：標題畫面出現後，趁空檔把病人與困境的圖先抓下來，看診時不會慢一拍 */
     setTimeout(() => {
-        const list = [...new Set(SH.CASES.concat(EY.CASES).map(c => c.img).concat(Object.values(DIL_IMG)).filter(Boolean))];
-        list.forEach((f, i) => setTimeout(() => { const im = new Image(); im.src = IMG + f; }, i * 150));
+        const list = [...new Set(SH.CASES.concat(EY.CASES).filter(c => c.img || FACE[c.id]).map(faceUrl)
+            .concat(Object.values(DIL_IMG).map(f => IMG + f), Object.values(NPC_FACE), Object.values(FACE_WELL).map(f => ART + f), [heroFace(null, S.ch)]))];
+        list.forEach((u, i) => setTimeout(() => { const im = new Image(); im.src = u; }, i * 150));
     }, 1200);
 
     /* 供測試用 */
