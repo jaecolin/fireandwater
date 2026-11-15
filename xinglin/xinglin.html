@@ -113,6 +113,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 .ans { margin: 0; padding: 0; list-style: none; }
 .ans li { padding: 2px 0; border-bottom: 1px dashed rgba(255, 255, 255, 0.12); }
 .ans li b { color: var(--name); margin-right: 8px; }
+.ans li.fu { padding-left: 1.6em; border-bottom-style: dotted; font-size: 0.94em; }
+.ans li.fu b { color: var(--hint); }
+.ans li.fu .btn { padding: 2px 10px; font-size: 0.92em; }
 .foot { display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
 .axis { display: flex; align-items: center; gap: 7px; margin: 7px 0; }
 .axis .lbl { width: 3.2em; color: var(--hint); flex: none; }
@@ -742,6 +745,11 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "q": "頭身哪裡不舒服"
       },
       {
+       "id": "chest",
+       "g": "問",
+       "q": "胸脅與心窩"
+      },
+      {
        "id": "thirst",
        "g": "問",
        "q": "口渴不渴"
@@ -760,6 +768,11 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "id": "pulse",
        "g": "切",
        "q": "診脈"
+      },
+      {
+       "id": "palp",
+       "g": "切",
+       "q": "按腹"
       }
      ],
      "HERBS": {
@@ -1534,12 +1547,24 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         "thirst": "不怎麼渴。",
         "diet": "胃口稍差，二便尚可。",
         "sleep": "痛得睡不安穩。",
-        "pulse": "脈浮而緊。"
+        "pulse": "脈浮而緊。",
+        "chest": "胸口有點悶，喘氣不太順。",
+        "palp": "肚子按著軟，不痛。"
        },
        "thanks": "老陳帶著半籃雞蛋來，說田裡的活又能幹了。",
        "angry": "老陳的兒子上門，說爹的病越治越重，話說得很難聽。",
        "_review": "已審",
-       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤"
+       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審",
+       "fu": {
+        "chill_alt": "冷和熱是一起的，一直怕冷，身上又燙。",
+        "chill_cover": "加了衣服被子，還是冷。",
+        "sweat_wind": "沒出汗，可是一吹風也難受。",
+        "sweat_where": "哪裡都沒有汗。",
+        "pain_neck": "後頸和背都僵，轉頭都難。",
+        "thirst_temp": "不太想喝，要喝也喝熱的。",
+        "diet_stool": "大便正常。",
+        "pulse_deep": "輕輕一按就摸到，繃得緊緊的；重按反而沒那麼明顯。"
+       }
       },
       {
        "id": "wen",
@@ -1565,12 +1590,24 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         "thirst": "不渴。",
         "diet": "胃口差，偶有乾嘔，二便如常。",
         "sleep": "尚可。",
-        "pulse": "脈浮而緩。"
+        "pulse": "脈浮而緩。",
+        "chest": "胸口不悶，只是偶爾乾嘔。",
+        "palp": "肚子按著軟，不痛。"
        },
        "thanks": "文遠親手抄了一卷書送來，字跡工整。",
        "angry": "文遠沒有抱怨，只是之後改去別家看診了。",
        "_review": "已審",
-       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤"
+       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審",
+       "fu": {
+        "chill_alt": "一直有點發熱，吹到風就怕冷，不是一陣一陣的。",
+        "chill_cover": "躲開風就好一點。",
+        "sweat_wind": "出了汗更怕風，門窗都要關上。",
+        "sweat_where": "全身都微微出汗。",
+        "pain_neck": "後頸還好，不怎麼緊。",
+        "thirst_temp": "不渴，喝溫的就好。",
+        "diet_stool": "大便正常。",
+        "pulse_deep": "輕按就摸得到，軟軟緩緩的；重按反而弱了。"
+       }
       },
       {
        "id": "bo",
@@ -1595,12 +1632,24 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         "thirst": "渴得厲害，連喝幾碗涼水還想再喝。",
         "diet": "不想吃，小便黃。",
         "sleep": "煩躁難眠。",
-        "pulse": "脈洪大有力。"
+        "pulse": "脈洪大有力。",
+        "chest": "胸口煩熱，悶得想把衣服扯開。",
+        "palp": "肚子按著不硬不痛，只是燙手。"
        },
        "thanks": "伯高遣人送來重禮，還要為我引薦太守。",
        "angry": "伯高揚言要拆了我的招牌。",
        "_review": "已審",
-       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤"
+       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審",
+       "fu": {
+        "chill_alt": "一直都熱，從頭熱到腳，沒有冷的時候。",
+        "chill_cover": "一點都不冷，被子早就踢掉了。",
+        "sweat_wind": "一點也不怕風，巴不得多吹一點。",
+        "sweat_where": "全身都在流汗，擦了又出。",
+        "pain_neck": "後頸不緊，只覺得頭脹。",
+        "thirst_temp": "要喝冷的，越涼越好。",
+        "diet_stool": "大便還通，不硬。",
+        "pulse_deep": "脈又大又急，重按也還有力。"
+       }
       },
       {
        "id": "hu",
@@ -1626,12 +1675,24 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         "thirst": "口乾舌燥，想喝水。",
         "diet": "吃不下東西。已經六天沒有解大便，小便又少又黃。",
         "sleep": "夜裡煩躁不安，說胡話。",
-        "pulse": "脈沉實有力。"
+        "pulse": "脈沉實有力。",
+        "chest": "胸口還好，脹都在肚子。",
+        "palp": "肚臍四周又硬又滿，一按就痛得叫出來，摸得到一塊一塊硬的。"
        },
        "thanks": "胡帳房親自送來一本謄得工工整整的帳冊，說是替我這小診間記的。",
        "angry": "胡帳房的兒子說，爹的肚子越脹越硬，他們要另請高明。",
        "_review": "已審",
-       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤"
+       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審",
+       "fu": {
+        "chill_alt": "一直是熱，下午到傍晚最厲害，沒有冷的時候。",
+        "chill_cover": "不冷，蓋被反而煩。",
+        "sweat_wind": "不怕風。",
+        "sweat_where": "身上汗不多，手心腳心一直濕濕的。",
+        "pain_neck": "後頸不緊。",
+        "thirst_temp": "口乾，想喝冷水。",
+        "diet_stool": "六天沒解了，之前解的也是又乾又硬的小粒。",
+        "pulse_deep": "脈要按下去才清楚，按到底還很有力。"
+       }
       },
       {
        "id": "shui",
@@ -1657,12 +1718,24 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         "thirst": "不渴，也不想喝水。",
         "diet": "吃不下，吃了想吐。一天拉四五回，稀得像水，沒什麼氣味。",
         "sleep": "人很倦，只想躺著。",
-        "pulse": "脈沉遲無力。"
+        "pulse": "脈沉遲無力。",
+        "chest": "胸口不悶，脹的是肚子。",
+        "palp": "肚子軟軟的，按下去反而舒服，不硬也不痛。"
        },
        "thanks": "阿水送來一簍剛撈上來的魚，還特地說，他現在都帶熱飯上船了。",
        "angry": "阿水沒再來。聽說他瘦了一大圈，槳都划不動了。",
        "_review": "已審",
-       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤"
+       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審",
+       "fu": {
+        "chill_alt": "不發熱，只是一直覺得肚子和手腳涼。",
+        "chill_cover": "蓋上被子、抱個湯婆子就舒服多了。",
+        "sweat_wind": "沒什麼汗，也不特別怕風。",
+        "sweat_where": "沒有出汗。",
+        "pain_neck": "後頸不緊。",
+        "thirst_temp": "不想喝，要喝也只喝熱的。",
+        "diet_stool": "稀得像水，一天四五回，沒什麼臭味。",
+        "pulse_deep": "輕按摸不到，要按下去才有，慢慢的，沒力氣。"
+       }
       },
       {
        "id": "quan",
@@ -1688,12 +1761,24 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         "thirst": "嘴裡發苦，喉嚨乾。",
         "diet": "什麼都不想吃，一聞到飯菜味就想吐。二便還算正常。",
         "sleep": "心裡煩，睡不安穩，起身時眼前發暈。",
-        "pulse": "脈弦細。"
+        "pulse": "脈弦細。",
+        "chest": "兩邊脅下脹滿，像被頂住，按著更悶。",
+        "palp": "肚子軟，按到兩脅下面會脹痛。"
        },
        "thanks": "阿全扛了一袋米來，說胃口回來了，一頓能吃兩碗。",
        "angry": "阿全的工頭上門，說人越吃越虛，連工都上不了。",
        "_review": "已審",
-       "_note": "少陽：依 251、252、253、254 條起草；佑彥 2026-11-15 看過審稿頁，確認無誤"
+       "_note": "少陽：依 251、252、253、254 條起草；佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審",
+       "fu": {
+        "chill_alt": "一陣冷一陣熱，冷完了熱，熱完了又冷，一天好幾回。",
+        "chill_cover": "冷的時候加衣服沒多大用，等它過去就熱起來了。",
+        "sweat_wind": "不太出汗，也說不上怕風。",
+        "sweat_where": "沒什麼汗。",
+        "pain_neck": "後頸還好，倒是頭有點痛。",
+        "thirst_temp": "嘴裡苦，喝什麼都苦，不太想喝。",
+        "diet_stool": "大便還算正常。",
+        "pulse_deep": "脈細細的，按著像按在琴弦上。"
+       }
       },
       {
        "id": "han",
@@ -1719,12 +1804,24 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         "thirst": "有點渴，想喝熱水。",
         "diet": "吃不下。拉的是稀水，裡頭還有沒化的米粒。小便清白。",
         "sleep": "整天只想睡。",
-        "pulse": "脈微細，要按到底才摸得到。"
+        "pulse": "脈微細，要按到底才摸得到。",
+        "chest": "胸口不悶，只是喘氣很淺。",
+        "palp": "肚子軟，按著不痛，有點涼。"
        },
        "thanks": "韓老爹拄著拐杖自己走來，說兒子不信，非要跟來看看。",
        "angry": "韓老爹的兒子紅著眼來說，爹這幾天越來越叫不醒了。",
        "_review": "已審",
-       "_note": "少陰：依 288、289、292、293 條起草；佑彥 2026-11-15 看過審稿頁，確認無誤"
+       "_note": "少陰：依 288、289、292、293 條起草；佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審",
+       "fu": {
+        "chill_alt": "一直冷，沒有熱過。",
+        "chill_cover": "蓋得再厚手腳還是冰的，可是蓋著好受一點。",
+        "sweat_wind": "沒有汗。",
+        "sweat_where": "沒有汗。",
+        "pain_neck": "後頸不緊。",
+        "thirst_temp": "有點渴，只想喝熱的，喝兩口就不要了。",
+        "diet_stool": "拉稀水，裡頭還有沒化的米粒。",
+        "pulse_deep": "輕按摸不到，重按到底才有一絲，又細又弱。"
+       }
       },
       {
        "id": "tao",
@@ -1750,14 +1847,72 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         "thirst": "不渴。",
         "diet": "飯量還可以，二便正常。",
         "sleep": "夜裡腳冷得睡不著。",
-        "pulse": "脈很細，細得快要摸不到。"
+        "pulse": "脈很細，細得快要摸不到。",
+        "chest": "胸口還好，不悶。",
+        "palp": "肚子軟，按著不痛。"
        },
        "thanks": "陶師傅送來一匹染好的青布，說今年冬天總算不怕下河了。",
        "angry": "陶師傅託人帶話，說手指頭冷得連布都抓不住，這個冬天怕是做不成了。",
        "_review": "已審",
-       "_note": "厥陰：依 350、356 條起草；佑彥 2026-11-15 看過審稿頁，確認無誤"
+       "_note": "厥陰：依 350、356 條起草；佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審",
+       "fu": {
+        "chill_alt": "不發熱，只有手腳冷，身上不冷。",
+        "chill_cover": "用熱水泡一泡會好一點，一碰冷水就又冷又痛。",
+        "sweat_wind": "沒有汗。",
+        "sweat_where": "沒有汗。",
+        "pain_neck": "後頸不緊，痛的是手指腳趾。",
+        "thirst_temp": "不渴，喝溫的就好。",
+        "diet_stool": "大便正常。",
+        "pulse_deep": "輕按重按都細得像一根線，快要摸不到。"
+       }
       }
-     ]
+     ],
+     "FOLLOW": {
+      "chill": [
+       {
+        "id": "chill_alt",
+        "q": "冷和熱是一起來，還是一陣一陣輪著來？"
+       },
+       {
+        "id": "chill_cover",
+        "q": "加衣蓋被，冷會不會好一點？"
+       }
+      ],
+      "sweat": [
+       {
+        "id": "sweat_wind",
+        "q": "出汗以後，怕不怕吹風？"
+       },
+       {
+        "id": "sweat_where",
+        "q": "汗是全身都有，還是只在頭上、手腳？"
+       }
+      ],
+      "pain": [
+       {
+        "id": "pain_neck",
+        "q": "後頸和背，緊不緊？"
+       }
+      ],
+      "thirst": [
+       {
+        "id": "thirst_temp",
+        "q": "想喝冷的，還是熱的？"
+       }
+      ],
+      "diet": [
+       {
+        "id": "diet_stool",
+        "q": "大便是乾硬、稀溏，還是正常？"
+       }
+      ],
+      "pulse": [
+       {
+        "id": "pulse_deep",
+        "q": "重按下去，脈怎麼樣？"
+       }
+      ]
+     }
     };
     const EY = {
      "WHEELS": {
@@ -2850,7 +3005,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const rep = Math.max(-12, Math.min(12, Math.round(S.fame / 3)));          // 聲望會帶到新病人一開始的信任
         return { id, c, kind: sh ? 'sh' : 'eye', trust: clamp(c.trust + rep), status: 'new', due: 0, firstDay: S.day, firstCh: S.ch, visits: 0, spiritUsed: 0, spiritStart: 0, lowSpirit: false,
                  asked: [], pattern: null, paidPattern: null, round: 1, referred: false, outcome: '', lost: false,
-                 bagang: [null, null, null], results: [], lastRx: null,
+                 bagang: [null, null, null], results: [], lastRx: null, fu: [],
                  wheel: null, wheelOk: null, plan: null, log: [], pending: null, inChain: false, chainIdx: 0, chainRight: 0, chainDone: false, promise: false, noRefer: false, keyHit: 0 };
     }
     function maxAsk() {
@@ -3993,7 +4148,21 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     /* =====================================================================
        外感病（張仲景）：問診、八綱、定證、君臣佐使
        ===================================================================== */
-    const shAnswers = (cls) => { const li = V.asked.map(id => { const q = SH.QUESTIONS.find(x => x.id === id); return `<li><b>${q.g}</b>${V.c.a[id]}</li>`; }).join(''); return li ? `<ul class="ans${cls ? ' ' + cls : ''}">${li}</ul>` : ''; };
+    /* 漏斗式四診（經方第 1 期，2026-11-15）：第一層是十一項問診，第二層是問過之後才出現的追問（SH.FOLLOW）。
+       每位病人回答同一組追問，所以追問的選項不會洩題；追問耗心神 1，不佔問診額度。asking 為真時，沒問過的追問顯示成按鈕 */
+    const FU_COST = 1;
+    const fuOf = (id) => (SH.FOLLOW && SH.FOLLOW[id]) || [];
+    const shAnswers = (cls, asking) => {
+        V.fu = V.fu || [];
+        const li = V.asked.map(id => {
+            const q = SH.QUESTIONS.find(x => x.id === id);
+            const fus = fuOf(id).map(f => V.fu.includes(f.id)
+                ? `<li class="fu"><b>追問</b>${f.q}<br><span>${(V.c.fu || {})[f.id] || ''}</span></li>`
+                : (asking ? `<li class="fu"><button class="btn" data-fu="${f.id}">追問：${f.q}</button></li>` : '')).join('');
+            return `<li><b>${q.g}</b>${V.c.a[id]}</li>${fus}`;
+        }).join('');
+        return li ? `<ul class="ans${cls ? ' ' + cls : ''}">${li}</ul>` : '';
+    };
     function shStart() {
         hub([narr(V.c.intro)].concat(tips(V.c.tip || '外感初起，先問寒熱，再問有汗無汗，最後憑脈。問得多不如問得準。')));
     }
@@ -4006,10 +4175,17 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             }).join('');
             return `<div class="askg"><b>${g}</b><div class="grid">${btns}</div></div>`;
         }).join('');
-        panel(`<h3>四診蒐集 <span>還可以問 <span class="px">${left}</span> 項，每問一項耗心神 ${askCost()}</span></h3>
+        panel(`<h3>四診蒐集 <span>還可以問 <span class="px">${left}</span> 項，每問一項耗心神 ${askCost()}；追問不佔項數，每次耗心神 ${FU_COST}</span></h3>
             <div class="see small" style="margin-bottom:8px">${V.c.intro}</div>
-            ${groups}${shAnswers()}
+            ${groups}${shAnswers('', true)}
             <div class="foot"><button class="btn go px" id="next" ${V.asked.length ? '' : 'disabled'}>先問到這裡</button></div>`);
+        $$('#panel [data-fu]').forEach(b => b.onclick = () => {
+            const f = [].concat(...Object.values(SH.FOLLOW)).find(x => x.id === b.dataset.fu);
+            V.fu = V.fu || []; V.fu.push(f.id);
+            addSpirit(-FU_COST); hud();
+            speak({ who: 'patient', text: (V.c.fu || {})[f.id] || '這倒沒有注意。' });
+            shAsk();
+        });
         $$('#panel [data-q]').forEach(b => b.onclick = () => {
             V.asked.push(b.dataset.q);
             addSpirit(-askCost()); hud();
