@@ -707,8 +707,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
      },
      "SLOT_MAX": {
       "jun": 1,
-      "chen": 1,
-      "zuo": 2,
+      "chen": 3,
+      "zuo": 4,
       "shi": 1
      },
      "QUESTIONS": [
@@ -870,6 +870,83 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "flavor": "苦、甘",
        "meridian": "脾、胃",
        "use": "健脾益氣，燥濕利水"
+      },
+      "gegen": {
+       "name": "葛根",
+       "q": "涼",
+       "flavor": "甘、辛",
+       "meridian": "脾、胃、肺",
+       "use": "解肌退熱，生津，升陽止瀉"
+      },
+      "chaihu": {
+       "name": "柴胡",
+       "q": "微寒",
+       "flavor": "辛、苦",
+       "meridian": "肝、膽、肺",
+       "use": "和解表裡，疏肝，升舉陽氣"
+      },
+      "huangqin": {
+       "name": "黃芩",
+       "q": "寒",
+       "flavor": "苦",
+       "meridian": "肺、膽、脾、大腸、小腸",
+       "use": "清熱燥濕，瀉火解毒"
+      },
+      "banxia": {
+       "name": "半夏",
+       "q": "溫",
+       "flavor": "辛",
+       "meridian": "脾、胃、肺",
+       "use": "燥濕化痰，降逆止嘔，消痞散結"
+      },
+      "zhizi": {
+       "name": "梔子",
+       "q": "寒",
+       "flavor": "苦",
+       "meridian": "心、肺、三焦",
+       "use": "瀉火除煩，清熱利濕"
+      },
+      "xiangchi": {
+       "name": "香豉",
+       "q": "涼",
+       "flavor": "苦、辛",
+       "meridian": "肺、胃",
+       "use": "解表，宣發鬱熱，除煩"
+      },
+      "huanglian": {
+       "name": "黃連",
+       "q": "寒",
+       "flavor": "苦",
+       "meridian": "心、脾、胃、肝、膽、大腸",
+       "use": "清熱燥濕，瀉火解毒"
+      },
+      "zexie": {
+       "name": "澤瀉",
+       "q": "寒",
+       "flavor": "甘、淡",
+       "meridian": "腎、膀胱",
+       "use": "利水滲濕，泄熱"
+      },
+      "fuling": {
+       "name": "茯苓",
+       "q": "平",
+       "flavor": "甘、淡",
+       "meridian": "心、肺、脾、腎",
+       "use": "利水滲濕，健脾，寧心"
+      },
+      "zhuling": {
+       "name": "豬苓",
+       "q": "平",
+       "flavor": "甘、淡",
+       "meridian": "腎、膀胱",
+       "use": "利水滲濕"
+      },
+      "fuzi": {
+       "name": "附子",
+       "q": "熱",
+       "flavor": "辛、甘",
+       "meridian": "心、腎、脾",
+       "use": "回陽救逆，補火助陽，散寒止痛（有毒）"
       }
      },
      "FORMULAS": {
@@ -960,6 +1037,117 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         ]
        },
        "note": "溫中祛寒，補氣健脾。原為理中丸，此處作湯。"
+      },
+      "gegen": {
+       "name": "葛根湯",
+       "slots": {
+        "jun": [
+         "gegen"
+        ],
+        "chen": [
+         "mahuang",
+         "guizhi"
+        ],
+        "zuo": [
+         "shaoyao",
+         "shengjiang",
+         "dazao"
+        ],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "解肌發表，治項背強几几、無汗惡風。"
+      },
+      "xiaochaihu": {
+       "name": "小柴胡湯",
+       "slots": {
+        "jun": [
+         "chaihu"
+        ],
+        "chen": [
+         "huangqin"
+        ],
+        "zuo": [
+         "banxia",
+         "shengjiang",
+         "renshen",
+         "dazao"
+        ],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "和解少陽，治往來寒熱、胸脅苦滿。"
+      },
+      "zhichi": {
+       "name": "梔子豉湯",
+       "slots": {
+        "jun": [
+         "zhizi"
+        ],
+        "chen": [
+         "xiangchi"
+        ],
+        "zuo": [],
+        "shi": []
+       },
+       "note": "清宣鬱熱，治虛煩不得眠、心中懊憹。"
+      },
+      "banxiaxiexin": {
+       "name": "半夏瀉心湯",
+       "slots": {
+        "jun": [
+         "banxia"
+        ],
+        "chen": [
+         "ganjiang",
+         "huangqin",
+         "huanglian"
+        ],
+        "zuo": [
+         "renshen",
+         "dazao"
+        ],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "寒熱並用，治心下痞，滿而不痛。"
+      },
+      "wuling": {
+       "name": "五苓散",
+       "slots": {
+        "jun": [
+         "zexie"
+        ],
+        "chen": [
+         "fuling",
+         "zhuling"
+        ],
+        "zuo": [
+         "baizhu",
+         "guizhi"
+        ],
+        "shi": []
+       },
+       "note": "化氣利水，治小便不利、渴欲飲水。"
+      },
+      "sini": {
+       "name": "四逆湯",
+       "slots": {
+        "jun": [
+         "fuzi"
+        ],
+        "chen": [
+         "ganjiang"
+        ],
+        "zuo": [],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "回陽救逆，治下利清穀、手足厥冷、脈微。"
       }
      },
      "PATTERNS": {
@@ -2258,6 +2446,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
      ]
     };
     /* DATA>> */
+    /* <<JINGFANG 這一段由 tools/build-formulary.js 依方劑總表產生，請勿手改 */
+    const JF = {"classes":[{"name":"桂枝湯類","head":"桂枝湯","list":[{"n":"桂枝湯","h":["桂枝","芍藥","甘草","生薑","大棗"]},{"n":"桂枝加附子湯","h":["桂枝","芍藥","甘草","生薑","大棗","附子"]},{"n":"桂枝加桂湯","h":["桂枝","芍藥","甘草","生薑","大棗"]},{"n":"桂枝去芍藥湯","h":["桂枝","甘草","生薑","大棗"]},{"n":"桂枝去芍藥加附子湯","h":["桂枝","甘草","生薑","大棗","附子"]},{"n":"桂枝加厚朴杏子湯","h":["桂枝","芍藥","甘草","生薑","大棗","厚朴","杏仁"]},{"n":"小建中湯","h":["桂枝","芍藥","甘草","生薑","大棗","膠飴"]},{"n":"桂枝加芍藥生薑人參新加湯","h":["桂枝","芍藥","甘草","生薑","大棗","人參"]},{"n":"桂枝甘草湯","h":["桂枝","甘草"]},{"n":"茯苓桂枝甘草大棗湯","h":["茯苓","桂枝","甘草","大棗"]},{"n":"桂枝麻黃各半湯","h":["桂枝","芍藥","生薑","甘草","麻黃","大棗","杏仁"]},{"n":"桂枝二麻黃一湯","h":["桂枝","芍藥","甘草","杏仁","麻黃","生薑","大棗"]},{"n":"桂枝二越婢一湯","h":["桂枝","芍藥","甘草","麻黃","大棗","生薑","石膏"]},{"n":"桂枝去芍藥加茯苓白朮湯","h":["桂枝","甘草","生薑","大棗","茯苓","白朮"]},{"n":"桂枝去芍藥加蜀漆龍骨牡蠣救逆湯","h":["桂枝","甘草","生薑","大棗","蜀漆","牡蠣","龍骨"]},{"n":"桂枝甘草龍骨牡蠣湯","h":["桂枝","甘草","牡蠣","龍骨"]},{"n":"桂枝加葛根湯","h":["桂枝","芍藥","甘草","生薑","大棗","葛根"]},{"n":"桂枝加芍藥湯","h":["桂枝","芍藥","甘草","生薑","大棗"]},{"n":"桂枝加大黃湯","h":["桂枝","芍藥","甘草","生薑","大棗","大黃"]}]},{"name":"麻黃湯類","head":"麻黃湯","list":[{"n":"麻黃湯","h":["麻黃","桂枝","甘草","杏仁"]},{"n":"麻黃杏仁甘草石膏湯","h":["麻黃","杏仁","甘草","石膏"]},{"n":"大青龍湯","h":["麻黃","桂枝","甘草","杏仁","生薑","大棗","石膏"]},{"n":"小青龍湯","h":["麻黃","芍藥","細辛","乾薑","甘草","桂枝","五味子","半夏"]},{"n":"麻黃附子細辛湯","h":["麻黃","細辛","附子"]},{"n":"麻黃附子甘草湯","h":["麻黃","甘草","附子"]}]},{"name":"葛根湯類","head":"葛根湯","list":[{"n":"葛根湯","h":["葛根","麻黃","芍藥","生薑","甘草","桂枝","大棗"]},{"n":"葛根黃芩黃連湯","h":["葛根","甘草","黃芩","黃連"]},{"n":"葛根加半夏湯","h":["葛根","麻黃","芍藥","生薑","甘草","桂枝","大棗","半夏"]}]},{"name":"柴胡湯類","head":"小柴胡湯","list":[{"n":"小柴胡湯","h":["柴胡","黃芩","人參","甘草","生薑","半夏","大棗"]},{"n":"大柴胡湯","h":["柴胡","半夏","黃芩","芍藥","生薑","枳實","大棗"]},{"n":"柴胡桂枝湯","h":["柴胡","黃芩","人參","桂枝","芍藥","生薑","半夏","甘草","大棗"]},{"n":"柴胡加龍骨牡蠣湯","h":["柴胡","龍骨","生薑","人參","茯苓","鉛丹","黃芩","牡蠣","桂枝","半夏","大棗","大黃"]},{"n":"柴胡桂枝乾薑湯","h":["柴胡","桂枝","黃芩","乾薑","牡蠣","甘草","栝蔞根"]},{"n":"柴胡加芒硝湯","h":["柴胡","黃芩","甘草","人參","生薑","半夏","大棗","芒硝"]}]},{"name":"梔子湯類","head":"梔子豉湯","list":[{"n":"梔子豉湯","h":["梔子","香豉"]},{"n":"梔子甘草豉湯","h":["梔子","香豉","甘草"]},{"n":"梔子生薑豉湯","h":["梔子","香豉","生薑"]},{"n":"梔子乾薑湯","h":["梔子","乾薑"]},{"n":"梔子厚朴枳實湯","h":["梔子","厚朴","枳實"]},{"n":"梔子柏皮湯","h":["梔子","甘草","黃柏"]},{"n":"枳實梔子豉湯","h":["枳實","梔子","香豉"]}]},{"name":"承氣湯類","head":"大承氣湯","list":[{"n":"大承氣湯","h":["大黃","厚朴","枳實","芒硝"]},{"n":"小承氣湯","h":["大黃","枳實","厚朴"]},{"n":"調胃承氣湯","h":["大黃","甘草","芒硝"]},{"n":"桃核承氣湯","h":["桃仁","大黃","甘草","桂枝","芒硝"]},{"n":"抵當湯","h":["水蛭","虻蟲","大黃","桃仁"]},{"n":"抵當丸","h":["水蛭","虻蟲","大黃","桃仁"]},{"n":"十棗湯","h":["芫花","甘遂","大戟","大棗"]},{"n":"大陷胸湯","h":["大黃","芒硝","甘遂"]},{"n":"大陷胸丸","h":["大黃","葶藶子","芒硝","杏仁"]},{"n":"小陷胸湯","h":["黃連","半夏","栝蔞實"]},{"n":"白散","h":["桔梗","貝母","巴豆"]},{"n":"麻子仁丸","h":["麻子仁","芍藥","枳實","大黃","厚朴","杏仁"]}]},{"name":"瀉心湯類","head":"生薑瀉心湯","list":[{"n":"生薑瀉心湯","h":["生薑","甘草","人參","黃芩","半夏","黃連","乾薑","大棗"]},{"n":"甘草瀉心湯","h":["甘草","黃芩","乾薑","半夏","黃連","大棗"]},{"n":"半夏瀉心湯","h":["半夏","黃芩","乾薑","甘草","人參","黃連","大棗"]},{"n":"大黃黃連瀉心湯","h":["大黃","黃連"]},{"n":"附子瀉心湯","h":["大黃","黃連","黃芩","附子"]},{"n":"黃連湯","h":["黃連","甘草","乾薑","桂枝","人參","半夏","大棗"]},{"n":"黃芩湯","h":["黃芩","甘草","芍藥","大棗"]},{"n":"黃芩加半夏生薑湯","h":["黃芩","甘草","芍藥","半夏","生薑","大棗"]},{"n":"乾薑黃連黃芩人參湯","h":["乾薑","黃連","黃芩","人參"]},{"n":"旋覆代赭湯","h":["旋覆花","人參","生薑","甘草","半夏","代赭石","大棗"]},{"n":"厚朴生薑甘草半夏人參湯","h":["厚朴","生薑","半夏","甘草","人參"]}]},{"name":"白虎湯類","head":"白虎湯","list":[{"n":"白虎湯","h":["知母","石膏","甘草","粳米"]},{"n":"白虎加人參湯","h":["知母","石膏","甘草","粳米","人參"]},{"n":"竹葉石膏湯","h":["竹葉","石膏","半夏","人參","麥門冬","甘草","粳米"]}]},{"name":"五苓散類","head":"五苓散","list":[{"n":"五苓散","h":["豬苓","澤瀉","白朮","茯苓","桂枝"]},{"n":"豬苓湯","h":["豬苓","茯苓","澤瀉","滑石","阿膠"]},{"n":"文蛤散","h":["文蛤"]},{"n":"茯苓甘草湯","h":["茯苓","桂枝","甘草","生薑"]}]},{"name":"四逆湯類","head":"四逆湯","list":[{"n":"四逆湯","h":["甘草","乾薑","附子"]},{"n":"四逆加人參湯","h":["甘草","乾薑","附子","人參"]},{"n":"通脈四逆湯","h":["甘草","乾薑","附子"]},{"n":"通脈四逆加豬膽汁湯","h":["甘草","乾薑","附子","豬膽汁"]},{"n":"乾薑附子湯","h":["乾薑","附子"]},{"n":"白通湯","h":["乾薑","附子","蔥白"]},{"n":"白通加豬膽汁湯","h":["乾薑","附子","蔥白","人尿","豬膽汁"]},{"n":"茯苓四逆湯","h":["茯苓","人參","附子","甘草","乾薑"]},{"n":"四逆散","h":["甘草","枳實","柴胡","芍藥"]},{"n":"當歸四逆湯","h":["當歸","桂枝","芍藥","細辛","甘草","通草","大棗"]},{"n":"當歸四逆加吳茱萸生薑湯","h":["當歸","甘草","通草","芍藥","桂枝","細辛","大棗","吳茱萸","生薑"]}]},{"name":"理中湯類","head":"理中丸","list":[{"n":"理中丸","h":["人參","甘草","白朮","乾薑"]},{"n":"真武湯","h":["茯苓","芍藥","生薑","白朮","附子"]},{"n":"附子湯","h":["附子","茯苓","人參","白朮","芍藥"]},{"n":"甘草附子湯","h":["甘草","白朮","桂枝","附子"]},{"n":"桂枝附子湯","h":["桂枝","附子","甘草","生薑","大棗"]},{"n":"桂枝附子去桂加白朮湯","h":["白朮","甘草","附子","生薑","大棗"]},{"n":"茯苓桂枝白朮甘草湯","h":["茯苓","桂枝","白朮","甘草"]},{"n":"芍藥甘草附子湯","h":["芍藥","甘草","附子"]},{"n":"桂枝人參湯","h":["桂枝","甘草","白朮","人參","乾薑"]}]},{"name":"雜法方類","head":"赤石脂禹餘糧湯","list":[{"n":"赤石脂禹餘糧湯","h":["赤石脂","禹餘糧"]},{"n":"炙甘草湯","h":["甘草","生薑","人參","生地黃","桂枝","麥門冬","阿膠","麻仁","大棗"]},{"n":"甘草乾薑湯","h":["甘草","乾薑"]},{"n":"芍藥甘草湯","h":["芍藥","甘草"]},{"n":"茵陳蒿湯","h":["茵陳蒿","梔子","大黃"]},{"n":"麻黃連軺赤小豆湯","h":["麻黃","連軺","赤小豆","生梓白皮","杏仁","甘草","生薑","大棗"]},{"n":"麻黃升麻湯","h":["麻黃","升麻","當歸","知母","黃芩","葳蕤","白朮","石膏","乾薑","芍藥","天冬","桂枝","茯苓","甘草"]},{"n":"瓜蒂散","h":["瓜蒂","赤小豆"]},{"n":"吳茱萸湯","h":["吳茱萸","人參","生薑","大棗"]},{"n":"黃連阿膠湯","h":["黃連","黃芩","芍藥","阿膠","雞子黃"]},{"n":"桃花湯","h":["赤石脂","乾薑","粳米"]},{"n":"半夏散及湯","h":["半夏","桂枝","甘草"]},{"n":"豬膚湯","h":["豬膚"]},{"n":"甘草湯","h":["甘草"]},{"n":"桔梗湯","h":["桔梗","甘草"]},{"n":"苦酒湯","h":["半夏","雞子"]},{"n":"烏梅丸","h":["烏梅","細辛","乾薑","當歸","黃連","附子","蜀椒","桂枝","人參","黃柏"]},{"n":"白頭翁湯","h":["白頭翁","黃連","黃柏","秦皮"]},{"n":"牡蠣澤瀉散","h":["牡蠣","澤瀉","蜀漆","栝蔞根","葶藶子","商陸根","海藻"]},{"n":"蜜煎導方","h":["食蜜"]},{"n":"豬膽汁方","h":["大豬膽"]},{"n":"燒褌散","h":["褌襠灰"]}]}]};
+    /* JINGFANG>> */
     const WHEELS = EY.WHEELS;
     function eyeSVG(e, sel) {
         const scl = e.red === 2 ? '#f0b9ae' : (e.red === 1 ? '#f2d3ca' : '#f6f1e7');
@@ -2678,7 +2869,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             { name: '四診', on: true, done: n > 0, sub: n ? `已問 ${n} 項` : '望聞問切', go: shAsk },
             { name: '八綱', on: n > 0, done: bg, sub: bg ? V.bagang.join('、') : '表裡寒熱虛實', go: shBagang },
             { name: '定證', on: bg, done: paid(), sub: paid() ? pats[V.pattern].name : '斷為何證', go: shPattern },
-            { name: '處方', on: paid(), done: false, sub: '君臣佐使', go: shRx }
+            { name: '處方', on: paid(), done: false, sub: pickMode() ? '類方選方' : '君臣佐使', go: shRx }
         ] : [
             { name: '察目', on: !eyed, done: eyed, sub: eyed ? `${WHEELS[V.wheel].name}　${WHEELS[V.wheel].part}` : '五輪定位', go: eyEye },
             { name: '問診', on: eyed, done: n > 0, sub: n ? `已問 ${n} 項` : '起病與起居', go: eyAsk },
@@ -2723,7 +2914,11 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             const tip = ['吹了風就不舒服，脈浮，病還在肌表。點「表」。', '是風寒，不是熱。點「寒」。', '同是風寒在表，有汗為虛，無汗為實。他一直在出汗。點「虛」。'][i];
             return i >= 0 ? { sel: `#panel [data-ax="${i}"][data-v="${P0.bagang[i]}"]`, tip } : { sel: '#next', tip: '三樣都定了。點「定下八綱」。' };
         }
-        if (/^定證/.test(t)) return V.pattern === V.c.pattern ? { sel: '#next', tip: '點「就定此證」。' } : { sel: `#panel [data-p="${V.c.pattern}"]`, tip: `${P0.bagang.join('、')}，是${P0.name}。點它。` };
+        if (/^定證/.test(t)) {
+            const j = jingOf(V.c.pattern);
+            if (V.jing !== j) return { sel: `#panel [data-jing="${j}"]`, tip: `病在肌表，惡風、脈浮，是${j}病。先定病位，點「${j}」。` };
+            return V.pattern === V.c.pattern ? { sel: '#next', tip: '點「就定此證」。' } : { sel: `#panel [data-p="${V.c.pattern}"]`, tip: `${P0.bagang.join('、')}，是${P0.name}。點它。` };
+        }
         if (/^處方/.test(t)) {
             const k = rx ? classify(rx) : { cls: '' };
             return k.cls === P0.formula && k.full ? { sel: '#next', tip: '君臣佐使都排好了。點「交付藥方」。' }
@@ -3569,19 +3764,60 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         $('#back').onclick = () => hub();
         $('#next').onclick = () => hub(tips('同是風寒在表，有汗為虛，無汗為實。若是大熱、大汗、大渴、脈洪大，那已是陽明裡熱。', '同是裡熱，要再分有形無形。腹滿硬痛、大便不通，是燥屎結住了。若是腹冷喜按、下利清稀，那是裡寒，不是熱。'));
     }
+    /* =====================================================================
+       經方第 1 期（2026-11-15）：定證分兩層，先定病位（六經），再定方證；
+       處方在習醫章是君臣佐使親手組十一個方根，立業章起改成在徐靈胎十二類的類方裡選方。
+       類方資料 JF 由 tools/build-formulary.js 寫入（見 JINGFANG 區塊）。
+       ===================================================================== */
+    const JING = ['太陽', '陽明', '少陽', '太陰', '少陰', '厥陰'];
+    const jingOf = (k) => SH.PATTERNS[k].name.slice(0, 2);           // 目前的證型名稱都以六經開頭（太陽傷寒、陽明腑實、太陰病…）
+    const FNAME_FIX = { 理中湯: '理中丸' };                           // 遊戲裡理中作湯，《類方》作理中丸
+    const jfFind = (name) => { name = FNAME_FIX[name] || name; for (const c of JF.classes) { const f = c.list.find(x => x.n === name); if (f) return { cls: c, f }; } return null; };
+    const fkeyOf = (name) => Object.keys(SH.FORMULAS).find(k => SH.FORMULAS[k].name === name || FNAME_FIX[SH.FORMULAS[k].name] === name);
+    const pickMode = () => S.ch >= 1 && !(V && V.tutor);
     function shPattern() {
-        const btns = Object.keys(SH.PATTERNS).map(k => { const p = SH.PATTERNS[k];
-            return `<button class="btn${V.pattern === k ? ' on' : ''}" data-p="${k}"><b>${p.name}</b>　${p.alias}${isEasy() ? `<span class="sub">治法：${p.law}</span>` : ''}</button>`; }).join('');
-        panel(`<h3>定證 <span>我判斷：${V.bagang.join('、')}</span></h3><div class="grid">${btns}</div>
+        const jing = V.jing || (V.pattern ? jingOf(V.pattern) : '');
+        const open = (j) => Object.keys(SH.PATTERNS).some(k => jingOf(k) === j);
+        const rowJ = JING.map(j => `<button class="btn${jing === j ? ' on' : ''}" data-jing="${j}" ${open(j) ? '' : 'disabled'}><b>${j}</b>${open(j) ? '' : '<span class="sub">尚未開放</span>'}</button>`).join('');
+        const btns = Object.keys(SH.PATTERNS).filter(k => jingOf(k) === jing).map(k => { const p = SH.PATTERNS[k], hit = jfFind(SH.FORMULAS[p.formula].name);
+            return `<button class="btn${V.pattern === k ? ' on' : ''}" data-p="${k}"><b>${p.name}</b>　${p.alias}${isEasy() ? `<span class="sub">治法：${p.law}${hit ? '　方屬' + hit.cls.name : ''}</span>` : ''}</button>`; }).join('');
+        panel(`<h3>定證 <span>我判斷：${V.bagang.join('、')}</span></h3>
+            <div class="askg"><b>病位</b><div class="grid">${rowJ}</div></div>
+            ${jing ? `<div class="askg"><b>方證</b><div class="grid">${btns}</div></div>` : '<div class="small dim">先定病在哪一經，再看這一經裡是哪一個方證。</div>'}
             <div class="small dim" style="margin-top:8px">定證耗心神 ${patCost()}。之後回頭改證，要再耗一次。</div>
             <div class="foot"><button class="btn" id="back">回診間</button><button class="btn go px" id="next" ${V.pattern ? '' : 'disabled'}>就定此證</button></div>`);
+        $$('#panel [data-jing]').forEach(b => b.onclick = () => { V.jing = b.dataset.jing; if (V.pattern && jingOf(V.pattern) !== V.jing) V.pattern = null; shPattern(); });
         $$('#panel [data-p]').forEach(b => b.onclick = () => { V.pattern = b.dataset.p; shPattern(); });
         $('#back').onclick = () => hub();
         $('#next').onclick = () => {
-            if (!paid()) { addSpirit(-patCost()); hud(); V.paidPattern = V.pattern; newRx(); }
-            hub(tips('方從法出。表實當發汗，表虛當解肌，裡熱當清，腑實當下，裡寒當溫。君藥對主證，臣藥助君，佐藥兼顧，使藥調和。'));
+            if (!paid()) { addSpirit(-patCost()); hud(); V.paidPattern = V.pattern; newRx(); pickFam = ''; pickF = ''; }
+            hub(pickMode() ? tips('方從法出。先找到這個證屬於哪一類方，再看眼前這一位和類首的方差在哪一味。')
+                           : tips('方從法出。表實當發汗，表虛當解肌，裡熱當清，腑實當下，裡寒當溫。君藥對主證，臣藥助君，佐藥兼顧，使藥調和。'));
         };
     }
+    /* 類方選方：左邊十二類，右邊這一類的每一首方，寫明和類首差在哪幾味 */
+    let pickFam = '', pickF = '';
+    function shPick() {
+        const p0 = SH.PATTERNS[V.pattern];
+        if (!pickFam && isEasy()) { const hit = jfFind(SH.FORMULAS[p0.formula].name); if (hit) pickFam = hit.cls.name; }
+        const fam = JF.classes.find(c => c.name === pickFam);
+        const tabs = JF.classes.map(c => `<button class="btn${c.name === pickFam ? ' on' : ''}" data-fam="${c.name}">${c.name}</button>`).join('');
+        const head = fam ? fam.list.find(x => x.n === fam.head) : null;
+        const cards = fam ? fam.list.map(f => {
+            const add = f.h.filter(h => !head.h.includes(h)), minus = head.h.filter(h => !f.h.includes(h));
+            const diff = f.n === fam.head ? '類首' : [add.length ? '加' + add.join('、') : '', minus.length ? '去' + minus.join('、') : ''].filter(Boolean).join('，') || '藥味相同，分量不同';
+            return `<button class="btn${pickF === f.n ? ' on' : ''}" data-pickf="${f.n}"><b>${f.n}</b><span class="sub">${f.n === fam.head ? '' : `比${fam.head}：`}${diff}${isEasy() ? `<br>${f.h.join('、')}` : ''}</span></button>`;
+        }).join('') : '';
+        panel(`<h3>${V.round === 1 ? '處方' : '複診處方'} <span>我定的證：${p0.name}</span></h3>
+            <div class="askg"><b>類方</b><div class="grid">${tabs}</div></div>
+            ${fam ? `<div class="askg"><b>${fam.name}</b><div class="grid">${cards}</div></div>` : '<div class="small dim">先選這個證屬於哪一類方。</div>'}
+            <div class="foot">${V.round === 1 ? '<button class="btn" id="back">回診間</button>' : ''}<button class="btn go px" id="next" ${pickF ? '' : 'disabled'}>交付藥方</button></div>`);
+        $$('#panel [data-fam]').forEach(b => b.onclick = () => { pickFam = b.dataset.fam; shPick(); });
+        $$('#panel [data-pickf]').forEach(b => b.onclick = () => { pickF = b.dataset.pickf; shPick(); });
+        if ($('#back')) $('#back').onclick = () => hub();
+        $('#next').onclick = shSubmit;
+    }
+    function shRx() { return pickMode() ? shPick() : shCompose(); }
     let rx = null, curSlot = 'jun';
     function newRx() { rx = { jun: [], chen: [], zuo: [], shi: [] }; curSlot = 'jun'; }
     const rxHerbs = (r) => [].concat(r.jun, r.chen, r.zuo, r.shi);
@@ -3590,10 +3826,10 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         return parts.length ? parts.join('　') : '未用藥';
     }
     const qClass = (q) => (/寒/.test(q) ? 'cold' : (/溫|熱/.test(q) ? 'hot' : 'even'));
-    function shRx() {
+    function shCompose() {
         const used = rxHerbs(rx), N = SH.SLOT_NAMES, MX = SH.SLOT_MAX;
         const slots = Object.keys(N).map(k => `<div class="slot${curSlot === k ? ' cur' : ''}" data-slot="${k}">
-            <div class="t">${N[k]}藥${MX[k] > 1 ? '　二味' : ''}</div>
+            <div class="t">${N[k]}藥${MX[k] > 1 ? `　至多${CN[MX[k]]}味` : ''}</div>
             <div class="h">${rx[k].map(h => SH.HERBS[h].name).join('、') || '<span class="dim">點此，再選藥</span>'}</div></div>`).join('');
         const herbs = Object.keys(SH.HERBS).map(k => { const h = SH.HERBS[k];
             return `<button class="herb${used.includes(k) ? ' used' : ''}" data-h="${k}"><span class="n">${h.name}</span><span class="q ${qClass(h.q)}">${h.q}</span>
@@ -3624,6 +3860,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     function classify(r) {
         const all = rxHerbs(r);
         const has = (h) => all.includes(h);
+        /* 先找組成完全相同的方根（十一方）：君藥也對才算配伍完整 */
+        const same = Object.keys(SH.FORMULAS).find(k => { const f = [].concat(...Object.values(SH.FORMULAS[k].slots)); return f.length === all.length && f.every(has); });
+        if (same) return { cls: same, full: r.jun[0] === SH.FORMULAS[same].slots.jun[0], why: r.jun[0] === SH.FORMULAS[same].slots.jun[0] ? '' : '藥對了，君藥卻擺錯了位置' };
         const cold = has('shigao') || has('zhimu') || has('dahuang') || has('mangxiao');
         const warm = has('mahuang') || has('guizhi') || has('ganjiang');
         if (cold && warm) return { cls: 'other', full: false, why: '寒涼與辛溫同用，方向互相牴觸' };
@@ -3634,14 +3873,30 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         if (r.jun[0] === 'ganjiang') return { cls: 'lizhong', full: has('renshen') && has('baizhu') && has('gancao'), why: '' };
         return { cls: 'other', full: false, why: '君藥未能針對主證' };
     }
+    /* 類方選方的判定（規則）：
+       選到十一方根之一，照病例寫好的結果；和正解同一類的鄰方，好轉，並說出差在哪幾味；
+       其他類的方，照那一類類首的結果（類首也沒寫的，當成藥不對證）。 */
+    function judgePick() {
+        const key = fkeyOf(pickF);
+        if (key) return { cls: key, full: true, why: '', label: pickF };
+        const hit = jfFind(pickF), right = SH.FORMULAS[SH.PATTERNS[V.c.pattern].formula], rHit = jfFind(right.name);
+        if (hit && rHit && hit.cls.name === rHit.cls.name) {
+            const add = hit.f.h.filter(h => !rHit.f.h.includes(h)), minus = rHit.f.h.filter(h => !hit.f.h.includes(h));
+            const d = [add.length ? '多了' + add.join('、') : '', minus.length ? '少了' + minus.join('、') : ''].filter(Boolean).join('，') || '分量不同';
+            return { cls: 'near', near: true, full: false, label: pickF, t: `${pickF}和對證的方同屬${hit.cls.name}，方向是對的。只是${d}，藥力沒有全中，症狀減了幾分，沒有全退。` };
+        }
+        const hk = hit ? fkeyOf(hit.cls.head) : '';
+        return { cls: hk || 'other', full: hk ? true : false, viaHead: hit ? hit.cls.name : '', label: pickF, why: hk ? '' : '方與證不相應' };
+    }
     function shSubmit() {
-        const k = classify(rx);
-        const o = SH.OUTCOME[V.c.pattern][k.cls] || SH.OUTCOME[V.c.pattern].other;     // 沒有特別寫的組合，一律當成藥不對證
-        const res = { rx: rxText(rx), cls: k.cls, r: o.r, t: o.t, q: o.q || '', fate: false, why: k.why, shown: false };
+        const pick = pickMode();
+        const k = pick ? judgePick() : classify(rx);
+        const o = k.near ? { r: 'better', t: k.t } : (SH.OUTCOME[V.c.pattern][k.cls] || SH.OUTCOME[V.c.pattern].other);     // 沒有特別寫的組合，一律當成藥不對證
+        const res = { rx: pick ? k.label : rxText(rx), cls: k.cls, r: o.r, t: (k.viaHead && o.r !== 'cured' ? `${k.label}屬${k.viaHead}。` : '') + o.t, q: o.q || '', fate: false, why: k.why || '', shown: false };
         if (o.r === 'cured' && !k.full) { res.r = 'better'; res.t = '方向是對的，症狀減了幾分，卻沒有全退。配伍不全，藥力未到。'; }
         else if (o.r === 'cured' && V.round === 1 && !V.tutor && Math.random() < 0.12) { res.r = 'better'; res.fate = true; res.t = '方證相應，症狀減了大半，卻還有些纏綿未解。'; }
         V.results.push(res);
-        V.lastRx = clone(rx);
+        V.lastRx = pick ? { pick: pickF, fam: pickFam } : clone(rx);
         if ((res.r === 'none' || res.r === 'worse') && V.trust < 40) V.lost = true;     // 信任不足又沒治好的病人，不一定會回來
         speak(narr('我把藥包好，囑咐了煎服的方法。'));
         leave(`藥方　${res.rx}`);
@@ -3678,7 +3933,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             };
             $('#redo').onclick = () => {
                 V.round = 2;
-                rx = clone(V.lastRx); curSlot = 'jun';
+                if (V.lastRx && V.lastRx.pick) { pickF = V.lastRx.pick; pickFam = V.lastRx.fam || ''; } else { rx = clone(V.lastRx); curSlot = 'jun'; }
                 speak(narr('我請病人坐下，重新看過一遍。'));
                 shRx();
             };
@@ -4026,7 +4281,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     }, 1200);
 
     /* 供測試用 */
-    window.__clinic = { loadMeta, saveMeta, ACH, S, P, get V() { return V; }, SH, EY, classify, saveGame, loadGame, readSave, showTitle, setMuted, DILEMMAS,
+    window.__clinic = { JF, loadMeta, saveMeta, ACH, S, P, get V() { return V; }, SH, EY, classify, saveGame, loadGame, readSave, showTitle, setMuted, DILEMMAS,
                         get track() { return wantTrack; }, get muted() { return muted; } };
 })();
 </script>
@@ -4074,7 +4329,13 @@ window.__bot = (function () {
             const p = pol.good ? V.c.pattern : other(C().SH.PATTERNS, V.c.pattern);
             if (/四診蒐集/.test(t)) return ask(pol);
             if (/八綱定位/.test(t)) { C().SH.PATTERNS[p].bagang.forEach((v, i) => click($(`#panel [data-ax="${i}"][data-v="${v}"]`))); click($('#next')); return 'bagang'; }
-            if (/^定證/.test(t)) { click($(`#panel [data-p="${p}"]`)); click($('#next')); return 'pattern'; }
+            if (/^定證/.test(t)) { click($(`#panel [data-jing="${C().SH.PATTERNS[p].name.slice(0, 2)}"]`)); click($(`#panel [data-p="${p}"]`)); click($('#next')); return 'pattern'; }
+            if (/處方/.test(t) && $('#panel [data-fam]')) {
+                const nm = C().SH.FORMULAS[C().SH.PATTERNS[p].formula].name.replace('理中湯', '理中丸');
+                const fam = C().JF.classes.find(c => c.list.some(x => x.n === nm)) || C().JF.classes[0];
+                const pickName = pol.near ? (fam.list.find(x => x.n !== nm) || fam.list[0]).n : nm;
+                click($(`#panel [data-fam="${fam.name}"]`)); click($(`#panel [data-pickf="${pickName}"]`)); click($('#next')); return 'pick';
+            }
             if (/處方/.test(t) && $('#clear')) {
                 const f = C().SH.PATTERNS[p].formula, fb = $(`#panel [data-f="${f}"]`);
                 if (fb) click(fb);
