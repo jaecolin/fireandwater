@@ -270,7 +270,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
    對手是病，不是病人，所以沒有攻擊與血條，只有「下一步要做什麼」。 */
 .scene { flex: 1; min-height: 0; position: relative; }
 .fig { position: absolute; pointer-events: none; }
-.fig img.back { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.35)); }
+.fig img.back { display: block; width: 100%; height: 100%; object-fit: contain; object-position: right bottom; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.35));
+    -webkit-mask-image: linear-gradient(#000 80%, transparent 100%); mask-image: linear-gradient(#000 80%, transparent 100%); }
+.fig.me > i, .fig.mt > i { display: none; }
 .fig > div { position: absolute; inset: 0; background: center bottom / contain no-repeat; }
 .fig > div svg { width: 100%; height: 100%; display: block; }
 .fig > i { position: absolute; left: 10%; right: 10%; bottom: -8px; height: 20px; border-radius: 50%; background: radial-gradient(ellipse, rgba(0, 0, 0, 0.6), transparent 70%); }
@@ -515,8 +517,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     background: rgba(9, 16, 56, 0.88); border: 1px solid var(--gold); padding: 0 0.6em; font-size: 0.86em; text-shadow: 1px 1px 0 #000;
 }
 .ui.clinic .fig.pt { left: 3%; bottom: 12.6em; top: auto; width: 25%; height: auto; aspect-ratio: 1; }
-.ui.clinic .fig.me { right: 7%; bottom: 8.4em; width: 11%; height: 40%; }
-.ui.clinic .fig.mt { right: 21%; bottom: 10.6em; width: 8%; height: 30%; }
+.ui.clinic .fig.me { right: 0; bottom: 5.6em; width: 28%; height: 58%; }
+.ui.clinic .fig.mt { right: 25%; bottom: 12.5em; width: 15%; height: 33%; opacity: 0.94; }
 /* 十字指令：上是第一步，左、右是第二、三步，下是最後一步 */
 .ui.clinic .cmds { display: block; left: 4px; right: auto; top: auto; bottom: 0; transform: none; width: 11.6em; height: 11.6em; }
 .ui.clinic .cmds .octw { position: absolute; width: 4em; }
@@ -559,8 +561,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 @media (max-width: 640px) {
     .ui.clinic #panel-win { width: 100%; height: calc(100% - 11em); }
     .ui.clinic .fig.pt { left: 1%; bottom: 16.5em; width: 44%; }
-    .ui.clinic .fig.me { right: 6%; bottom: 13em; width: 22%; height: 28%; }
-    .ui.clinic .fig.mt { right: 31%; bottom: 15.5em; width: 15%; height: 20%; }
+    .ui.clinic .fig.me { right: 0; bottom: 9.5em; width: 50%; height: 38%; }
+    .ui.clinic .fig.mt { right: 36%; bottom: 17em; width: 26%; height: 20%; }
     .ui.clinic .cmds { width: 10.2em; height: 10.2em; }
     .ui.clinic .cmds .octw { width: 3.5em; }
     .ui.clinic .cmds .octw:nth-child(1), .ui.clinic .cmds .octw:nth-child(4) { left: 3.35em; }
@@ -706,15 +708,17 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const $ = (s) => document.querySelector(s);
     const $$ = (s) => [...document.querySelectorAll(s)];
     const IMG = 'https://yylin.tw/images/yylin.tw/upload_file/';
-    /* 立繪（2026-11-15 起）：新的立繪放在 GitHub 的 xinglin/art/，和遊戲檔放一起；還沒有新圖的病人沿用媒體庫的舊圖。
+    /* 立繪（2026-11-15 起）：新的立繪放在 GitHub 的 xinglin/art/，和遊戲檔放一起；十四位病人都有新圖；FACE 沒列到的病人才沿用媒體庫的舊圖。
        c.img 不改，因為診金倍數（PAY_MULT）靠它分辨權貴與窮苦。線上由載入頁的 XL 指出遊戲檔的位置，本機就用旁邊的 art/ 資料夾。 */
     const ART = ((window.XL && window.XL.game && window.XL.game[0]) || '').replace(/[^/]*$/, '') + 'art/';
     const FACE = { quan: 'p-quan.webp', han: 'p-han.webp', hu: 'p-hu.webp', shui: 'p-shui.webp', tao: 'p-tao.webp',
-                   c1: 'p-ashun.webp', c2: 'p-zhongan.webp', c3: 'p-wan.webp', c5: 'p-akuan.webp', c6: 'p-xu.webp' };
+                   c1: 'p-ashun.webp', c2: 'p-zhongan.webp', c3: 'p-wan.webp', c5: 'p-akuan.webp', c6: 'p-xu.webp',
+                   chen: 'p-chen.webp', wen: 'p-wen.webp', bo: 'p-bo.webp', c4: 'p-akui.webp' };
     const faceUrl = (c) => (FACE[c.id] ? ART + FACE[c.id] : IMG + c.img);
     /* 病好版：回診時改善或痊癒（cured、saved、better；慢性病回診走完是 well、better），換上氣色轉好的立繪，和「大夫，我好了」對得上。V.well 每次進診間先歸零 */
     const FACE_WELL = { quan: 'p-quan-w.webp', han: 'p-han-w.webp', hu: 'p-hu-w.webp', shui: 'p-shui-w.webp', tao: 'p-tao-w.webp',
-                        c1: 'p-ashun-w.webp', c2: 'p-zhongan-w.webp', c3: 'p-wan-w.webp', c5: 'p-akuan-w.webp', c6: 'p-xu-w.webp' };
+                        c1: 'p-ashun-w.webp', c2: 'p-zhongan-w.webp', c3: 'p-wan-w.webp', c5: 'p-akuan-w.webp', c6: 'p-xu-w.webp',
+                        chen: 'p-chen-w.webp', wen: 'p-wen-w.webp', bo: 'p-bo-w.webp', c4: 'p-akui-w.webp' };
     const WELL_R = ['cured', 'saved', 'better', 'well'];
     const ptFace = () => (V.well && FACE_WELL[V.c.id] ? ART + FACE_WELL[V.c.id] : faceUrl(V.c));
     const MASTER_FACE = ART + 'm-master.webp';
@@ -3274,12 +3278,12 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     /* 回診揭曉結果時：改善或痊癒就換上病好版立繪 */
     function markWell(r) { V.well = WELL_R.includes(r); $('#sc-pt').style.backgroundImage = `url('${ptFace()}')`; hud(); }
     /* 病人進診間：擺好病人、我與師父，清掉上一位的指令 */
-    /* 診間右側的背影（2026-11-15 起是畫的，主角分男女）；圖片讀不到時退回原本的剪影 */
+    /* 診間右側的人物：過肩半身（佑彥 2026-11-15 選定），背對玩家、轉向左邊的病人；主角分男女與三個年紀。圖片讀不到時退回原本的剪影 */
     const backImg = (n, sil) => `<img class="back" src="${ART}${n}.webp" alt="" onerror="this.outerHTML=this.dataset.sil" data-sil="${sil.replace(/"/g, '&quot;')}">`;
     function sceneSetup() {
         $('#sc-pt').style.backgroundImage = `url('${ptFace()}')`;
-        $('#sc-mt').innerHTML = backImg(V.kind === 'sh' ? 'b-master' : 'b-huang', V.kind === 'sh' ? SIL.master : SIL.mentor);
-        $('#sc-me').innerHTML = backImg(S.hero === 'f' ? 'b-hero-f' : 'b-hero-m', SIL.hero);
+        $('#sc-mt').innerHTML = backImg(V.kind === 'sh' ? 'o-master' : 'o-huang', V.kind === 'sh' ? SIL.master : SIL.mentor);
+        $('#sc-me').innerHTML = backImg(`o-hero-${S.hero === 'f' ? 'f' : 'm'}-${heroStage(S.ch)}`, SIL.hero);
         $('#cs-face').innerHTML = heroImg();
         $('#sc-cmds').innerHTML = ''; $('#sc-steps').innerHTML = '';
     }
