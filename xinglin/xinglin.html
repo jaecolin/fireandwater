@@ -424,6 +424,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 .axis .btn:hover:not(:disabled), .axis .btn:focus-visible { background: linear-gradient(145deg, var(--gold-hi), #b8892e 45%, var(--gold-dark)); color: var(--name); transform: scale(1.06); }
 .axis .btn:hover:not(:disabled)::before, .axis .btn:focus-visible::before { animation: none; }
 .axis .btn.on { background: linear-gradient(145deg, var(--gold-hi), #b8892e 45%, var(--gold-dark)); color: #fff6d6; filter: drop-shadow(0 0 6px rgba(255, 224, 102, 0.8)); }
+.axis .btn.long { font-size: 0.82em; line-height: 1.15; }
 .axis .btn.on::before { background: radial-gradient(circle at 50% 32%, #4a5fc4, #16206a 78%); }
 
 /* 君臣佐使：四個八角藥格 */
@@ -947,6 +948,27 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "flavor": "辛、甘",
        "meridian": "心、腎、脾",
        "use": "回陽救逆，補火助陽，散寒止痛（有毒）"
+      },
+      "danggui": {
+       "name": "當歸",
+       "q": "溫",
+       "flavor": "甘、辛",
+       "meridian": "肝、心、脾",
+       "use": "補血活血，散寒止痛"
+      },
+      "xixin": {
+       "name": "細辛",
+       "q": "溫",
+       "flavor": "辛",
+       "meridian": "心、肺、腎",
+       "use": "散寒止痛，溫通經脈"
+      },
+      "tongcao": {
+       "name": "通草",
+       "q": "微寒",
+       "flavor": "甘、淡",
+       "meridian": "肺、胃",
+       "use": "通利血脈，利水（《傷寒論》的通草，一說即今之木通）"
       }
      },
      "FORMULAS": {
@@ -1148,6 +1170,27 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         ]
        },
        "note": "回陽救逆，治下利清穀、手足厥冷、脈微。"
+      },
+      "danggui": {
+       "name": "當歸四逆湯",
+       "slots": {
+        "jun": [
+         "danggui"
+        ],
+        "chen": [
+         "guizhi",
+         "shaoyao",
+         "xixin"
+        ],
+        "zuo": [
+         "tongcao",
+         "dazao"
+        ],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "溫經散寒，養血通脈，治手足厥寒、脈細欲絕。"
       }
      },
      "PATTERNS": {
@@ -1205,6 +1248,39 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        ],
        "law": "溫中祛寒，補氣健脾",
        "formula": "lizhong"
+      },
+      "shaoyang": {
+       "name": "少陽病",
+       "alias": "邪在半表半裡",
+       "bagang": [
+        "半表半裡",
+        "熱",
+        "實"
+       ],
+       "law": "和解少陽",
+       "formula": "xiaochaihu"
+      },
+      "shaoyin": {
+       "name": "少陰病",
+       "alias": "陽虛寒盛",
+       "bagang": [
+        "裡",
+        "寒",
+        "虛"
+       ],
+       "law": "回陽救逆",
+       "formula": "sini"
+      },
+      "jueyin": {
+       "name": "厥陰寒厥",
+       "alias": "血虛寒凝",
+       "bagang": [
+        "裡",
+        "寒",
+        "虛"
+       ],
+       "law": "溫經散寒，養血通脈",
+       "formula": "danggui"
       }
      },
      "OUTCOME": {
@@ -1333,6 +1409,100 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "other": {
         "r": "none",
         "t": "藥吃了幾帖，腹脹、下利依舊。"
+       }
+      },
+      "shaoyang": {
+       "xiaochaihu": {
+        "r": "cured",
+        "t": "服了三帖，寒熱不再一陣一陣地來，胸脅鬆開了，也想吃東西了。",
+        "q": "傷寒中風，有柴胡證，但見一證便是，不必悉具"
+       },
+       "mahuang": {
+        "r": "worse",
+        "t": "發了一身汗，寒熱沒退，反倒煩躁起來，夜裡說胡話。",
+        "q": "少陽不可發汗，發汗則譫語"
+       },
+       "guizhi": {
+        "r": "none",
+        "t": "汗沒出多少，寒熱照舊交替，胸口還是悶。"
+       },
+       "chengqi": {
+        "r": "worse",
+        "t": "瀉了幾回，人更虛了，心裡怦怦跳，一點聲響就驚醒。",
+        "q": "不可吐下，吐下則悸而驚"
+       },
+       "baihu": {
+        "r": "none",
+        "t": "熱退了一陣，很快又冷起來，胃口更差。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，寒熱還是一陣一陣，胸口照樣悶。"
+       }
+      },
+      "shaoyin": {
+       "sini": {
+        "r": "cured",
+        "t": "服藥後手腳慢慢回溫，下利止了，人也清醒過來，叫得出兒子的名字。",
+        "q": "少陰病，脈沉者，急溫之"
+       },
+       "mahuang": {
+        "r": "worse",
+        "t": "一發汗，冷汗流個不停，手腳更冰，人更叫不醒。",
+        "q": "少陰病，脈微，不可發汗，亡陽故也"
+       },
+       "guizhi": {
+        "r": "none",
+        "t": "吃了沒有起色，還是昏沉怕冷。"
+       },
+       "chengqi": {
+        "r": "worse",
+        "t": "攻下之後，下利更重，人幾乎虛脫。",
+        "q": "陽已虛，尺脈弱濇者，復不可下之"
+       },
+       "lizhong": {
+        "r": "better",
+        "t": "溫了中焦，吐利少了一些，手腳卻還是冷，人仍昏沉。"
+       },
+       "baihu": {
+        "r": "worse",
+        "t": "寒涼一下肚，下利更甚，手腳冰冷。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，人還是昏昏沉沉，手腳冰冷。"
+       }
+      },
+      "jueyin": {
+       "danggui": {
+        "r": "cured",
+        "t": "連服幾帖，手指慢慢有了血色，碰到冷水也不那麼痛了。",
+        "q": "手足厥寒，脈細欲絕者"
+       },
+       "sini": {
+        "r": "better",
+        "t": "手腳暖了一些，指尖卻還是發白麻痛。"
+       },
+       "chengqi": {
+        "r": "worse",
+        "t": "攻下之後，人虛了，手腳反而更冷。",
+        "q": "諸四逆厥者，不可下之"
+       },
+       "mahuang": {
+        "r": "none",
+        "t": "發了汗，手腳還是冰冷，人倒累了。"
+       },
+       "guizhi": {
+        "r": "none",
+        "t": "手腳稍微溫了一點，很快又冷回去。"
+       },
+       "baihu": {
+        "r": "worse",
+        "t": "寒涼之藥下肚，手腳更冷，指尖發紫。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，手腳依舊冰冷麻痛。"
        }
       }
      },
@@ -1490,6 +1660,99 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "angry": "阿水沒再來。聽說他瘦了一大圈，槳都划不動了。",
        "_review": "草稿",
        "_note": ""
+      },
+      {
+       "id": "quan",
+       "pattern": "shaoyang",
+       "name": "阿全",
+       "type": "碼頭挑夫　話少",
+       "img": "4e97f3aa-3216-4b4b-a68b-df7624c77c9c.png",
+       "trust": 50,
+       "lv": 2,
+       "keyQ": [
+        "chill",
+        "pain",
+        "pulse"
+       ],
+       "tip": "一陣冷一陣熱，和表證的惡寒發熱不一樣。問問他的胸脅和嘴裡的味道。",
+       "intro": "阿全病了五六天，起初只是著了涼。這兩天一陣冷、一陣熱，人懶懶的，話也更少了。",
+       "a": {
+        "look": "面色微黃，舌苔薄白。",
+        "listen": "聲音低，說幾句就不想說了，常常嘆氣。",
+        "chill": "一陣怕冷，過一會兒又發熱，一天來回好幾次。",
+        "sweat": "沒怎麼出汗。",
+        "pain": "胸口兩側脹脹悶悶的，像被什麼頂住。",
+        "thirst": "嘴裡發苦，喉嚨乾。",
+        "diet": "什麼都不想吃，一聞到飯菜味就想吐。二便還算正常。",
+        "sleep": "心裡煩，睡不安穩，起身時眼前發暈。",
+        "pulse": "脈弦細。"
+       },
+       "thanks": "阿全扛了一袋米來，說胃口回來了，一頓能吃兩碗。",
+       "angry": "阿全的工頭上門，說人越吃越虛，連工都上不了。",
+       "_review": "草稿",
+       "_note": "少陽：依 251、252、253、254 條起草"
+      },
+      {
+       "id": "han",
+       "pattern": "shaoyin",
+       "name": "韓老爹",
+       "type": "獨居老人　隱忍",
+       "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "trust": 55,
+       "lv": 3,
+       "keyQ": [
+        "sleep",
+        "pulse",
+        "chill"
+       ],
+       "tip": "一樣是怕冷，有沒有發熱、人有沒有精神，差別很大。",
+       "intro": "韓老爹的兒子把他背進門。他病了三四天，起初只是怕冷，如今整天昏昏沉沉，叫他也只睜一下眼。",
+       "a": {
+        "look": "蜷著身子，手腳冰冷。舌淡，苔白。",
+        "listen": "聲音低微，氣息短淺。",
+        "chill": "很怕冷，蓋了兩床被子還喊冷，身上不發熱。",
+        "sweat": "沒有出汗。",
+        "pain": "身上說不上哪裡痛，只覺得沉。",
+        "thirst": "有點渴，想喝熱水。",
+        "diet": "吃不下。拉的是稀水，裡頭還有沒化的米粒。小便清白。",
+        "sleep": "整天只想睡。",
+        "pulse": "脈微細，要按到底才摸得到。"
+       },
+       "thanks": "韓老爹拄著拐杖自己走來，說兒子不信，非要跟來看看。",
+       "angry": "韓老爹的兒子紅著眼來說，爹這幾天越來越叫不醒了。",
+       "_review": "草稿",
+       "_note": "少陰：依 288、289、292、293 條起草"
+      },
+      {
+       "id": "tao",
+       "pattern": "jueyin",
+       "name": "陶師傅",
+       "type": "染坊漂布師傅　認命",
+       "img": "49fc1c80-551e-4cdd-9fb7-e6925a598c71.png",
+       "trust": 50,
+       "lv": 4,
+       "keyQ": [
+        "chill",
+        "pain",
+        "pulse"
+       ],
+       "tip": "手腳冷不一定是陽氣將亡。看看他的精神和二便，再摸摸脈有多細。",
+       "intro": "陶師傅在染坊做了二十年，冬天也得蹲在河邊漂布。這個月起，手腳冷得發紫，捂也捂不熱。",
+       "a": {
+        "look": "精神還好。手指發白發紫，指尖冰涼。舌淡，苔白。",
+        "listen": "說話聲音如常。",
+        "chill": "手腳冷得厲害，身上倒還好，不發熱。",
+        "sweat": "沒有汗。",
+        "pain": "手指腳趾又冷又痛，一碰冷水更痛。",
+        "thirst": "不渴。",
+        "diet": "飯量還可以，二便正常。",
+        "sleep": "夜裡腳冷得睡不著。",
+        "pulse": "脈很細，細得快要摸不到。"
+       },
+       "thanks": "陶師傅送來一匹染好的青布，說今年冬天總算不怕下河了。",
+       "angry": "陶師傅託人帶話，說手指頭冷得連布都抓不住，這個冬天怕是做不成了。",
+       "_review": "草稿",
+       "_note": "厥陰：依 350、356 條起草"
       }
      ]
     };
@@ -3751,18 +4014,18 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             speak({ who: q.g === '問' ? 'patient' : '', text: V.c.a[q.id] });
             shAsk();
         });
-        $('#next').onclick = () => hub(tipsOr('線索就是這些了。', '先定八綱。病在肌表還是臟腑？是寒是熱？正氣虛還是邪氣實？'));
+        $('#next').onclick = () => hub(tipsOr('線索就是這些了。', '先定八綱。病在肌表、在半表半裡，還是在臟腑？是寒是熱？正氣虛還是邪氣實？'));
     }
-    const AXES = [['表', '裡'], ['寒', '熱'], ['虛', '實']];
+    const AXES = [['表', '半表半裡', '裡'], ['寒', '熱'], ['虛', '實']];      // 補完六經後，病位多了少陽的半表半裡
     const AXIS_NAME = ['病位', '病性', '邪正'];
     function shBagang() {
         const rows = AXES.map((pair, i) => `<div class="axis"><span class="lbl">${AXIS_NAME[i]}</span>${pair.map(v =>
-            `<button class="btn${V.bagang[i] === v ? ' on' : ''}" data-ax="${i}" data-v="${v}">${v}</button>`).join('')}</div>`).join('');
+            `<button class="btn${V.bagang[i] === v ? ' on' : ''}${v.length > 2 ? ' long' : ''}" data-ax="${i}" data-v="${v}">${v.length > 2 ? v.slice(0, 2) + '<br>' + v.slice(2) : v}</button>`).join('')}</div>`).join('');
         panel(`<h3>八綱定位</h3>${shAnswers('small')}${rows}
             <div class="foot"><button class="btn" id="back">回診間</button><button class="btn go px" id="next" ${V.bagang.every(Boolean) ? '' : 'disabled'}>定下八綱</button></div>`);
         $$('#panel [data-ax]').forEach(b => b.onclick = () => { V.bagang[+b.dataset.ax] = b.dataset.v; shBagang(); });
         $('#back').onclick = () => hub();
-        $('#next').onclick = () => hub(tips('同是風寒在表，有汗為虛，無汗為實。若是大熱、大汗、大渴、脈洪大，那已是陽明裡熱。', '同是裡熱，要再分有形無形。腹滿硬痛、大便不通，是燥屎結住了。若是腹冷喜按、下利清稀，那是裡寒，不是熱。'));
+        $('#next').onclick = () => hub(tips('同是風寒在表，有汗為虛，無汗為實。若是大熱、大汗、大渴、脈洪大，那已是陽明裡熱。', '同是裡熱，要再分有形無形。腹滿硬痛、大便不通，是燥屎結住了。若是腹冷喜按、下利清稀，那是裡寒，不是熱。', '一陣冷一陣熱、胸脅苦滿、口苦，病在半表半裡。同是裡寒，還要分太陰、少陰、厥陰：吐利腹滿、但欲寐、手足厥寒各有所主。'));
     }
     /* =====================================================================
        經方第 1 期（2026-11-15）：定證分兩層，先定病位（六經），再定方證；
@@ -3775,6 +4038,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const jfFind = (name) => { name = FNAME_FIX[name] || name; for (const c of JF.classes) { const f = c.list.find(x => x.n === name); if (f) return { cls: c, f }; } return null; };
     const fkeyOf = (name) => Object.keys(SH.FORMULAS).find(k => SH.FORMULAS[k].name === name || FNAME_FIX[SH.FORMULAS[k].name] === name);
     const pickMode = () => S.ch >= 1 && !(V && V.tutor);
+    /* 習醫章親手組的十一個方根（佑彥 2026-11-15 決定：十二類各類的類首）。其他成方（例如厥陰的當歸四逆湯）只在類方選方裡出現 */
+    const ROOT_KEYS = ['guizhi', 'mahuang', 'gegen', 'xiaochaihu', 'zhichi', 'chengqi', 'banxiaxiexin', 'baihu', 'wuling', 'sini', 'lizhong'];
     function shPattern() {
         const jing = V.jing || (V.pattern ? jingOf(V.pattern) : '');
         const open = (j) => Object.keys(SH.PATTERNS).some(k => jingOf(k) === j);
@@ -3835,7 +4100,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             return `<button class="herb${used.includes(k) ? ' used' : ''}" data-h="${k}"><span class="n">${h.name}</span><span class="q ${qClass(h.q)}">${h.q}</span>
                 <span class="d">${h.flavor}　歸${h.meridian}${isEasy() ? `<br>${h.use}` : ''}</span></button>`; }).join('');
         const formulas = isEasy() ? `<div class="grp"><b>成方</b><span class="small hint">點一下直接套用，之後仍可增減</span><div class="grid" style="margin-top:4px">${
-            Object.keys(SH.FORMULAS).map(k => `<button class="btn" data-f="${k}"><b>${SH.FORMULAS[k].name}</b><span class="sub">${SH.FORMULAS[k].note}</span></button>`).join('')}</div></div>` : '';
+            ROOT_KEYS.filter(k => SH.FORMULAS[k]).map(k => `<button class="btn" data-f="${k}"><b>${SH.FORMULAS[k].name}</b><span class="sub">${SH.FORMULAS[k].note}</span></button>`).join('')}</div></div>` : '';
         panel(`<h3>${V.round === 1 ? '處方' : '複診處方'} <span>我定的證：${SH.PATTERNS[V.pattern].name}</span></h3>
             ${formulas}<div class="slots">${slots}</div><div class="herbs">${herbs}</div>
             <div class="foot"><button class="btn" id="clear">清空</button>${V.round === 1 ? '<button class="btn" id="back">回診間</button>' : ''}<button class="btn go px" id="next" ${rx.jun.length ? '' : 'disabled'}>交付藥方</button></div>`);
