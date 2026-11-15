@@ -672,7 +672,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         </div>
         <div class="win hidden" id="t-new">
             <h1>初入杏林</h1>
-            <div class="sub small">業師：張仲景　書中師：黃庭鏡</div>
+            <div class="sub small">業師：張仲景</div>
             <div class="small">從拜師開始，走過習醫、立業、盛年、傳承、晚年五章，最後把一生的醫案寫成書。一輪大約三十到四十分鐘。每一章有幾位病人上門：方子開出去，要等他下個門診日回來，才知道對不對。</div>
             <h2>怎麼玩</h2>
             <ul class="small how">
@@ -3027,7 +3027,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     /* dil：每章遇過的困境；echo：還沒浮現的回音；flags：留到結局的印記；dilLog：一生的抉擇 */
     /* 第一代的數值：energy 精力、peace 修為、money 金錢；jiji 既濟的天數、bal 目前的身心狀態、over 透支次數、poor 連續入不敷出的天數、epi 已領悟的心法 */
     const fresh = () => ({ energy: 70, peace: 0, money: 20, jiji: 0, bal: '', over: 0, poor: 0, epi: [], gives: 0,
-                           day: 1, ch: 0, chDay: 1, arr: {}, spirit: 70, skill: 0, fame: 0, study: 0, studyNext: 0, queue: [], news: [], metEye: false, dil: [], echo: [], flags: {}, dilLog: [],
+                           day: 1, ch: 0, chDay: 1, arr: {}, spirit: 70, skill: 0, fame: 0, study: 0, studyNext: 0, queue: [], news: [], metEye: false, learn: {}, needLearn: '', dil: [], echo: [], flags: {}, dilLog: [],
                            app: { on: false, exp: 0, done: false } });       // app：學徒（第四章起）
     const S = Object.assign({ diff: 'easy', hero: 'm' }, fresh());       // hero：主角 m 男、f 女（舊存檔沒有這一欄就當男）
     const P = {};               // 病歷簿：每位病人一筆，跨門診日保存
@@ -3089,6 +3089,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             Object.keys(P).forEach(k => delete P[k]);
             Object.assign(P, ps);
             Object.assign(S, fresh(), d.S, { queue: [], news: [] });          // 先鋪預設值，舊存檔缺的欄位才不會出錯
+            if (!d.S.learn && d.S.metEye) S.learn = { eye: true };            // 舊存檔：見過眼病的，當成已結識黃庭鏡
             return true;
         } catch (e) { return false; }
     }
@@ -3534,7 +3535,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         V.lowSpirit = S.spirit < 20;
         hud();
         /* 看診耗精力：新病人 10，回診 3。三秒停頓法：新病人進門先定一定神 */
-        if (V.status === 'new') {
+        if (V.status === 'new' || V.held) {
             addEnergy(-10);
             if (S.epi.includes('pause')) addSpirit(2);
             hud();
@@ -3899,22 +3900,28 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         V = null; hud();
         const waiting = Object.values(P).filter(p => p.status === 'waiting');
         const eye = S.energy < 30, heart = S.spirit < 30;        // 第一代的肉身警訊：精力低讀不下書，心神低歇不安穩
+        const book = S.needLearn && !S.learn[S.needLearn] ? LEARN[S.needLearn] : null;     // 白天遇到不會看的病，今晚該讀的書
         panel(`<h3>門診結束 <span>今天還能做一件事</span></h3>
             <div class="octs">
                 <button class="octw" data-act="rest"><span class="oct"><b>休養</b></span><span class="sub">${heart ? '心悸失眠，歇不安穩。精力 +9，心神 +2' : '早睡，讓身體歇著。精力 +18，心神 +5'}</span></button>
                 <button class="octw" data-act="sit"><span class="oct"><b>靜坐</b></span><span class="sub">關上門，坐一個時辰。心神 +14，修為 +2</span></button>
-                <button class="octw" data-act="study" ${eye ? 'disabled' : ''}><span class="oct"><b>研讀</b></span><span class="sub">${eye ? '精力不足 30：眼壓飆高，視物模糊，讀不下書' : '讀《傷寒論》與《目經大成》。精力 −4，醫術 +1，下個門診日每位新病人可多問一項'}</span></button>
+                <button class="octw${book ? ' cur' : ''}" data-act="study" ${eye ? 'disabled' : ''}><span class="oct"><b>研讀</b></span>${book ? `<span class="sub">${eye ? '精力不足 30：眼壓飆高，視物模糊，讀不下書' : `讀${book.book}，學會看${book.kind}。精力 −4，醫術 +1`}</span>` : ''}${book ? '' : `<span class="sub">${eye ? '精力不足 30：眼壓飆高，視物模糊，讀不下書' : `讀《傷寒論》${S.learn.eye ? '與《目經大成》' : ''}。精力 −4，醫術 +1，下個門診日每位新病人可多問一項`}</span>`}</button>
                 <button class="octw" data-act="visit"><span class="oct"><b>探望</b></span><span class="sub">${waiting.length ? '去看看治療中最讓我放不下的那一位。精力 −4，信任 +8' : `沒有治療中的病人。去看看${kin().who}。精力 −2，心神 +8，修為 +1`}</span></button>
                 <button class="octw" data-act="give" ${S.money >= 15 ? '' : 'disabled'}><span class="oct"><b>施藥</b></span><span class="sub">${S.money >= 15 ? '拿出金錢 15，替付不起藥錢的人抓藥。聲望 +3，修為 +2' : '需金錢 15：手頭不寬裕'}</span></button>
                 ${S.app.on && !S.app.done ? `<button class="octw" data-act="teach"><span class="oct"><b>帶徒</b></span><span class="sub">把今天的病人一位一位講給小滿聽。精力 −3，醫術 +1，聲望 +1。小滿的歷練 ${S.app.exp}/3</span></button>` : ''}
             </div>
             <div class="small dim" style="text-align:center">精力 ${S.energy}　心神 ${S.spirit}。兩者都在五成以上且相差不大，就是既濟。</div>`);
         chapterTrack();
-        speak(narr('最後一位病人離開了。天色還早。'));
+        speak(book ? [narr('最後一位病人離開了。天色還早。'), narr(`白天那位${book.kind}的病人，明天還會來。我得把${book.book}讀一讀。`)] : narr('最後一位病人離開了。天色還早。'));
         $$('#panel [data-act]').forEach(b => b.onclick = () => {
             const a = b.dataset.act;
             if (a === 'rest') { addEnergy(heart ? 9 : 18); addSpirit(heart ? 2 : 5); dayEnd(heart ? '我早早躺下，心卻跳得厲害，翻來覆去到半夜才闔眼。' : night('rest')); }
             else if (a === 'sit') { addSpirit(14); const pk = addPeace(2); dayEnd(night('sit'), pk); }
+            else if (a === 'study' && book) {
+                addEnergy(-4); const pk = addSkill(1);
+                S.learn[S.needLearn] = true; S.needLearn = '';
+                story('書中師', `${book.who}　${book.book}`, book.meet, () => dayEnd(`讀完${book.book}。`, pk));
+            }
             else if (a === 'study') { addEnergy(-4); S.studyNext = 1; const pk = addSkill(1); dayEnd(night('study'), pk); }
             else if (a === 'give') {
                 S.money -= 15; S.fame += 3; S.gives++; const pk = addPeace(2);
@@ -4162,7 +4169,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             const over = S.ch >= CHAPTERS.length;
             R.innerHTML = `<h3>狀態</h3>
                 <div class="st-top"><div class="face">${heroImg()}</div>
-                    <div><span class="name">${$('#me-name').textContent}</span><br>業師：張仲景　書中師：黃庭鏡<br>${over ? '終章' : `第${CN[S.ch + 1]}章　${chOf().name}　第 ${S.chDay} 個門診日`}　${isEasy() ? '入門' : '專業'}</div></div>
+                    <div><span class="name">${$('#me-name').textContent}</span><br>業師：張仲景　書中師：${S.learn.eye ? '黃庭鏡' : '尚未結識'}<br>${over ? '終章' : `第${CN[S.ch + 1]}章　${chOf().name}　第 ${S.chDay} 個門診日`}　${isEasy() ? '入門' : '專業'}</div></div>
                 <div class="row"><span class="k">精力</span><span class="gauge"><i style="width:${S.energy}%"></i></span><span class="v px">${S.energy}<small>/100</small></span></div>
                 <div class="row"><span class="k">心神</span><span class="gauge sp"><i style="width:${S.spirit}%"></i></span><span class="v px">${S.spirit}<small>/100</small></span></div>
                 <div class="stats4"><span>醫術 <span class="name px">${S.skill}</span></span><span>修為 <span class="name px">${S.peace}</span>　${tierOf()}</span>
@@ -4551,17 +4558,50 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        眼病（黃庭鏡）：察目、問診、辨證、治法
        ===================================================================== */
     const eyAnswers = (cls) => { const li = V.asked.map(id => { const q = EY.QUESTIONS.find(x => x.id === id); return `<li><b>${q.q}</b>${V.c.a[id]}</li>`; }).join(''); return li ? `<ul class="ans${cls ? ' ' + cls : ''}">${li}</ul>` : ''; };
+    /* 書中師要先「讀書結識」才能看那一科的病（佑彥 2026-11-15 定）：
+       第一次遇到這一科的病人，用《傷寒》《金匱》治不了，只能請他改日再來；當晚門診後選「研讀」那部書，結識書中師，病人回來時才能看。
+       之後要加其他醫家，在 LEARN 加一筆，並在那一科的開場呼叫 needBook()。 */
+    const LEARN = {
+        eye: { who: EYM, book: '《目經大成》', kind: '眼病',
+               meet: [narr('那晚我把《目經大成》攤在燈下，一頁一頁讀。讀到五輪，書頁之間，有位清瘦的長者抬起頭來。'),
+                      { who: EYM, text: '目為人身至寶，匪明則無以作哲。' },
+                      { who: EYM, text: '看眼病，先把眼睛看清楚，再去問他這個人。不要只憑脈象就下判斷。' },
+                      narr('雞叫時我才闔上書。往後眼病的病人，我可以接了。')] }
+    };
+    /* 還沒結識這一科的書中師：這一診先擱下，請病人改日再來。回傳 true 表示擱下了 */
+    function needBook(key) {
+        if (S.learn[key]) return false;
+        const L = LEARN[key], again = V.held;
+        S.needLearn = key;
+        const lines = [narr(V.c.intro)];
+        if (!again) {
+            lines.push(narr(`${L.kind}，師父沒有教過我。我把《傷寒論》《金匱要略》在心裡翻了一遍，找不到一條是治這個的。`));
+            if (S.ch === 0) { lines.push(narr('我回頭看師父。')); lines.push({ who: SHM, text: `這個，我也說不全。去讀書。${L.book}。` }); }
+            lines.push(narr('不懂的病，不能亂開方。我只好請他明天再來。'));
+            lines.push({ who: 'patient', text: '……那我明天再來。' });
+        } else {
+            addTrust(-6);
+            lines.push(narr(`${L.book}我還沒讀。只好再請他寬限一天。`));
+            lines.push({ who: 'patient', text: '大夫，我這眼睛還要等多久？' });
+        }
+        V.held = true; V.status = 'waiting'; V.due = S.day + 1;
+        hud();
+        panel(`<h3>${V.c.name}　改日再來</h3><div>${L.kind}我還不會看。今晚門診結束後，去「研讀」${L.book}。</div>
+            <div class="foot"><button class="btn go px" id="next">${nextLabel()}</button></div>`);
+        speak(lines);
+        $('#next').onclick = nextPatient;
+        return true;
+    }
     function eyStart() {
         const c = V.c;
+        if (needBook('eye')) return;
         const lines = [narr(c.intro)];
         if (!S.metEye) {
             S.metEye = true;
-            lines.push(narr('眼病，師父沒有教過我。'));
-            if (S.ch === 0) { lines.push(narr('我回頭看師父。')); lines.push({ who: SHM, text: '這個，我也說不全。去讀書。' }); }
-            lines.push(narr('我想起昨夜讀的《目經大成》。書頁之間，有位清瘦的長者抬起頭來。'));
-            lines.push({ who: EYM, text: '目為人身至寶，匪明則無以作哲。' });
-            lines.push({ who: EYM, text: '看眼病，先把眼睛看清楚，再去問他這個人。不要只憑脈象就下判斷。' });
+            lines.push(narr(V.held ? '他又來了。這一回，我心裡有底了。' : '眼病。我想起燈下讀過的《目經大成》。'));
+            lines.push({ who: EYM, text: '先把眼睛看清楚，再去問他這個人。' });
         }
+        V.held = false;
         lines.push(...tips('先察目。紅在哪裡，濁在哪裡，就先記在哪一輪。'));
         hub(lines);
     }
@@ -4885,6 +4925,7 @@ window.__bot = (function () {
     }
     function pickAct(pol) {
         const S = C().S, has = (a) => { const b = $(`#panel [data-act="${a}"]`); return b && !b.disabled; };
+        if (S.needLearn && has('study')) return 'study';
         if (pol.act === 'smart') {
             if (S.energy < 50) return 'rest';
             if (S.spirit < 50) return 'sit';
