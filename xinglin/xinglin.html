@@ -3286,7 +3286,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const backImg = (n, sil) => `<img class="back" src="${ART}${n}.webp" alt="" onerror="this.outerHTML=this.dataset.sil" data-sil="${sil.replace(/"/g, '&quot;')}">`;
     function sceneSetup() {
         $('#sc-pt').style.backgroundImage = `url('${ptFace()}')`;
-        $('#sc-mt').innerHTML = backImg(V.kind === 'sh' ? 'o-master' : 'o-huang', V.kind === 'sh' ? SIL.master : SIL.mentor);
+        /* 眼病看診時黃庭鏡怎麼出場還沒定（佑彥 2026-11-15），先不放他的背影；外感照舊站師父 */
+        $('#sc-mt').innerHTML = V.kind === 'sh' ? backImg('o-master', SIL.master) : '';
         $('#sc-me').innerHTML = backImg(`o-hero-${S.hero === 'f' ? 'f' : 'm'}-${heroStage(S.ch)}`, SIL.hero);
         $('#cs-face').innerHTML = heroImg();
         $('#sc-cmds').innerHTML = ''; $('#sc-steps').innerHTML = '';
@@ -4399,8 +4400,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        加減：方後注有或然證加減的方（小柴胡湯、理中丸），開出去之後依兼症勾選。只有正解是這首方、而且病例寫了正確加減（HUORAN）時才計分。
        叮嚀：交代煎服與將息，三選一，選錯了，本來會痊癒的只到好轉。教學那一位不走這兩步。 */
     const JJ_KEYS = ['xiaochaihu', 'lizhong'];
-    /* 病例的正確加減（方後注加減句的序號，空陣列是原方不加減）。草稿，待佑彥審：阿全的兩脅脹滿當主證看，不算脇下痞鞕；阿水待定 */
-    const HUORAN = { quan: [] };
+    /* 病例的正確加減（方後注加減句的序號，空陣列是原方不加減）。佑彥 2026-11-15 定：阿全、阿水都用原方，不加減 */
+    const HUORAN = { quan: [], shui: [] };
     /* 叮嚀：每首方一句白話，配上宋本方後注的原句（q 必須是 FH 裡的原文） */
     const DING = {
         guizhi: { say: '服藥後喝一碗熱稀粥助藥力，蓋被取微汗；汗出病好就停，不必喝完', q: '服已須臾，歠熱稀粥一升餘，以助藥力。溫覆令一時許，遍身漐漐微似有汗者益佳，不可令如水流漓，病必不除。' },
