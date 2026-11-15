@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>水火既濟：杏林問診</title>
+<!-- 片頭（2026-11-15）：向早年遊戲光碟的開場致意，神似而非複製。
+     分鏡：點一下開始 → 林佑彥中醫師的標誌 → 黑暗中墨暈 → 水墨山水浮現、白鶴飛過 → 書法標題直書、蓋印 → 換成遊戲。
+     上線時由 yylin.tw/xinglin 的載入頁抓這個檔換上（只有第一次來的人會看到），window.XL 由載入頁給：
+       XL.game 遊戲檔的網址（依序試）、XL.logo 標誌圖檔的網址。
+     片頭播放的同時就在背景下載遊戲檔，播完直接換上，不必再等。
+     在本機直接打開這個檔時，標誌用 素材/logo-yylin.png，播完跳到 xinglin.html。 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&text=杏林問診水火既濟&display=swap" rel="stylesheet">
+<style>
+:root { --gold: #c9a465; --gold-hi: #f2d79a; }
+html, body { margin: 0; height: 100%; background: #000; color: #e8dcc0; overflow: hidden; }
+body { font-family: 'Noto Serif TC', serif; }
+.stage { position: fixed; inset: 0; overflow: hidden; background: #000; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.scene { position: absolute; inset: 0; opacity: 0; transition: opacity 1s ease; pointer-events: none; }
+.scene.on { opacity: 1; }
+
+/* 0. 點一下開始（瀏覽器要先有一次點擊，才肯放聲音） */
+#gate { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; transition-duration: 0.4s; }
+#gate .press { letter-spacing: 0.5em; color: #cbb98f; animation: blink 1.6s ease-in-out infinite; }
+#gate .hint { font-size: 0.8em; color: #6f6a5c; letter-spacing: 0.15em; }
+@keyframes blink { 50% { opacity: 0.25; } }
+
+/* 1. 標誌：金色光暈先亮起，標誌由上而下顯影，一道光掃過 */
+#logo { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; }
+#logo .mark { position: relative; width: min(40vmin, 220px); aspect-ratio: 476 / 488; }
+#logo .mark img { width: 100%; height: 100%; display: block; clip-path: inset(0 0 100% 0); transform: scale(0.94); filter: blur(6px) drop-shadow(0 0 0 rgba(242,215,154,0)); }
+#logo .halo { position: absolute; inset: -30%; border-radius: 50%; background: radial-gradient(circle, rgba(201,164,101,0.35), rgba(201,164,101,0.08) 45%, transparent 68%); transform: scale(0.3); opacity: 0; }
+#logo .glint { position: absolute; inset: 0; background: linear-gradient(105deg, transparent 35%, rgba(255,250,230,0.95) 50%, transparent 65%) -200% 0 / 300% 100% no-repeat;
+               -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; opacity: 0; }
+#logo.on .halo { animation: halo 1.4s ease-out forwards; }
+#logo.on .mark img { animation: develop 1.8s cubic-bezier(.3,.7,.3,1) 0.5s forwards; }
+#logo.on .glint { animation: glint 1.1s ease-in-out 2.5s forwards; }
+#logo .maker { opacity: 0; letter-spacing: 0.45em; color: var(--gold-hi); font-size: clamp(14px, 3.4vmin, 20px); text-align: center; line-height: 2; padding-left: 0.45em; }
+#logo .maker small { display: block; letter-spacing: 0.3em; color: #8f8466; font-size: 0.7em; }
+#logo.on .maker { animation: fadeup 1s ease-out 3s forwards; }
+@keyframes halo { to { transform: scale(1); opacity: 1; } }
+@keyframes develop { 60% { filter: blur(0) drop-shadow(0 0 14px rgba(242,215,154,0.55)); } to { clip-path: inset(0 0 0 0); transform: scale(1); filter: blur(0) drop-shadow(0 0 6px rgba(242,215,154,0.25)); } }
+@keyframes glint { 0% { opacity: 1; background-position: -200% 0; } 100% { opacity: 1; background-position: 200% 0; } }
+@keyframes fadeup { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* 2. 黑暗中墨暈 */
+#ink .drop { position: absolute; border-radius: 50%; filter: blur(18px); background: radial-gradient(circle, rgba(120,128,130,0.55), rgba(40,44,46,0.25) 55%, transparent 72%); transform: scale(0); }
+#ink.on .drop { animation: bloom 5s ease-out forwards; }
+@keyframes bloom { 0% { transform: scale(0); opacity: 0; } 25% { opacity: 1; } 100% { transform: scale(1); opacity: 0.85; } }
+
+/* 3. 水墨山水、霧、白鶴 */
+#land .bg { position: absolute; inset: -4%; background: center / cover no-repeat; filter: grayscale(0.55) brightness(0.15) contrast(1.05); transform: scale(1.14); }
+#land.on .bg { animation: reveal 9s ease-out forwards; }
+@keyframes reveal { 60% { filter: grayscale(0.4) brightness(0.85) contrast(1.05); } 100% { filter: grayscale(0.25) brightness(1) contrast(1); transform: scale(1.02); } }
+#land .mist { position: absolute; left: -40%; width: 180%; height: 38%; background: radial-gradient(ellipse at center, rgba(235,238,240,0.55), transparent 65%); filter: blur(10px); opacity: 0; }
+#land .m1 { top: 52%; } #land .m2 { top: 30%; height: 26%; }
+#land.on .m1 { animation: mist 14s linear forwards; } #land.on .m2 { animation: mist 18s linear 1s reverse forwards; }
+@keyframes mist { 0% { opacity: 0; transform: translateX(8%); } 20% { opacity: 0.8; } 100% { opacity: 0.55; transform: translateX(-12%); } }
+.crane { position: absolute; width: 46px; height: 24px; opacity: 0; }
+.crane svg { width: 100%; height: 100%; animation: flap 0.9s ease-in-out infinite; transform-origin: 50% 60%; }
+@keyframes flap { 50% { transform: scaleY(-0.55); } }
+#land.on .c1 { animation: fly 9s linear 1.5s forwards; top: 34%; }
+#land.on .c2 { animation: fly 10s linear 2.3s forwards; top: 40%; width: 34px; }
+#land.on .c3 { animation: fly 11s linear 3.1s forwards; top: 30%; width: 28px; }
+@keyframes fly { 0% { opacity: 0; transform: translate(105vw, 0); } 10% { opacity: 0.95; } 90% { opacity: 0.9; } 100% { opacity: 0; transform: translate(-15vw, -14vh); } }
+
+/* 4. 書法標題直書、蓋印 */
+#title { position: absolute; right: 9%; top: 9%; display: flex; flex-direction: row-reverse; gap: 10px; align-items: flex-start; }
+#title .col { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+#title .big { writing-mode: vertical-rl; font-family: 'Yuji Syuku', serif; font-size: clamp(54px, 13vmin, 112px); color: #111; letter-spacing: 0.05em; line-height: 1; text-shadow: 0 0 18px rgba(255,255,255,0.55); }
+#title .big span { display: inline-block; clip-path: inset(0 0 100% 0); }
+#title .small { writing-mode: vertical-rl; font-size: clamp(14px, 3vmin, 20px); color: #2a2a2a; letter-spacing: 0.6em; margin-top: 0.6em; opacity: 0; text-shadow: 0 0 8px rgba(255,255,255,0.7); }
+/* 印文由右而左、由上而下：水火在右行，既濟在左行 */
+#title .seal { width: clamp(40px, 7.5vmin, 60px); aspect-ratio: 1; background: #a82b1e; color: #f7e9d6; border-radius: 5px; display: grid; grid-template-rows: 1fr 1fr; grid-auto-flow: column; direction: rtl; place-items: center;
+               font-family: 'Yuji Syuku', serif; font-size: clamp(14px, 2.7vmin, 21px); line-height: 1; padding: 5px; box-sizing: border-box; box-shadow: 0 0 0 2px #a82b1e inset, 0 0 0 4px #f2e3c8 inset;
+               opacity: 0; transform: scale(1.8) rotate(-8deg); }
+#title .seal i { font-style: normal; }
+#land.titled .big span { animation: brush 0.9s ease-out forwards; }
+#land.titled .big span:nth-child(2) { animation-delay: 0.7s; } #land.titled .big span:nth-child(3) { animation-delay: 1.4s; } #land.titled .big span:nth-child(4) { animation-delay: 2.1s; }
+#land.titled .small { animation: fadeup 1.2s ease-out 3s forwards; }
+#land.titled .seal { animation: stamp 0.35s cubic-bezier(.3,1.6,.5,1) 3.9s forwards; }
+@keyframes brush { to { clip-path: inset(0 0 0 0); } }
+@keyframes stamp { to { opacity: 0.92; transform: scale(1) rotate(-4deg); } }
+#enter { position: absolute; left: 0; right: 0; bottom: 9%; text-align: center; letter-spacing: 0.5em; color: #fff; text-shadow: 0 0 6px #000, 0 0 2px #000; opacity: 0; }
+#land.ready #enter { opacity: 1; animation: blink 1.8s ease-in-out infinite; }
+
+/* 跳過、結尾淡出 */
+#skip { position: fixed; right: 16px; bottom: 14px; z-index: 5; background: rgba(0,0,0,0.35); border: 1px solid rgba(201,164,101,0.55); color: #d8c48f; font: inherit; font-size: 13px; letter-spacing: 0.2em; padding: 5px 12px; border-radius: 3px; cursor: pointer; display: none; }
+#fade { position: fixed; inset: 0; background: #070a16; opacity: 0; pointer-events: none; transition: opacity 0.8s; z-index: 4; display: flex; align-items: center; justify-content: center; color: #8791b8; letter-spacing: 0.2em; font-size: 0.9em; }
+@media (prefers-reduced-motion: reduce) { .scene, .scene * { animation-duration: 0.01s !important; animation-delay: 0s !important; transition: none !important; } .crane { display: none; } }
+@media (max-width: 640px) { #title { right: 6%; top: 7%; } }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+    <div class="scene on" id="gate">
+        <div class="press">點一下　開始</div>
+        <div class="hint">有聲音　隨時可以跳過</div>
+    </div>
+
+    <div class="scene" id="logo">
+        <div class="mark"><div class="halo"></div><img id="logoimg" alt="林佑彥中醫師數位診間"><div class="glint"></div></div>
+        <div class="maker">林佑彥中醫師數位診間<small>yylin.tw　出品</small></div>
+    </div>
+
+    <div class="scene" id="ink">
+        <div class="drop" style="left:12%;top:18%;width:48vmin;height:48vmin;animation-delay:0s"></div>
+        <div class="drop" style="left:52%;top:8%;width:62vmin;height:62vmin;animation-delay:0.6s"></div>
+        <div class="drop" style="left:30%;top:45%;width:70vmin;height:70vmin;animation-delay:1.2s"></div>
+        <div class="drop" style="left:-10%;top:55%;width:56vmin;height:56vmin;animation-delay:1.8s"></div>
+    </div>
+
+    <div class="scene" id="land">
+        <div class="bg" id="landbg"></div>
+        <div class="mist m2"></div><div class="mist m1"></div>
+        <div class="crane c1"><svg viewBox="0 0 46 24"><path d="M2 14 Q14 2 23 12 Q32 2 44 14 Q32 9 23 16 Q14 9 2 14 Z" fill="#f4f1ea"/></svg></div>
+        <div class="crane c2"><svg viewBox="0 0 46 24"><path d="M2 14 Q14 2 23 12 Q32 2 44 14 Q32 9 23 16 Q14 9 2 14 Z" fill="#f4f1ea"/></svg></div>
+        <div class="crane c3"><svg viewBox="0 0 46 24"><path d="M2 14 Q14 2 23 12 Q32 2 44 14 Q32 9 23 16 Q14 9 2 14 Z" fill="#f4f1ea"/></svg></div>
+        <div id="title">
+            <div class="col">
+                <div class="big"><span>杏</span><span>林</span><span>問</span><span>診</span></div>
+                <div class="seal"><i>水</i><i>火</i><i>既</i><i>濟</i></div>
+            </div>
+            <div class="small">水火既濟</div>
+        </div>
+        <div id="enter">點一下　進入</div>
+    </div>
+</div>
+<button id="skip">跳過 ▶</button>
+<div id="fade"></div>
+<script>
+(function () {
+    'use strict';
+    var $ = function (s) { return document.querySelector(s); };
+    var XL = window.XL || {};
+    var IMG = 'https://yylin.tw/images/yylin.tw/upload_file/ab8fdfe7-fb59-4655-843a-35fe9ae6ba5b.png';   // 遊戲標題畫面用的水墨背景，片頭最後一幕和遊戲標題接得起來
+    var MUSIC = 'https://cdn.jsdelivr.net/gh/jaecolin/fireandwater@main/' + encodeURIComponent('春日微風.mp3');
+    var LOGO = XL.logo || '素材/logo-yylin.png';
+    var store = { get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) { /* 存不了就算了 */ } } };
+    var muted = store.get('xinglin-mute') === '1';
+    var timers = [], step = 'gate', audio = null, ended = false;
+    var later = function (ms, f) { timers.push(setTimeout(f, ms)); };
+
+    $('#logoimg').src = LOGO;
+    document.documentElement.style.setProperty('--logo', 'url("' + LOGO + '")');
+    $('#landbg').style.backgroundImage = 'url(' + IMG + ')';
+    new Image().src = IMG;
+
+    /* 遊戲檔：片頭一開始就在背景下載 */
+    var game = null;
+    if (XL.game && XL.game.length) {
+        game = (function tryAt(i) {
+            if (i >= XL.game.length) return Promise.reject(new Error('all failed'));
+            return fetch(XL.game[i]).then(function (r) { if (!r.ok) throw new Error('http'); return r.text(); })
+                .then(function (t) { if (t.indexOf('id="stage"') < 0) throw new Error('content'); return t; })
+                .catch(function () { return tryAt(i + 1); });
+        })(0);
+        game.catch(function () {});
+    }
+
+    function show(id) { ['#gate', '#logo', '#ink', '#land'].forEach(function (s) { $(s).classList.toggle('on', s === id); }); }
+    function music() {
+        if (muted) return;
+        try {
+            audio = new Audio(MUSIC); audio.volume = 0;
+            audio.play().then(function () { var t = setInterval(function () { audio.volume = Math.min(0.35, audio.volume + 0.02); if (audio.volume >= 0.35) clearInterval(t); }, 120); }).catch(function () {});
+        } catch (e) { /* 放不了就安靜地播 */ }
+    }
+    function fadeMusic(ms) {
+        if (!audio) return;
+        var a = audio, d = a.volume / (ms / 60);
+        var t = setInterval(function () { a.volume = Math.max(0, a.volume - d); if (a.volume <= 0) { clearInterval(t); a.pause(); } }, 60);
+    }
+    function start() {
+        step = 'run';
+        $('#skip').style.display = 'block';
+        music();
+        show('#logo');                                   // 0–6.5 秒：標誌
+        later(6500, function () { show('#ink'); });     // 6.5–11 秒：墨暈
+        later(10500, function () { show('#land'); });   // 10.5 秒起：山水、霧、白鶴
+        later(15500, function () { $('#land').classList.add('titled'); });   // 15.5 秒起：標題一字一字寫出、蓋印
+        later(21000, function () { $('#land').classList.add('ready'); step = 'ready'; });
+        later(29000, finish);                            // 停在標題畫面幾秒，沒點也會自己進去
+    }
+    function enterGame(t) { document.open(); document.write(t); document.close(); }
+    function finish() {
+        if (ended) return; ended = true;
+        timers.forEach(clearTimeout);
+        store.set('xinglin-intro-seen', '1');            // 看過一次，之後直接進遊戲（網址加 ?intro=1 可以重看）
+        fadeMusic(800);
+        $('#skip').style.display = 'none';
+        $('#fade').style.opacity = 1;
+        setTimeout(function () {
+            /* 沒有載入頁給的網址：在本機測試時跳到同資料夾的遊戲；在網站上就重新整理，載入頁會因為「看過了」直接載入遊戲 */
+            if (!game) { location.href = /^(file:|https?:\/\/(127\.0\.0\.1|localhost)[:/])/.test(location.href) ? 'xinglin.html' : location.pathname; return; }
+            $('#fade').textContent = '載入中';
+            game.then(enterGame, function () { $('#fade').textContent = '載入失敗，請重新整理再試一次'; });
+        }, 900);
+    }
+    $('#stage').addEventListener('click', function () { if (step === 'gate') start(); else if (step === 'ready') finish(); });
+    $('#skip').addEventListener('click', function (e) { e.stopPropagation(); finish(); });
+    document.addEventListener('keydown', function (e) {
+        if (ended) return;
+        if (e.key === 'Escape') return finish();
+        if (e.key === 'Enter' || e.key === ' ') { if (step === 'gate') start(); else if (step === 'ready') finish(); }
+    });
+    window.__intro = { start: start, show: show, finish: finish };
+})();
+</script>
+</body>
+</html>
