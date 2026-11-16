@@ -588,6 +588,13 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 .tdim { pointer-events: none; opacity: 0.4; }
 .gtip { margin: 0 0 10px; padding: 7px 12px; border-left: 3px solid var(--gold-hi); background: rgba(255, 224, 102, 0.13); color: var(--gold-hi); line-height: 1.6; }
 .gtip b { color: var(--name); margin-right: 0.4em; }
+/* 教學提示卡（2026-11-17）：第一次遇到某個畫面時浮出一張，師父說一句，要看的地方發光。z-index 在選單與轉場黑幕之下 */
+.coach { position: absolute; z-index: 4; left: 50%; transform: translateX(-50%); width: min(34em, calc(100% - 24px)); padding: 9px 14px; border-color: var(--gold-hi); box-shadow: 0 0 0 2px rgba(255, 224, 102, 0.28), 0 8px 26px rgba(0, 0, 0, 0.6); line-height: 1.65; }
+.coach .co-t { color: var(--gold-hi); margin-bottom: 3px; }
+.coach .co-t b { color: var(--name); margin-right: 0.5em; }
+.coach .foot { margin-top: 8px; display: flex; justify-content: flex-end; gap: 8px; }
+.coach-hl { border-radius: 4px; animation: gpulse 0.9s ease-in-out infinite alternate; }
+.help-list li { margin-bottom: 6px; }
 @media (prefers-reduced-motion: reduce) { .float { animation-duration: 0.01s; } .guide { animation: none; box-shadow: 0 0 0 2px var(--gold-hi), 0 0 12px 3px rgba(255, 224, 102, 0.7); } .octw.guide, .btn.go.guide { animation: none; box-shadow: none; filter: brightness(1.5) drop-shadow(0 0 8px #ffe066); } }
 /* 門診結束：夜醫館（2026-11-16，佑彥要求把要做的事放在背景圖上）。熱點座標在 NIGHT_POS，圖是 art/bg-night.webp */
 .night { flex: 1; min-height: 0; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #0b0f22 center / cover no-repeat; }
@@ -697,6 +704,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     </div>
 
     <div class="veil hidden" id="veil"><div><div class="vbig" id="veil-big"></div><div class="vsub small" id="veil-sub"></div></div></div>
+    <div class="win coach hidden" id="coach"></div>
 
     <div class="title" id="title">
         <div class="tscreen" id="t-main">
@@ -724,17 +732,14 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             <h1>初入杏林</h1>
             <div class="sub small">業師：張仲景</div>
             <div class="small">從拜師開始，走過習醫、立業、盛年、傳承、晚年五章，最後把一生的醫案寫成書。一輪大約三十到四十分鐘。每一章有幾位病人上門：方子開出去，要等他下個門診日回來，才知道對不對。</div>
-            <h2>怎麼玩</h2>
-            <ul class="small how">
-                <li>每個門診日：先看診，再做一件門診後的事，然後天亮。</li>
-                <li>看診在診間進行，依序選指令。能問的項數有限，問得越多越耗心神。</li>
-                <li>方子開出去，病人下個門診日回來才知道結果。選單裡的病歷簿隨時可翻。</li>
-                <li>精力是身體，心神是腦力。兩者都在五成以上且相差不大，就是「既濟」，身心會自己回復，修為也會增長。</li>
-                <li>看診有診金，每天要付生計。連續幾天付不出來，診間就開不下去。</li>
-                <li>每一章會遇到一次困境。同一個選擇，在有餘力與已透支時，結果不同。</li>
-                <li>每個門診日開始時自動存檔，從標題的「重溫舊夢」接著玩。</li>
-            </ul>
             <div class="small down hidden" id="t-warn" style="margin-top:6px">已經有一份紀錄。重新開始後，舊的紀錄會被蓋掉。</div>
+
+            <!-- 「怎麼玩」的條列文字（2026-11-17 拿掉）：改成邊玩邊教，第一次遇到的畫面才由師父說一句 -->
+            <h2>教學</h2>
+            <div class="opt" id="opt-tut">
+                <button class="btn on" data-tut="on">邊玩邊教<small>第一次玩建議開著。該看哪裡會發光，師父說一句；看過的不再出現。</small></button>
+                <button class="btn" data-tut="off">不用教<small>已經熟悉的人。之後可以在選單的「系統」重新打開。</small></button>
+            </div>
 
             <h2>難度</h2>
             <div class="opt" id="opt-diff">
@@ -3289,6 +3294,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         $('#panel-win').classList.add('hidden'); $('#night').classList.add('hidden');
         $('#scene').classList.remove('hidden'); $('#scene').classList.add('bare');
         if (big) showVeil(big, sub || '');
+        coachHide();
         speak(lines, () => { $('#ui').classList.remove('story'); done(); });
     }
     $('#skip').onclick = () => {
@@ -3410,6 +3416,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             { name: '處置', on: paid(), done: false, sub: '立法施治', go: eyPlan }
         ];
         const cur = steps.findIndex(s => s.on && !s.done);
+        if (n > 0) teachSoon('stat');
+        if (!sh) teachSoon('eye');
         /* 十字指令：上、左、右、下依序是四個步驟。旁邊列出每一步的現況 */
         $('#sc-cmds').innerHTML = steps.map((s, i) => `<button class="octw${i === cur ? ' cur' : ''}${s.done ? ' done' : ''}" data-i="${i}" ${s.on ? '' : 'disabled'} title="${s.sub}">
             <span class="oct"><b>${s.name}</b></span><span class="sub">${s.sub}</span></button>`).join('');
@@ -3463,6 +3471,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         return null;
     }
     function guideMark() {
+        coachCheck(); tutorMark(); coachFlush();       // 序章跟診的逐步指引，再加上第一次遇到的畫面的提示卡
+    }
+    function tutorMark() {
         if (!V || !V.tutor) return;
         const g = tutorStep();
         if (!g) return;
@@ -3483,6 +3494,70 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         S.spirit = 70; S.energy = 70;            // 跟診那天耗掉的不算，從頭開始
         story('', '', [{ who: SHM, text: '問得多不如問得準。往後，你自己問。' }], startChapter);
     }
+    /* =====================================================================
+       教學提示（2026-11-17，佑彥要「邊玩邊教」，取代初入杏林那段「怎麼玩」的文字）：
+       第一次遇到某個畫面，浮出一張提示卡（#coach），師父說一句，要看的地方發光（.coach-hl）。
+       看過的記在札記（meta.taught），之後不再出現；初入杏林可選「不用教」（meta.tutorOff）；系統選單可重新打開、重新教一次、翻教學手冊。
+       用法：畫面畫好後 teach(key)；或先 teachSoon(key)，等下一次 panel()、hub() 畫完自動跳出。換畫面時，要看的東西不在了，卡片就收起來。
+       ===================================================================== */
+    const hoverTip = () => (canHover() ? '滑鼠移到圖上的字，看會耗掉與得到什麼，點一下就去做' : '點一下圖上的字看說明，再按「確定」');
+    const LESSONS = {
+        stat: { t: '精力與心神', sel: '#sc-stat', x: () => '右下是你的狀態。精力是身體，看一位新病人耗 10；心神是腦力，每多問一項都耗一點。心神不到二十，每一診能問的就少一項。' },
+        eye: { t: '眼病怎麼看', sel: '#sc-cmds', x: () => '眼病的指令和外感不同：先「察目」，看病在五輪的哪一輪，再問診、辨證、處置。來勢急重的病，處置裡要懂得「急送專科」。' },
+        day: { t: '門診日', sel: '#next', x: () => '每個門診日先看候診名單，新病人和回診的人都在這裡。按「開始看診」，一位一位看。每天開門時會自動存檔，回標題後可以從「重溫舊夢」接著玩。' },
+        revisit: { t: '回診', x: () => '方子對不對，要等病人回來才知道。回診時先看他吃藥後怎麼樣，再決定守方、改方或轉介。' },
+        fee: { t: '診金', sel: '.s-mn', x: () => '看完一位病人就有診金，記在「金錢」。窮苦人家給得少，權貴給得多；沒治好，診金也少。' },
+        night: { t: '門診後', at: 'top', sel:() => ($('#nt-pic .spot.cur') ? '#nt-pic .spot.cur' : '#nt-pic [data-act="rest"]'),
+                 x: () => `門診後只能做一件事，做完就天亮。${hoverTip()}。${$('#nt-pic .spot.cur') ? '今晚該讀的書，書案已經亮著。' : '累了就休養，心亂就靜坐，想多學就研讀。'}` },
+        living: { t: '生計', sel: '.s-mn', x: () => '自立門戶之後，每天收工要付生計；用了杜掌櫃的藥材，還要付藥錢。錢不夠就三餐不繼，連續幾天付不出來，診間就開不下去。' },
+        jiji: { t: '既濟', sel: '.v-bal', x: () => '收工時精力與心神都在五成以上、相差不大，就是「既濟」：身心會自己回復，修為也會增長。偏了一邊是「未濟」，門診後做的事，要往不足的那一邊補。' },
+        tired: { t: '量力而為', x: () => '精力不到三十，研讀讀不下書；心神不到三十，休養睡不安穩；不到二十，看診能問的變少。累的時候，先把自己顧好。' },
+        dilemma: { t: '困境', x: () => '困境沒有標準答案。每個選項下面寫了此刻要付出什麼；同一個選擇，在你有餘力與已透支時，結果不同。有些後果要到下一章才看得見。' },
+        herbs: { t: '本草圖鑑', sel: '.menubtn', x: () => '杜掌櫃開的是藥行。選單裡的「本草」是本草圖鑑，開方用過的藥會點亮。往後他供的藥材分粗、中、上、道地四等，藥越好，病越不容易纏綿不去。' },
+        menu: { t: '選單', sel: '.menubtn', x: () => `「選單」${canHover() ? '（也可以按 M 鍵）' : ''}裡有七頁：狀態看身心，病歷看每位病人，心法是領悟，醫典查《傷寒》《金匱》，本草是圖鑑，札記記下每一輪，系統可以開關聲音、回到標題、重看教學。` },
+        chapter: { t: '一章結束', sel: '#next', x: () => '這一章看過的病人都列在這裡。歲月流轉，下一章醫館的境況會不一樣，上門的病人也會換一批。' }
+    };
+    let coachQ = [], coachOn = [];
+    const tutOn = () => !loadMeta().tutorOff;
+    const taught = (k) => (loadMeta().taught || []).includes(k);
+    function markTaught(k) { const m = loadMeta(); if (!(m.taught || []).includes(k)) { m.taught = (m.taught || []).concat(k); saveMeta(m); } }
+    function teachSoon(...keys) { if (!tutOn()) return; keys.forEach(k => { if (LESSONS[k] && !taught(k) && !coachQ.includes(k)) coachQ.push(k); }); }
+    function teach(...keys) { teachSoon(...keys); coachFlush(); }
+    function coachHide() {
+        coachOn.forEach(el => el.classList.remove('coach-hl')); coachOn = [];
+        $('#coach').classList.add('hidden');
+    }
+    /* 換畫面時：要看的東西已經不在（或這張卡本來就沒有指著東西），卡片收起來 */
+    function coachCheck() {
+        if ($('#coach').classList.contains('hidden')) return;
+        if (!coachOn.length || coachOn.every(e => !e.isConnected || e.offsetParent === null)) coachHide();
+    }
+    function coachFlush() {
+        const c = $('#coach');
+        if (!c.classList.contains('hidden') || $('#ui').classList.contains('story') || !$('#book').classList.contains('hidden')) return;     // 一次一張；劇情與選單裡不出
+        while (coachQ.length && taught(coachQ[0])) coachQ.shift();
+        const k = coachQ.shift();
+        if (!k || !tutOn()) return;
+        const L = LESSONS[k];
+        markTaught(k);
+        const sel = typeof L.sel === 'function' ? L.sel() : L.sel;
+        coachOn = sel ? $$(sel).filter(e => e.offsetParent !== null) : [];
+        coachOn.forEach(e => e.classList.add('coach-hl'));
+        c.innerHTML = `<div class="co-t"><b>${S.ch === 0 ? '師父' : '提示'}</b>${L.t}</div><div>${L.x()}</div>
+            <div class="foot"><button class="btn" id="co-off">往後不用教</button><button class="btn go px" id="co-ok">知道了</button></div>`;
+        c.style.top = c.style.bottom = '';
+        c.classList.remove('hidden');
+        /* 卡片放在要看的東西旁邊：東西在上半部就放它下面，在下半部就放它上面，免得蓋住 */
+        const st = $('#stage').getBoundingClientRect(), r = coachOn[0] && coachOn[0].getBoundingClientRect(), room = st.height - c.offsetHeight - 8;
+        if (L.at === 'top') c.style.top = '8px';                // 夜醫館：熱點散在圖的中段，卡片放最上面才不會蓋到
+        else if (r && r.top - st.top < st.height / 2) c.style.top = Math.max(8, Math.min(r.bottom - st.top + 10, room)) + 'px';
+        else if (r) c.style.bottom = Math.max(8, Math.min(st.bottom - r.top + 10, room)) + 'px';
+        else c.style.top = '14%';
+        $('#co-ok').onclick = (e) => { e.stopPropagation(); coachHide(); coachFlush(); };
+        $('#co-off').onclick = (e) => { e.stopPropagation(); const m = loadMeta(); m.tutorOff = true; saveMeta(m); coachQ = []; coachHide(); };
+    }
+    /* 系統選單的「教學手冊」：所有提示一次列出來 */
+    const helpHTML = () => `<ul class="small help-list">${Object.values(LESSONS).map(L => `<li><b class="name">${L.t}</b>　${L.x()}</li>`).join('')}</ul>`;
     function addTrust(d) {
         if (d < 0 && S.epi.includes('comm')) d = Math.ceil(d / 2);       // 降維溝通：不再與病人的焦慮共振
         V.trust = clamp(V.trust + d);
@@ -3639,6 +3714,10 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             <span class="tag${p.status === 'waiting' ? ' back' : ''}">${p.status === 'waiting' ? '回診' : '新病人'}</span></li>`).join('');
         const news = S.news.map(t => `<div class="down small" style="margin-top:6px">${t}</div>`).join('');
         const warn = S.spirit < 20 ? '<div class="down small" style="margin-top:6px">心神不足二十。今天每一診能問的都會少一項。</div>' : '';
+        teachSoon('day');
+        if (S.flags.duMet) teachSoon('herbs');
+        if (S.ch >= 1) teachSoon('menu');
+        if (S.energy < 30 || S.spirit < 30) teachSoon('tired');
         panel(`<h3>${chOf().name}　第 ${S.chDay} 個門診日 <span>候診 <span class="px">${S.queue.length}</span> 位</span></h3>
             ${echoes.map(e => `<div class="note small" style="margin:0 0 8px"><b class="hint">回音</b>　${e.t}</div>`).join('')}
             ${S.queue.length ? `<ul class="plist">${li}</ul>` : '<div class="dim">今天沒有病人上門。</div>'}${news}${warn}
@@ -3669,7 +3748,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             if (S.epi.includes('pause')) addSpirit(2);
             hud();
             V.status = 'seeing'; (V.kind === 'sh' ? shStart : eyStart)();
-        } else { addEnergy(-3); addSpirit(S.app.on ? -1 : -2); hud(); (V.kind === 'sh' ? shRevisit : eyReturn)(); }     // 回診也要用心，只是比初診省力；有學徒幫忙記錄更省
+        } else { addEnergy(-3); addSpirit(S.app.on ? -1 : -2); hud(); teachSoon('revisit'); (V.kind === 'sh' ? shRevisit : eyReturn)(); }     // 回診也要用心，只是比初診省力；有學徒幫忙記錄更省
     }
     /* 處置完畢，病人離開。結果要等回診才揭曉 */
     function leave(what) {
@@ -3692,7 +3771,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         S.money += pay;
         const parts = [`醫術 +${sk}`];
         if (fm) parts.push(`聲望 ${fm > 0 ? '+' : '−'}${Math.abs(fm)}`);
-        if (pay) parts.push(`診金 +${pay}`);
+        if (pay) { parts.push(`診金 +${pay}`); teachSoon('fee'); }
         /* 沒治好會自責耗神；領悟「褪去神格」之後不再自責，反而長修為。老實轉介也長修為 */
         const bad = ['無效', '惡化', '時好時壞'].includes(outcome);
         if (bad && !S.epi.includes('mortal')) { addSpirit(-6); parts.push('自責，心神 −6'); }
@@ -3991,6 +4070,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const d = DILEMMAS[id], ctx = d.ctx ? d.ctx() : {};
         const rows = d.opts.map(o => ({ o, v: o.v.find(x => !x.when || x.when()), locked: !!o.req && !o.req() }));
         const text = d.text(ctx);
+        teachSoon('dilemma');
         panel(`<h3>困境　${d.title} <span>此刻的我：精力 ${S.energy}　心神 ${S.spirit}　修為 ${S.peace}　醫術 ${S.skill}　聲望 ${S.fame}　金錢 ${S.money}</span></h3>
             <div class="dwrap"><div class="dimg" style="background-image:url('${IMG}${DIL_IMG[d.img || id]}')"></div><div class="see">${text}</div></div>
             <div class="octs">${rows.map((x, i) => `<button class="octw" data-d="${i}" ${x.locked ? 'disabled' : ''}><span class="oct"><b>${x.o.name}</b></span>
@@ -4128,6 +4208,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             };
         });
         nightFit(); requestAnimationFrame(nightFit);
+        coachCheck(); requestAnimationFrame(() => { if (!$('#night').classList.contains('hidden')) teach('night'); });        // 等圖排好位置，卡片才放得準
     }
     window.addEventListener('resize', () => { if (nightFit && !$('#night').classList.contains('hidden')) nightFit(); });
     /* 研讀選書：只有一部可讀就直接讀 */
@@ -4174,6 +4255,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         /* 既濟／未濟：看的是今天收工時的身心 */
         const bal = evalBalance();
         if (bal) { notes.push(`<span class="${bal.cls}">${bal.text}</span>`); perks.push(bal.perk); }
+        if (cost) teachSoon('living');
+        if (bal) teachSoon('jiji');
         addEnergy(8); addSpirit(5);         // 夜裡歇息
         S.study = S.studyNext; S.studyNext = 0;
         hud();
@@ -4222,6 +4305,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         V = null; hud();
         const list = Object.values(P).filter(p => p.firstCh === S.ch).sort((a, b) => a.firstDay - b.firstDay);
         const last = S.ch === CHAPTERS.length - 1;
+        teachSoon('chapter');
         panel(`<h3>第${CN[S.ch + 1]}章　${chOf().name}　終 <span>這一章看了 <span class="px">${list.length}</span> 位病人</span></h3>
             ${list.length ? `<table class="rec small">${list.map(caseRow).join('')}</table>` : '<div class="dim">這一章沒有病人上門。</div>'}
             <div class="small hint" style="margin-top:8px">醫術 ${S.skill}　修為 ${S.peace}（${tierOf()}）　聲望 ${S.fame}　金錢 ${S.money}　既濟 ${S.jiji} 天${last ? '' : '<br>歲月流轉，精力與心神各回復 15。'}</div>
@@ -4363,7 +4447,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        照樣張：左邊是選單列，右邊是內容。狀態、病歷、心法、札記、系統。 */
     const MENU = ['狀態', '病歷', '心法', '醫典', '本草', '札記', '系統'];
     let mSel = 0, subSel = 0, armed = false;         // armed：回到標題要點兩次才生效
-    function openMenu() { subSel = 0; armed = false; renderMenu(); $('#book').classList.remove('hidden'); }
+    function openMenu() { coachHide(); subSel = 0; armed = false; renderMenu(); $('#book').classList.remove('hidden'); }
     function closeMenu() { $('#book').classList.add('hidden'); }
     function renderMenu() {
         $('#m-list').innerHTML = MENU.map((t, i) => `<li class="${i === mSel ? 'sel' : ''}" data-m="${i}">${t}</li>`).join('');
@@ -4430,8 +4514,14 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                 <div class="desc" style="color:#fff">${notesHTML()}</div>`;
         } else {
             const items = [{ n: '聲音', v: muted ? '關' : '開', act: () => setMuted(!muted) }, { n: '難度', v: isEasy() ? '入門' : '專業', off: true },
-                           { n: '存檔', v: '每個門診日開始時自動', off: true }, { n: '回到標題', v: armed ? '再點一次確定' : '', act: () => { if (armed) { closeMenu(); showTitle(); } else armed = true; } }];
-            sub('系統', items, (it) => `${it.n}<span class="qty name">${it.v}</span>`, () => '回到標題後，可以從「重溫舊夢」回到今天這個門診日的開頭。');
+                           { n: '存檔', v: '每個門診日開始時自動', off: true },
+                           { n: '教學提示', v: tutOn() ? '開' : '關', tip: '第一次遇到某個畫面時，師父說一句，要看的地方會發光。',
+                             act: () => { const m = loadMeta(); m.tutorOff = !m.tutorOff; saveMeta(m); armed = false; } },
+                           { n: '重新教一次', v: armed === 'tut' ? '再點一次確定' : '', tip: '把看過的教學提示全部清掉，之後遇到時重新提示。下一輪選入門難度，會再跟師父看一次診。',
+                             act: () => { if (armed === 'tut') { const m = loadMeta(); m.taught = []; m.tutorOff = false; m.retaught = true; saveMeta(m); armed = false; } else armed = 'tut'; } },
+                           { n: '教學手冊', v: '', help: true },
+                           { n: '回到標題', v: armed === true ? '再點一次確定' : '', act: () => { if (armed === true) { closeMenu(); showTitle(); } else armed = true; } }];
+            sub('系統', items, (it) => `${it.n}<span class="qty name">${it.v}</span>`, (it) => (it.help ? helpHTML() : (it.tip || '回到標題後，可以從「重溫舊夢」回到今天這個門診日的開頭。')));
             $$('#sub li').forEach(li => li.onclick = () => { const it = items[+li.dataset.s]; subSel = +li.dataset.s; if (it.act) it.act(); else armed = false; if (!$('#book').classList.contains('hidden')) renderMenu(); });
         }
         if (mSel === 2 || mSel === 3) $$('#sub li').forEach(li => li.onclick = () => { subSel = +li.dataset.s; renderMenu(); });
@@ -5122,7 +5212,12 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             { text: '母親的病好了。我沒有走。' },
             { who: SHM, text: '想學醫？先學會坐著，看我怎麼看病人。' },
             { text: '我坐著看了三年。' }
-        ], isEasy() && !loadMeta().runs && SH.CASES.some(c => c.id === 'wen') ? prologue : startChapter);
+        ], wantPrologue() ? prologue : startChapter);
+    }
+    /* 序章跟診：入門難度、教學開著、沒跟過診（玩過一輪的人只有在系統選單按「重新教一次」後才再跟一次） */
+    function wantPrologue() {
+        const m = loadMeta();
+        return isEasy() && tutOn() && !taught('prologue') && (!m.runs || m.retaught) && SH.CASES.some(c => c.id === 'wen');
     }
     /* 序章「跟診」（入門難度、第一次玩才有）：引導式教學。病人是病例庫裡的文遠（太陽中風），
        玩家在真的看診畫面上照師父指的做一遍，隔天文遠回診，把「方子開出去，要等他回來才知道對不對」演一次。
@@ -5133,6 +5228,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             { text: '師父頭一回把脈枕推到我面前。' },
             { who: SHM, text: '今天這一位，你來。我在旁邊。' }
         ], () => {
+            markTaught('prologue');
             S.day = 0;                              // 跟診算在第一個門診日之前
             V = P.wen = mk('wen');
             V.tutor = true;
@@ -5142,7 +5238,11 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             shStart();
         });
     }
-    $('#t-go-new').onclick = () => { $('#t-main').classList.add('hidden'); $('#t-new').classList.remove('hidden'); };
+    $('#t-go-new').onclick = () => {
+        $('#t-main').classList.add('hidden'); $('#t-new').classList.remove('hidden');
+        const on = tutOn(); $$('#opt-tut .btn').forEach(x => x.classList.toggle('on', (x.dataset.tut === 'on') === on));
+    };
+    $$('#opt-tut .btn').forEach(b => b.onclick = () => { $$('#opt-tut .btn').forEach(x => x.classList.toggle('on', x === b)); });
     $('#t-back').onclick = () => { $('#t-new').classList.add('hidden'); $('#t-main').classList.remove('hidden'); };
     $('#t-notes-btn').onclick = () => { $('#t-notes-body').innerHTML = notesHTML(); $('#t-main').classList.add('hidden'); $('#t-notes').classList.remove('hidden'); };
     $('#t-notes-back').onclick = () => { $('#t-notes').classList.add('hidden'); $('#t-main').classList.remove('hidden'); };
@@ -5154,6 +5254,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     $('#t-load').onclick = () => { if (loadGame()) enter(dayStart); else showTitle(); };
     $$('.snd').forEach(b => { b.textContent = muted ? '聲音：關' : '聲音：開'; b.onclick = () => setMuted(!muted); });
     $('#start').onclick = () => {
+        const m = loadMeta(), sel = $('#opt-tut .btn.on');
+        m.tutorOff = !!sel && sel.dataset.tut === 'off'; saveMeta(m);
+        coachQ = []; coachHide();
         Object.keys(P).forEach(k => delete P[k]);
         Object.assign(S, fresh());
         enter(opening);
@@ -5207,6 +5310,7 @@ window.__bot = (function () {
         st.minEn = Math.min(st.minEn, S.energy); st.minSp = Math.min(st.minSp, S.spirit);
         if (!$('#title').classList.contains('hidden')) return 'title';
         if ($('#ui').classList.contains('story')) { click($('#dlg')); return 'story'; }
+        if (!$('#coach').classList.contains('hidden')) { st.acts.coach = (st.acts.coach || 0) + 1; click($('#co-ok')); return 'coach'; }
         if (inHub()) { const c = $('#sc-cmds .octw.cur'); if (!c) return 'stuck:hub'; click(c); return 'hub'; }
         if (/^(全書完|貧病交加)/.test(t) && $('#home')) return 'end';
         if (V && V.tutor) { const g = $('.guide'); if (g) { click(g); return 'tutor'; } }
