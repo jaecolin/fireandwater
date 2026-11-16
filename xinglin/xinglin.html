@@ -728,10 +728,16 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             <div id="t-notes-body"></div>
             <div class="foot"><button class="btn" id="t-notes-back">返回</button></div>
         </div>
+        <div class="win hidden" id="t-saves">
+            <h1>重溫舊夢</h1>
+            <div class="sub small">選一份紀錄接著玩。讀回來是那一天開門的時候。</div>
+            <ul class="list" id="t-saves-list"></ul>
+            <div class="foot"><button class="btn" id="t-saves-back">返回</button></div>
+        </div>
         <div class="win hidden" id="t-new">
             <h1>初入杏林</h1>
             <div class="sub small">業師：張仲景</div>
-            <div class="small">從拜師開始，走過習醫、立業、盛年、傳承、晚年五章，最後把一生的醫案寫成書。一輪大約三十到四十分鐘。每一章有幾位病人上門：方子開出去，要等他下個門診日回來，才知道對不對。</div>
+            <div class="small">從拜師開始，走過習醫、立業、盛年、傳承、晚年五章，最後把一生的醫案寫成書。每一章有幾位病人上門：方子開出去，要等他下個門診日回來，才知道對不對。</div>
             <div class="small down hidden" id="t-warn" style="margin-top:6px">已經有一份紀錄。重新開始後，舊的紀錄會被蓋掉。</div>
 
             <!-- 「怎麼玩」的條列文字（2026-11-17 拿掉）：改成邊玩邊教，第一次遇到的畫面才由師父說一句 -->
@@ -743,9 +749,11 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 
             <h2>難度</h2>
             <div class="opt" id="opt-diff">
-                <button class="btn on" data-diff="easy">入門<small>問診項數較多，師父會提點，看得到藥材功效，可套用成方。</small></button>
-                <button class="btn" data-diff="hard">專業<small>問診項數較少，沒有提點，方子自己配，對錯到醫案才揭曉。</small></button>
+                <button class="btn on" data-diff="easy">入門<small>一輪約三、四十分鐘，一天約三位病人。問診項數多，師父會提點，看得到藥材功效，可套用成方。</small></button>
+                <button class="btn" data-diff="mid">進階<small>一輪約一個半小時，一天約五位病人。只有習醫章有提點；立業章起從類方加減選方。</small></button>
+                <button class="btn" data-diff="hard">專業<small>一天約五位病人。問診項數少，沒有提點，每一帖都一味一味自己配，對錯到醫案才揭曉。</small></button>
             </div>
+            <div class="small dim" style="margin-top:4px">病例還在陸續增加。目前進階與專業每天上門的病人，會比上面寫的少一些。</div>
 
             <h2>主角</h2>
             <div class="opt" id="opt-hero">
@@ -3001,7 +3009,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     }
     function pickText(w) {
         const x = WHEELS[w];
-        return isEasy() ? `我看的是：<b class="name">${x.name}</b>（${x.part}，${x.plain}），屬${x.organ}` : `我看的是：<b class="name">${x.part}</b>（${x.plain}）`;
+        return !isHard() ? `我看的是：<b class="name">${x.name}</b>（${x.part}，${x.plain}），屬${x.organ}` : `我看的是：<b class="name">${x.part}</b>（${x.plain}）`;
     }
     const LEGEND = '<div class="legend small">' + Object.keys(WHEELS).map(k => { const x = WHEELS[k]; return `<span><b>${x.name}</b>${x.part}（${x.plain}）屬${x.organ}</span>`; }).join('') + '</div>';
 
@@ -3077,7 +3085,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const pool = SH.CASES.concat(EY.CASES).filter(c => !P[c.id] && lvOf(c) <= k + 1)
             .map(c => ({ id: c.id, lv: lvOf(c), o: c.ord || CASE_ORD[c.id] || 10 + Math.random() * 80 }))
             .sort((a, b) => (b.lv - a.lv) || (a.o - b.o));          // 合乎這一章程度的優先，同程度隨機
-        const picks = pool.slice(0, CHAPTERS[k].quota).map(x => x.id);
+        const picks = pool.slice(0, quotaOf(k)).map(x => x.id);
         const n1 = Math.ceil(picks.length / 2);
         return { 1: picks.slice(0, n1), 2: picks.slice(n1) };
     }
@@ -3091,7 +3099,19 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const S = Object.assign({ diff: 'easy', hero: 'm' }, fresh());       // hero：主角 m 男、f 女（舊存檔沒有這一欄就當男）
     const P = {};               // 病歷簿：每位病人一筆，跨門診日保存
     let V = null;               // 目前在診間的病人
+    /* 難度（2026-11-17 佑彥定三級）：入門 easy（一天約三位，約三四十分鐘）、進階 mid（一天約五位，約一個半小時，類方加減）、專業 hard（一天約五位，方子一味一味自己配）。
+       isEasy() 是只給入門的提點；!isHard() 是入門與進階都有的資訊（藥材功效、類方組成、察目的臟腑） */
     const isEasy = () => S.diff === 'easy';
+    const isHard = () => S.diff === 'hard';
+    const DIFF_NAME = { easy: '入門', mid: '進階', hard: '專業' };
+    const diffName = (d) => DIFF_NAME[d || S.diff] || '入門';
+    const QUOTA_MORE = [4, 5, 5, 5, 5];          // 進階、專業每章的新病人數（入門用 CHAPTERS 的 quota）。病例庫不夠時，有幾位就排幾位
+    /* 病例不夠時，把剩下的病例平均留給後面幾章，免得晚年章沒人上門；病例補足後就是 QUOTA_MORE */
+    function quotaOf(k) {
+        if (isEasy()) return CHAPTERS[k].quota;
+        const left = SH.CASES.concat(EY.CASES).filter(c => !P[c.id]).length;
+        return Math.min(QUOTA_MORE[k], Math.max(CHAPTERS[k].quota, Math.ceil(left / (CHAPTERS.length - k))));
+    }
     const clamp = (n) => Math.max(0, Math.min(100, n));
     const clone = (o) => JSON.parse(JSON.stringify(o));
     function mk(id) {
@@ -3104,7 +3124,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                  wheel: null, wheelOk: null, plan: null, log: [], pending: null, inChain: false, chainIdx: 0, chainRight: 0, chainDone: false, promise: false, noRefer: false, keyHit: 0 };
     }
     function maxAsk() {
-        const base = V.kind === 'sh' ? (isEasy() ? 5 : 3) : (isEasy() ? 4 : 3);
+        const base = V.kind === 'sh' ? { easy: 5, mid: 4 }[S.diff] || 3 : (isEasy() ? 4 : 3);
         return Math.max(1, base + S.study + (S.skill >= 10 ? 1 : 0) - (V.lowSpirit ? 1 : 0));
     }
     /* 醫術：每結一案就長一點，到門檻會讓看診省力。聲望：治好加、治壞減，影響新病人的信任 */
@@ -3130,17 +3150,35 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         set(v) { memSave = v; try { localStorage.setItem(SAVE_KEY, v); } catch (e) { /* 無法寫入時只留在記憶體 */ } },
         del() { memSave = null; try { localStorage.removeItem(SAVE_KEY); } catch (e) { /* 同上 */ } }
     };
-    function readSave() {
-        try { const d = JSON.parse(store.get()); return d && d.v === 2 ? d : null; } catch (e) { return null; }      // v2：加入章節、醫術、聲望
+    /* raw 沒給就讀自動存檔；給了就讀那一份（手動存檔的格子） */
+    function readSave(raw) {
+        try { const d = JSON.parse(raw === undefined ? store.get() : raw); return d && d.v === 2 ? d : null; } catch (e) { return null; }      // v2：加入章節、醫術、聲望
     }
+    /* 手動存檔（2026-11-17，佑彥要能存檔再玩）：三格。存進去的是「今天開門時」的進度，也就是自動存檔那一份；
+       讀回來從那一天的候診室開始。不存半途的狀態，是因為讀回時同一天的病人會重複上門 */
+    const SLOT_N = 3, memSlot = {};
+    const slotKey = (n) => `xinglin-slot-${n}`;
+    function slotGet(n) { try { return localStorage.getItem(slotKey(n)) || memSlot[n] || null; } catch (e) { return memSlot[n] || null; } }
+    /* 今天開門時的自動存檔，是不是這一局的（新開一局、還沒開門前，自動存檔還是上一局的） */
+    function todaySave() { const d = readSave(); return d && d.S.day === S.day && d.S.ch === S.ch && d.S.chDay === S.chDay ? d : null; }
+    function slotSave(n) {
+        const d = todaySave();
+        if (!d) return false;
+        d.at = Date.now();
+        const v = JSON.stringify(d); memSlot[n] = v;
+        try { localStorage.setItem(slotKey(n), v); } catch (e) { /* 存不了就只留在這一次 */ }
+        return true;
+    }
+    const saveWhen = (d) => (d && d.at ? new Date(d.at).toLocaleString('zh-TW', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }) : '');
+    const saveInfo = (d) => (d ? `${(CHAPTERS[d.S.ch] || {}).name || '終章'}　第 ${d.S.chDay} 個門診日　${diffName(d.S.diff)}${d.at ? '　' + saveWhen(d) + ' 存' : ''}` : '空的');
     function saveGame() {
         const ps = {};
         Object.keys(P).forEach(id => { const o = Object.assign({}, P[id]); delete o.c; ps[id] = o; });
         const s = Object.assign({}, S); delete s.queue; delete s.news;       // 狀態整包存，之後加新欄位不必再改這裡
         store.set(JSON.stringify({ v: 2, S: s, P: ps }));
     }
-    function loadGame() {
-        const d = readSave();
+    function loadGame(raw) {
+        const d = readSave(raw);
         if (!d) return false;
         try {
             const ps = {};
@@ -3312,7 +3350,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     let askN = 0;
     function tips(...texts) {
         texts = texts.filter(Boolean);
-        if (!isEasy() || !texts.length) return [];
+        if (!(isEasy() || (S.diff === 'mid' && S.ch === 0)) || !texts.length) return [];        // 進階只有習醫章有師父提點
         const eye = V && V.kind === 'eye';
         if (S.ch === 0) return texts.map(Mt);
         if (S.ch === 1) return eye ? texts.map(Mt) : texts.map((t, i) => narr((i ? '' : '我想起師父說過：') + t));
@@ -3340,7 +3378,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         face.classList.toggle('hidden', !V);
         const over = S.ch >= CHAPTERS.length;      // 五章走完，進入結局
         $('#me-name').textContent = `我（${['弟子', '醫者', '醫者', '師者', '老醫者'][S.ch] || '著書人'}）`;
-        $('#me-diff').innerHTML = over ? '終章' : `<span class="wide">${isEasy() ? '入門' : '專業'}　${chOf().name}　第 ${S.chDay} 日</span><span class="narrow">${chOf().name} ${S.chDay} 日</span>`;
+        $('#me-diff').innerHTML = over ? '終章' : `<span class="wide">${diffName()}　${chOf().name}　第 ${S.chDay} 日</span><span class="narrow">${chOf().name} ${S.chDay} 日</span>`;
         /* 精力、心神與四個數值有兩處顯示：平常在右上的狀態牌，看診時在右下的狀態窗 */
         $$('.g-sp').forEach(e => { e.style.width = S.spirit + '%'; }); $$('.v-sp').forEach(e => { e.innerHTML = `${S.spirit}<small>/100</small>`; });
         $$('.g-en').forEach(e => { e.style.width = S.energy + '%'; }); $$('.v-en').forEach(e => { e.innerHTML = `${S.energy}<small>/100</small>`; });
@@ -4466,7 +4504,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             const over = S.ch >= CHAPTERS.length;
             R.innerHTML = `<h3>狀態</h3>
                 <div class="st-top"><div class="face">${heroImg()}</div>
-                    <div><span class="name">${$('#me-name').textContent}</span><br>業師：張仲景　書中師：${[S.learn.eye ? '黃庭鏡' : '', S.learn.bc ? LSZ : ''].filter(Boolean).join('、') || '尚未結識'}<br>${over ? '終章' : `第${CN[S.ch + 1]}章　${chOf().name}　第 ${S.chDay} 個門診日`}　${isEasy() ? '入門' : '專業'}</div></div>
+                    <div><span class="name">${$('#me-name').textContent}</span><br>業師：張仲景　書中師：${[S.learn.eye ? '黃庭鏡' : '', S.learn.bc ? LSZ : ''].filter(Boolean).join('、') || '尚未結識'}<br>${over ? '終章' : `第${CN[S.ch + 1]}章　${chOf().name}　第 ${S.chDay} 個門診日`}　${diffName()}</div></div>
                 <div class="row"><span class="k">精力</span><span class="gauge"><i style="width:${S.energy}%"></i></span><span class="v px">${S.energy}<small>/100</small></span></div>
                 <div class="row"><span class="k">心神</span><span class="gauge sp"><i style="width:${S.spirit}%"></i></span><span class="v px">${S.spirit}<small>/100</small></span></div>
                 <div class="stats4"><span>醫術 <span class="name px">${S.skill}</span></span><span>修為 <span class="name px">${S.peace}</span>　${tierOf()}</span>
@@ -4513,8 +4551,12 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                 <div class="small"><b class="hint">這一輪的抉擇</b>　${S.dilLog.length ? S.dilLog.join('、') : '<span class="dim">還沒有遇到困境。</span>'}</div>
                 <div class="desc" style="color:#fff">${notesHTML()}</div>`;
         } else {
-            const items = [{ n: '聲音', v: muted ? '關' : '開', act: () => setMuted(!muted) }, { n: '難度', v: isEasy() ? '入門' : '專業', off: true },
-                           { n: '存檔', v: '每個門診日開始時自動', off: true },
+            const items = [{ n: '聲音', v: muted ? '關' : '開', act: () => setMuted(!muted) }, { n: '難度', v: diffName(), off: true },
+                           { n: '自動存檔', v: '每天開門時', off: true, tip: '每個門診日開始時自動存一次。下面三格可以另外存，換難度、換身分玩的時候不會蓋掉。' },
+                           ...[1, 2, 3].map(n => { const d = readSave(slotGet(n));
+                               return { n: `存到第${CN[n]}格`, v: armed === 's' + n ? '再點一次覆蓋' : (d ? `${(CHAPTERS[d.S.ch] || {}).name || '終章'} ${d.S.chDay} 日` : '空'),
+                                        tip: `${d ? '目前存著：' + saveInfo(d) + '。' : '這一格是空的。'}存進去的是今天開門時的進度，讀回來從今天的候診室開始。${todaySave() ? '' : '<br><span class="down">今天還沒開門，還不能存。</span>'}`,
+                                        act: () => { if (!todaySave()) { armed = false; return; } if (d && armed !== 's' + n) { armed = 's' + n; return; } slotSave(n); armed = false; beep(660, 0.05, 0.04, 'sine'); } }; }),
                            { n: '教學提示', v: tutOn() ? '開' : '關', tip: '第一次遇到某個畫面時，師父說一句，要看的地方會發光。',
                              act: () => { const m = loadMeta(); m.tutorOff = !m.tutorOff; saveMeta(m); armed = false; } },
                            { n: '重新教一次', v: armed === 'tut' ? '再點一次確定' : '', tip: '把看過的教學提示全部清掉，之後遇到時重新提示。下一輪選入門難度，會再跟師父看一次診。',
@@ -4602,7 +4644,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const FNAME_FIX = { 理中湯: '理中丸' };                           // 遊戲裡理中作湯，《類方》作理中丸
     const jfFind = (name) => { name = FNAME_FIX[name] || name; for (const c of JF.classes) { const f = c.list.find(x => x.n === name); if (f) return { cls: c, f }; } return null; };
     const fkeyOf = (name) => Object.keys(SH.FORMULAS).find(k => SH.FORMULAS[k].name === name || FNAME_FIX[SH.FORMULAS[k].name] === name);
-    const pickMode = () => S.ch >= 1 && !(V && V.tutor);
+    const pickMode = () => S.ch >= 1 && !(V && V.tutor) && !isHard();        // 專業難度一律一味一味自己配（佑彥 2026-11-17）
     /* 習醫章親手組的十一個方根（佑彥 2026-11-15 決定：十二類各類的類首）。其他成方（例如厥陰的當歸四逆湯）只在類方選方裡出現 */
     const ROOT_KEYS = ['guizhi', 'mahuang', 'gegen', 'xiaochaihu', 'zhichi', 'chengqi', 'banxiaxiexin', 'baihu', 'wuling', 'sini', 'lizhong'];
     function shPattern() {
@@ -4643,7 +4685,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             : fam ? fam.list.map(f => {
             const add = f.h.filter(h => !head.h.includes(h)), minus = head.h.filter(h => !f.h.includes(h));
             const diff = f.n === fam.head ? '類首' : [add.length ? '加' + add.join('、') : '', minus.length ? '去' + minus.join('、') : ''].filter(Boolean).join('，') || '藥味相同，分量不同';
-            return `<button class="btn${pickF === f.n ? ' on' : ''}" data-pickf="${f.n}"><b>${f.n}</b><span class="sub">${f.n === fam.head ? '' : `比${fam.head}：`}${diff}${isEasy() ? `<br>${f.h.join('、')}` : ''}${tongNote(f.h)}</span></button>`;
+            return `<button class="btn${pickF === f.n ? ' on' : ''}" data-pickf="${f.n}"><b>${f.n}</b><span class="sub">${f.n === fam.head ? '' : `比${fam.head}：`}${diff}${!isHard() ? `<br>${f.h.join('、')}` : ''}${tongNote(f.h)}</span></button>`;
         }).join('') : '';
         panel(`<h3>${V.round === 1 ? '處方' : '複診處方'} <span>我定的證：${p0.name}</span></h3>
             <div class="askg"><b>方書</b><div class="grid">${books}</div></div>${bookTip}
@@ -4672,7 +4714,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             <div class="h">${rx[k].map(h => SH.HERBS[h].name).join('、') || '<span class="dim">點此，再選藥</span>'}</div></div>`).join('');
         const herbs = Object.keys(SH.HERBS).map(k => { const h = SH.HERBS[k];
             return `<button class="herb${used.includes(k) ? ' used' : ''}" data-h="${k}"><span class="n">${h.name}</span><span class="q ${qClass(h.q)}">${h.q}</span>
-                <span class="d">${h.flavor}　歸${h.meridian}${isEasy() ? `<br>${h.use}` : ''}</span></button>`; }).join('');
+                <span class="d">${h.flavor}　歸${h.meridian}${!isHard() ? `<br>${h.use}` : ''}</span></button>`; }).join('');
         const formulas = isEasy() ? `<div class="grp"><b>成方</b><span class="small hint">點一下直接套用，之後仍可增減</span><div class="grid" style="margin-top:4px">${
             ROOT_KEYS.filter(k => SH.FORMULAS[k]).map(k => `<button class="btn" data-f="${k}"><b>${SH.FORMULAS[k].name}</b><span class="sub">${SH.FORMULAS[k].note}</span></button>`).join('')}</div></div>` : '';
         panel(`<h3>${V.round === 1 ? '處方' : '複診處方'} <span>我定的證：${SH.PATTERNS[V.pattern].name}</span></h3>
@@ -5184,14 +5226,14 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         clearInterval(typing); typing = null; queue = []; after = null;
         clearTimeout(veilTimer);
         if (introBgm) introBgm = false; else playTrack('');       // 剛從片頭進來：片頭的音樂繼續放
-        ['#ui', '#book', '#veil', '#t-new', '#t-notes'].forEach(s => $(s).classList.add('hidden'));
+        ['#ui', '#book', '#veil', '#t-new', '#t-notes', '#t-saves'].forEach(s => $(s).classList.add('hidden'));
         const mm = loadMeta();
         $('#t-notes-info').textContent = mm.runs ? `行醫 ${mm.runs} 輪　成就 ${mm.ach.length}/${ACH.length}` : '還是空白的';
         $('#ui').classList.remove('story');
         $('#t-main').classList.remove('hidden'); $('#title').classList.remove('hidden');
-        const d = readSave();
-        $('#t-load').disabled = !d;
-        $('#t-load-info').textContent = d ? `${(CHAPTERS[d.S.ch] || {}).name || ''}　第 ${d.S.chDay} 個門診日　${d.S.diff === 'easy' ? '入門' : '專業'}` : '還沒有紀錄';
+        const d = readSave(), slots = [1, 2, 3].filter(n => readSave(slotGet(n))).length;
+        $('#t-load').disabled = !d && !slots;
+        $('#t-load-info').textContent = d ? saveInfo(d) + (slots ? `　另有 ${slots} 份存檔` : '') : (slots ? `有 ${slots} 份存檔` : '還沒有紀錄');
         $('#t-warn').classList.toggle('hidden', !d);
     }
     /* go：進到遊戲畫面後要從哪裡開始（新遊戲是開場，讀檔是當天的候診室） */
@@ -5251,7 +5293,15 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const local = /^(file:|data:|https?:\/\/(127\.0\.0\.1|localhost)[:/])/.test(location.href);
         location.href = local ? 'intro.html' : location.pathname + '?intro=1';
     };
-    $('#t-load').onclick = () => { if (loadGame()) enter(dayStart); else showTitle(); };
+    /* 重溫舊夢：只有自動存檔就直接讀；有手動存檔就列出來選 */
+    $('#t-load').onclick = () => {
+        const list = [{ n: '自動存檔', raw: store.get() }].concat([1, 2, 3].map(n => ({ n: `第${CN[n]}格`, raw: slotGet(n) }))).filter(x => readSave(x.raw));
+        if (list.length === 1 && list[0].n === '自動存檔') { if (loadGame()) enter(dayStart); else showTitle(); return; }
+        $('#t-saves-list').innerHTML = list.map((x, i) => `<li data-sv="${i}">${x.n}<span class="qty name small">${saveInfo(readSave(x.raw))}</span></li>`).join('');
+        $$('#t-saves-list li').forEach(li => li.onclick = () => { if (loadGame(list[+li.dataset.sv].raw)) enter(dayStart); else showTitle(); });
+        $('#t-main').classList.add('hidden'); $('#t-saves').classList.remove('hidden');
+    };
+    $('#t-saves-back').onclick = () => { $('#t-saves').classList.add('hidden'); $('#t-main').classList.remove('hidden'); };
     $$('.snd').forEach(b => { b.textContent = muted ? '聲音：關' : '聲音：開'; b.onclick = () => setMuted(!muted); });
     $('#start').onclick = () => {
         const m = loadMeta(), sel = $('#opt-tut .btn.on');
