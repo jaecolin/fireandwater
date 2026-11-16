@@ -609,6 +609,18 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     .night { align-items: flex-start; padding-top: 14px; }
     .nt-info { left: 0; bottom: auto; top: calc(100% + 12px); transform: none; width: 100%; box-sizing: border-box; }
 }
+/* 手機（2026-11-17，佑彥回報）：點過的選項會殘留「滑鼠移過」的樣式，看起來像選了兩個。觸控裝置不顯示 hover，只看 .on */
+@media (hover: none) {
+    .btn:hover:not(:disabled):not(.on):not(:focus-visible) { background: none; color: #fff; }
+    .btn:hover:not(:disabled):not(.on):not(:focus-visible)::before { opacity: 0; animation: none; }
+    .btn.go:hover:not(:disabled) { filter: none; }
+    .axis .btn:hover:not(:disabled):not(.on) { transform: none; }
+    .herb:hover:not(:focus-visible) { background: none; }
+    .herb:hover:not(:focus-visible)::before { opacity: 0; animation: none; }
+    .octw:hover:not(:disabled) .oct { transform: none; filter: none; }
+}
+/* 視窗最下面的確定鈕黏在視窗底部，內容再長也看得到（手機上辨證的選項一多，確定鈕會被擠到看不見） */
+#panel > .foot:last-child { position: sticky; bottom: -10px; z-index: 2; margin: 10px -14px -10px; padding: 8px 14px 10px; background: linear-gradient(180deg, rgba(10, 18, 56, 0.6), var(--navy-2) 40%); }
 /* 書中師說話：像從書頁裡浮出來的淡影 */
 #dlg-face.ghost { opacity: 0.62; filter: sepia(0.35) contrast(0.9); -webkit-mask-image: radial-gradient(ellipse at 50% 40%, #000 52%, transparent 100%); mask-image: radial-gradient(ellipse at 50% 40%, #000 52%, transparent 100%); }
 /* 本草圖鑑 */
@@ -3694,6 +3706,17 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const pool = {};
     let curTrack = '', wantTrack = '', muted = false, actx = null;
     try { muted = localStorage.getItem('xinglin-mute') === '1'; } catch (e) { /* 讀不到就當作沒靜音 */ }
+    /* 片頭交棒（2026-11-17，佑彥回報音樂重複）：片頭放的〈春日微風〉不停，直接當成遊戲的 spring 接著放，
+       標題畫面不關它，進第一章時就是同一首、不會重來。iPhone 不能用程式調音量，所以停音樂一律靠 pause，不靠音量淡到 0 */
+    let introBgm = false;
+    (function adoptIntro() {
+        const ia = window.__xlBgm;
+        window.__xlBgm = null;
+        if (!ia || !ia.audio) return;
+        if (muted) { try { ia.audio.pause(); } catch (e) { /* 已經停了 */ } return; }
+        ia.audio.loop = true;
+        pool[ia.key] = ia.audio; curTrack = wantTrack = ia.key; introBgm = true;
+    })();
     function fade(a, to, ms) {
         clearInterval(a._f);
         const from = a.volume, n = 20; let i = 0;
@@ -5060,7 +5083,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     function showTitle() {
         clearInterval(typing); typing = null; queue = []; after = null;
         clearTimeout(veilTimer);
-        playTrack('');
+        if (introBgm) introBgm = false; else playTrack('');       // 剛從片頭進來：片頭的音樂繼續放
         ['#ui', '#book', '#veil', '#t-new', '#t-notes'].forEach(s => $(s).classList.add('hidden'));
         const mm = loadMeta();
         $('#t-notes-info').textContent = mm.runs ? `行醫 ${mm.runs} 輪　成就 ${mm.ach.length}/${ACH.length}` : '還是空白的';
