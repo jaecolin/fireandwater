@@ -172,8 +172,9 @@ body { font-family: 'Noto Serif TC', serif; }
     }
     function fadeMusic(ms) {
         if (!audio) return;
-        var a = audio, d = a.volume / (ms / 60);
-        var t = setInterval(function () { a.volume = Math.max(0, a.volume - d); if (a.volume <= 0) { clearInterval(t); a.pause(); } }, 60);
+        /* 用次數算，時間到一定 pause：iPhone 不能改音量，靠音量淡到 0 才停的話會永遠停不下來 */
+        var a = audio, n = Math.max(1, Math.round(ms / 60)), i = 0, v0 = a.volume;
+        var t = setInterval(function () { i++; try { a.volume = Math.max(0, v0 * (1 - i / n)); } catch (e) { /* 改不了音量就算了 */ } if (i >= n) { clearInterval(t); a.pause(); } }, 60);
     }
     function start() {
         step = 'run';
@@ -191,14 +192,15 @@ body { font-family: 'Noto Serif TC', serif; }
         if (ended) return; ended = true;
         timers.forEach(clearTimeout);
         store.set('xinglin-intro-seen', '1');            // 看過一次，之後直接進遊戲（網址加 ?intro=1 可以重看）
-        fadeMusic(800);
+        if (game && audio && !audio.paused) window.__xlBgm = { key: 'spring', audio: audio };      // 交給遊戲接著放，不淡出、不重來
+        else fadeMusic(800);
         $('#skip').style.display = 'none';
         $('#fade').style.opacity = 1;
         setTimeout(function () {
             /* 沒有載入頁給的網址：在本機測試時跳到同資料夾的遊戲；在網站上就重新整理，載入頁會因為「看過了」直接載入遊戲 */
             if (!game) { location.href = /^(file:|https?:\/\/(127\.0\.0\.1|localhost)[:/])/.test(location.href) ? 'xinglin.html' : location.pathname; return; }
             $('#fade').textContent = '載入中';
-            game.then(enterGame, function () { $('#fade').textContent = '載入失敗，請重新整理再試一次'; });
+            game.then(enterGame, function () { if (window.__xlBgm) { window.__xlBgm = null; fadeMusic(800); } $('#fade').textContent = '載入失敗，請重新整理再試一次'; });
         }, 900);
     }
     $('#stage').addEventListener('click', function () { if (step === 'gate') start(); else if (step === 'ready') finish(); });
