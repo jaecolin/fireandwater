@@ -632,6 +632,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 .hb.off .nm { color: var(--dim); }
 .hb.sel, .hb:hover { background: rgba(255, 255, 255, 0.14); border-color: var(--gold-hi); }
 .hb-card .big { font-size: 1.25em; color: var(--name); letter-spacing: 0.2em; }
+.hb .ch.img { background: #efe6d0 center / cover no-repeat; color: transparent; text-shadow: none; }
+.hb-pic { float: right; width: 9.5em; height: 9.5em; margin: 0 0 6px 10px; border: 1px solid var(--gold); box-shadow: 0 0 0 2px var(--gold-dark); background: #efe6d0 center / cover no-repeat; }
+@media (max-width: 640px) { .hb-pic { width: 7em; height: 7em; } }
 .hb-card .chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
 .hb-card .chips .btn { padding: 2px 8px; font-size: 0.9em; }
 .hb-card .fx { margin-top: 6px; padding: 6px 8px; border-left: 2px solid var(--gold); background: rgba(255, 255, 255, 0.05); }
@@ -1058,10 +1061,10 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
       },
       "tongcao": {
        "name": "通草",
-       "q": "微寒",
-       "flavor": "甘、淡",
-       "meridian": "肺、胃",
-       "use": "通利血脈，利水（《傷寒論》的通草，一說即今之木通）"
+       "q": "寒",
+       "flavor": "苦",
+       "meridian": "心、小腸、膀胱",
+       "use": "通利血脈，利尿通淋（《傷寒論》的通草，即今之木通）"
       }
      },
      "FORMULAS": {
@@ -2079,6 +2082,10 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
       "weire": {
        "name": "脾胃內熱",
        "alias": "炙烤辛辣吃多了，胃火上衝，胞瞼紅腫"
+      },
+      "chengshu": {
+       "name": "圓翳成熟期",
+       "alias": "年高肝腎陰精漸虧，瞳神內翳障已深，藥力難以化開"
       }
      },
      "PLANS": {
@@ -2096,7 +2103,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
       },
       "qi": {
        "name": "益氣升清",
-       "sub": "補氣上提，如益氣聰明湯之類"
+       "sub": "補氣上提，如補中益氣湯之類"
       },
       "san": {
        "name": "清胃散結",
@@ -2820,7 +2827,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "lv": 4,
        "disease": "圓翳內障",
        "modern": "老年性白內障",
-       "pattern": "laosun",
+       "pattern": "chengshu",
        "right": "bu",
        "wheel": "shui",
        "keyQ": [
@@ -4275,7 +4282,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         lines.push({ text: '病歷簿邊上那些小字，我終於理成了一張表：眼睛的每一層，和身上哪一處是同一個來處，歸哪一臟。我把它叫做胚胎對應定位法。' });
         lines.push({ text: '在外的膜歸肺，血絡歸心，黃仁的肉歸脾，眼帶與筋歸肝，晶珠與神膏歸腎。' });
         lines.push({ text: '這樣想的人不只我一個。後來我遇過別處的大夫，各自想到的，大同小異。' });
-        lines.push({ text: '表的最後，我添了一行：定位只是參考。仍當觀其脈證，知犯何逆，隨證治之。' });
+        lines.push({ text: '表的最後，我添了一行：定位只是參考。《傷寒論》說：「觀其脈證，知犯何逆，隨證治之。」' });         // 佑彥 2026-11-17 確認出自《傷寒論》；字句同宋本第 16 條（條文版第六一條作「視其脈證」）
         if (S.app.done) lines.push({ text: '小滿把這部書抄了一份，帶回他自己的診間。' });
         lines.push({ text: '許多年後，一個年輕人在燈下翻開這部書，讀到第三遍。' });
         lines.push({ text: '書頁之間，有位長者抬起頭來。那是我。' });
@@ -4398,22 +4405,24 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                     return `書中師：${x.k === 'sh' || x.k === 'jg' ? '張仲景（業師）' : (lv ? B.who : '尚未結識')}<br>${prog}${rows}`;
                 });
         } else if (mSel === 4) {
+            /* 藥材圖：art/hb-代號.webp（佑彥 2026-11-17 選甲，整株植物的本草圖譜風，只當插畫）。通草畫的是木通（佑彥定：通草即今之木通） */
+            const hbImg = (k) => `${ART}hb-${k}.webp`;
             const lit = new Set(loadMeta().herbs || []), ids = Object.keys(SH.HERBS), id = ids[Math.min(subSel, ids.length - 1)], h = SH.HERBS[id];
             const forms = Object.keys(SH.FORMULAS).filter(k => Object.values(SH.FORMULAS[k].slots).some(a => a.includes(id)));
             const nAll = JF.classes.concat(JF.jg).reduce((n, c) => n + c.list.filter(x => x.h.includes(herbBase(h))).length, 0);
             const deep = bookLv('bc') >= 1;
             const card = !lit.has(id) ? '<div class="dim">還不認得這味藥。開方用過，就會點亮。</div>'
-                : `<div class="big">${h.name}</div><div>${h.q}　${h.flavor}</div>
+                : `${hbImg(id) ? `<div class="hb-pic" style="background-image:url('${hbImg(id)}')"></div>` : ''}<div class="big">${h.name}</div><div>${h.q}　${h.flavor}</div>
                    ${deep ? `<div>歸經：${h.meridian}<br>功效：${h.use}</div>` : '<div class="dim small">讀了《本草綱目》，才看得到歸經與功效。</div>'}
                    <div class="small hint" style="margin-top:6px">見於（點方名看組成）${nAll ? `　《傷寒》《金匱》共 ${nAll} 首方用到` : ''}</div>
                    <div class="chips">${forms.map(k => `<button class="btn" data-hf="${k}">${SH.FORMULAS[k].name}</button>`).join('') || '<span class="dim small">遊戲裡的成方沒有用到</span>'}</div><div id="hb-fx"></div>`;
             R.innerHTML = `<h3>本草圖鑑 <span class="small hint">已識 ${ids.filter(k => lit.has(k)).length}／${ids.length} 味</span></h3>
-                <div class="hb-grid">${ids.map((k, i) => `<button class="hb${lit.has(k) ? '' : ' off'}${k === id ? ' sel' : ''}" data-hb="${i}"><span class="ch">${lit.has(k) ? SH.HERBS[k].name[0] : '？'}</span><span class="nm">${lit.has(k) ? SH.HERBS[k].name : '？？'}</span></button>`).join('')}</div>
+                <div class="hb-grid">${ids.map((k, i) => `<button class="hb${lit.has(k) ? '' : ' off'}${k === id ? ' sel' : ''}" data-hb="${i}"><span class="ch${lit.has(k) && hbImg(k) ? ' img' : ''}"${lit.has(k) && hbImg(k) ? ` style="background-image:url('${hbImg(k)}')"` : ''}>${lit.has(k) ? SH.HERBS[k].name[0] : '？'}</span><span class="nm">${lit.has(k) ? SH.HERBS[k].name : '？？'}</span></button>`).join('')}</div>
                 <div class="desc hb-card">${card}</div>`;
             $$('#m-right [data-hb]').forEach(b => b.onclick = () => { subSel = +b.dataset.hb; renderMenu(); });
             $$('#m-right [data-hf]').forEach(b => b.onclick = () => {
                 const F = SH.FORMULAS[b.dataset.hf];
-                $('#hb-fx').innerHTML = `<div class="fx small"><b class="name">${F.name}</b>　${Object.keys(SH.SLOT_NAMES).filter(s => F.slots[s] && F.slots[s].length).map(s => `${SH.SLOT_NAMES[s]}：${F.slots[s].map(x => SH.HERBS[x].name).join('、')}`).join('　')}${F.note ? '<br>' + F.note : ''}</div>`;
+                $('#hb-fx').innerHTML = `<div class="fx small"><b class="name">${F.name}</b>　${Object.keys(SH.SLOT_NAMES).filter(s => F.slots[s] && F.slots[s].length).map(s => `${SH.SLOT_NAMES[s]}：${F.slots[s].map(x => SH.HERBS[x].name).join('、')}`).join('　')}${tongNote([].concat(...Object.values(F.slots)).map(x => SH.HERBS[x].name))}${F.note ? '<br>' + F.note : ''}</div>`;
             });
         } else if (mSel === 5) {
             R.innerHTML = `<h3>札記</h3>
@@ -4540,11 +4549,11 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             : (pickBook === 'jg' && bookLv('jg') >= 2 ? '<div class="small hint">《金匱要略》二重：眼前這一位是外感，方要回《傷寒》十二類找。</div>' : '');
         const tabs = fams.map(c => `<button class="btn${c.name === pickFam ? ' on' : ''}" data-fam="${c.name}">${c.name}</button>`).join('');
         const head = fam && fam.head ? fam.list.find(x => x.n === fam.head) : null;
-        const cards = fam && !head ? fam.list.map(f => `<button class="btn${pickF === f.n ? ' on' : ''}" data-pickf="${f.n}"><b>${f.n}</b><span class="sub">${f.h.join('、')}</span></button>`).join('')
+        const cards = fam && !head ? fam.list.map(f => `<button class="btn${pickF === f.n ? ' on' : ''}" data-pickf="${f.n}"><b>${f.n}</b><span class="sub">${f.h.join('、')}${tongNote(f.h)}</span></button>`).join('')
             : fam ? fam.list.map(f => {
             const add = f.h.filter(h => !head.h.includes(h)), minus = head.h.filter(h => !f.h.includes(h));
             const diff = f.n === fam.head ? '類首' : [add.length ? '加' + add.join('、') : '', minus.length ? '去' + minus.join('、') : ''].filter(Boolean).join('，') || '藥味相同，分量不同';
-            return `<button class="btn${pickF === f.n ? ' on' : ''}" data-pickf="${f.n}"><b>${f.n}</b><span class="sub">${f.n === fam.head ? '' : `比${fam.head}：`}${diff}${isEasy() ? `<br>${f.h.join('、')}` : ''}</span></button>`;
+            return `<button class="btn${pickF === f.n ? ' on' : ''}" data-pickf="${f.n}"><b>${f.n}</b><span class="sub">${f.n === fam.head ? '' : `比${fam.head}：`}${diff}${isEasy() ? `<br>${f.h.join('、')}` : ''}${tongNote(f.h)}</span></button>`;
         }).join('') : '';
         panel(`<h3>${V.round === 1 ? '處方' : '複診處方'} <span>我定的證：${p0.name}</span></h3>
             <div class="askg"><b>方書</b><div class="grid">${books}</div></div>${bookTip}
@@ -4709,6 +4718,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     }
     /* 本草圖鑑：開方用過的藥會點亮（跨輪保存在札記，和成就一樣）。杜掌櫃教過的甘草也會亮 */
     const herbBase = (h) => h.name.replace(/^炙/, '');        // 遊戲寫「炙甘草」，方書寫「甘草」
+    const tongNote = (names) => (names.includes('通草') ? '（通草即為今之木通）' : '');     // 佑彥 2026-11-17：方中藥材後備註
     function litHerbs(names) {
         const m = loadMeta(), set = new Set(m.herbs || []);
         let n = 0;
