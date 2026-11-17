@@ -772,19 +772,15 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const $ = (s) => document.querySelector(s);
     const $$ = (s) => [...document.querySelectorAll(s)];
     const IMG = 'https://yylin.tw/images/yylin.tw/upload_file/';
-    /* 立繪（2026-11-15 起）：新的立繪放在 GitHub 的 xinglin/art/，和遊戲檔放一起；十四位病人都有新圖；FACE 沒列到的病人才沿用媒體庫的舊圖。
-       c.img 不改，因為診金倍數（PAY_MULT）靠它分辨權貴與窮苦。線上由載入頁的 XL 指出遊戲檔的位置，本機就用旁邊的 art/ 資料夾。 */
+    /* 立繪（2026-11-15 起）：新的立繪放在 GitHub 的 xinglin/art/，和遊戲檔放一起。2026-11-17 起寫在病例資料的 face（試算表的「立繪」欄），
+       例如 p-chen → art/p-chen.webp；病好版是 p-chen-w.webp；長期病人第二段起用年老版 p-…-o.webp。沒有 face 的病人才沿用媒體庫的舊圖。
+       c.img 不改，因為診金倍數（PAY_MULT）靠它分辨權貴與窮苦（試算表的「身家」欄）。線上由載入頁的 XL 指出遊戲檔的位置，本機就用旁邊的 art/ 資料夾。 */
     const ART = ((window.XL && window.XL.game && window.XL.game[0]) || '').replace(/[^/]*$/, '') + 'art/';
-    const FACE = { quan: 'p-quan.webp', han: 'p-han.webp', hu: 'p-hu.webp', shui: 'p-shui.webp', tao: 'p-tao.webp',
-                   c1: 'p-ashun.webp', c2: 'p-zhongan.webp', c3: 'p-wan.webp', c5: 'p-akuan.webp', c6: 'p-xu.webp',
-                   chen: 'p-chen.webp', wen: 'p-wen.webp', bo: 'p-bo.webp', c4: 'p-akui.webp' };
-    const faceUrl = (c) => (FACE[c.id] ? ART + FACE[c.id] : IMG + c.img);
+    const faceUrl = (c, v) => (c.face ? ART + c.face + (v ? '-' + v : '') + '.webp' : IMG + c.img);
+    const faceOf = (p) => faceUrl(p.c, p.c.life && p.stage ? 'o' : '');          // 長期病人第二段起是年老版
     /* 病好版：回診時改善或痊癒（cured、saved、better；慢性病回診走完是 well、better），換上氣色轉好的立繪，和「大夫，我好了」對得上。V.well 每次進診間先歸零 */
-    const FACE_WELL = { quan: 'p-quan-w.webp', han: 'p-han-w.webp', hu: 'p-hu-w.webp', shui: 'p-shui-w.webp', tao: 'p-tao-w.webp',
-                        c1: 'p-ashun-w.webp', c2: 'p-zhongan-w.webp', c3: 'p-wan-w.webp', c5: 'p-akuan-w.webp', c6: 'p-xu-w.webp',
-                        chen: 'p-chen-w.webp', wen: 'p-wen-w.webp', bo: 'p-bo-w.webp', c4: 'p-akui-w.webp' };
     const WELL_R = ['cured', 'saved', 'better', 'well'];
-    const ptFace = () => (V.well && FACE_WELL[V.c.id] ? ART + FACE_WELL[V.c.id] : faceUrl(V.c));
+    const ptFace = () => (V.well && V.c.face && !V.c.life ? faceUrl(V.c, 'w') : faceOf(V));
     const MASTER_FACE = ART + 'm-master.webp';
     /* 主角：玩家在「初入杏林」選男或女；立繪依章節分三個年紀（佑彥 2026-11-15 定）：青年＝習醫、立業，中年＝盛年、傳承，晚年＝晚年與結局 */
     const heroStage = (ch) => (ch <= 1 ? 'y' : (ch <= 3 ? 'mid' : 'old'));
@@ -1300,6 +1296,118 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         ]
        },
        "note": "溫經散寒，養血通脈，治手足厥寒、脈細欲絕。"
+      },
+      "guizhigegen": {
+       "name": "桂枝加葛根湯",
+       "slots": {
+        "jun": [
+         "gegen"
+        ],
+        "chen": [
+         "guizhi",
+         "shaoyao"
+        ],
+        "zuo": [
+         "shengjiang",
+         "dazao"
+        ],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "解肌祛風，升津舒經，治項背強几几、反汗出惡風。"
+      },
+      "maxingshigan": {
+       "name": "麻黃杏仁甘草石膏湯",
+       "slots": {
+        "jun": [
+         "mahuang"
+        ],
+        "chen": [
+         "shigao"
+        ],
+        "zuo": [
+         "xingren"
+        ],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "清宣肺熱，降氣平喘，治汗出而喘、無大熱。"
+      },
+      "gegenqinlian": {
+       "name": "葛根黃芩黃連湯",
+       "slots": {
+        "jun": [
+         "gegen"
+        ],
+        "chen": [
+         "huangqin",
+         "huanglian"
+        ],
+        "zuo": [],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "清熱止利，兼以解表，治誤下後利遂不止、喘而汗出。"
+      },
+      "dachaihu": {
+       "name": "大柴胡湯",
+       "slots": {
+        "jun": [
+         "chaihu"
+        ],
+        "chen": [
+         "huangqin",
+         "zhishi",
+         "shaoyao"
+        ],
+        "zuo": [
+         "banxia",
+         "shengjiang"
+        ],
+        "shi": [
+         "dazao"
+        ]
+       },
+       "note": "和解少陽，內瀉熱結，治嘔不止、心下急、鬱鬱微煩。"
+      },
+      "huangqin": {
+       "name": "黃芩湯",
+       "slots": {
+        "jun": [
+         "huangqin"
+        ],
+        "chen": [
+         "shaoyao"
+        ],
+        "zuo": [
+         "dazao"
+        ],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "清熱止利，治太陽與少陽合病、自下利。"
+      },
+      "zhenwu": {
+       "name": "真武湯",
+       "slots": {
+        "jun": [
+         "fuzi"
+        ],
+        "chen": [
+         "fuling",
+         "baizhu"
+        ],
+        "zuo": [
+         "shengjiang",
+         "shaoyao"
+        ],
+        "shi": []
+       },
+       "note": "溫陽利水，治汗出不解、心下悸、頭眩、身瞤動。"
       }
      },
      "PATTERNS": {
@@ -1390,6 +1498,94 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        ],
        "law": "溫經散寒，養血通脈",
        "formula": "danggui"
+      },
+      "xiangqiang": {
+       "name": "太陽經輸不利",
+       "alias": "風寒束表，經氣不舒，無汗",
+       "bagang": [
+        "表",
+        "寒",
+        "實"
+       ],
+       "law": "發汗解表，升津舒經",
+       "formula": "gegen"
+      },
+      "xiangqiangxu": {
+       "name": "太陽中風兼項強",
+       "alias": "營衛不和，經氣不舒，汗出",
+       "bagang": [
+        "表",
+        "寒",
+        "虛"
+       ],
+       "law": "解肌祛風，升津舒經",
+       "formula": "guizhigegen"
+      },
+      "xiongge": {
+       "name": "陽明熱擾胸膈",
+       "alias": "汗吐下後，餘熱留擾胸膈",
+       "bagang": [
+        "裡",
+        "熱",
+        "實"
+       ],
+       "law": "清宣鬱熱",
+       "formula": "zhichi"
+      },
+      "feire": {
+       "name": "太陽邪熱壅肺",
+       "alias": "汗後表解，邪熱壅肺",
+       "bagang": [
+        "裡",
+        "熱",
+        "實"
+       ],
+       "law": "清宣肺熱，降氣平喘",
+       "formula": "maxingshigan"
+      },
+      "xieli": {
+       "name": "太陽誤下熱利",
+       "alias": "表邪內陷，協熱下利",
+       "bagang": [
+        "裡",
+        "熱",
+        "實"
+       ],
+       "law": "清熱止利，兼以解表",
+       "formula": "gegenqinlian"
+      },
+      "shaoyangshi": {
+       "name": "少陽兼裡實",
+       "alias": "少陽未解，熱結在裡",
+       "bagang": [
+        "半表半裡",
+        "熱",
+        "實"
+       ],
+       "law": "和解少陽，內瀉熱結",
+       "formula": "dachaihu"
+      },
+      "shaoyangli": {
+       "name": "少陽熱利",
+       "alias": "太陽與少陽合病，熱迫大腸",
+       "bagang": [
+        "半表半裡",
+        "熱",
+        "實"
+       ],
+       "law": "清熱止利",
+       "formula": "huangqin"
+      },
+      "shuifan": {
+       "name": "少陰陽虛水泛",
+       "alias": "汗後傷陽，水氣不化",
+       "bagang": [
+        "裡",
+        "寒",
+        "虛"
+       ],
+       "law": "溫陽利水",
+       "formula": "zhenwu"
       }
      },
      "OUTCOME": {
@@ -1613,6 +1809,219 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         "r": "none",
         "t": "藥吃了幾帖，手腳依舊冰冷麻痛。"
        }
+      },
+      "xiangqiang": {
+       "gegen": {
+        "r": "cured",
+        "t": "服藥後蓋被躺了一會，遍身微微汗出。後頸和背鬆開了，轉頭也不痛了。"
+       },
+       "mahuang": {
+        "r": "better",
+        "t": "汗是發出來了，惡風也退了，後頸和背卻還是僵，轉頭仍舊費力。"
+       },
+       "guizhi": {
+        "r": "none",
+        "t": "汗始終發不出來，頸背依舊僵硬。",
+        "q": "桂枝本為解肌，若其人脈浮緊、發熱汗不出者，不可與之也。"
+       },
+       "guizhigegen": {
+        "r": "none",
+        "t": "汗發不出來，頸背僵硬如故。這一首是給有汗的人用的。"
+       },
+       "chengqi": {
+        "r": "worse",
+        "t": "表邪還沒解就用了攻下，惡寒未退，又添了腹瀉。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，頸背僵硬如故，還是怕風。"
+       }
+      },
+      "xiangqiangxu": {
+       "guizhigegen": {
+        "r": "cured",
+        "t": "服藥後喝了熱粥，遍身微汗。惡風退了，後頸和背也鬆了。"
+       },
+       "guizhi": {
+        "r": "better",
+        "t": "汗出惡風好了，後頸和背卻還是僵。"
+       },
+       "gegen": {
+        "r": "worse",
+        "t": "本就汗出，又用了麻黃發汗，汗出不止，心悸，頸背反而更緊。",
+        "q": "太陽病，發汗，遂漏不止。"
+       },
+       "mahuang": {
+        "r": "worse",
+        "t": "本就汗出，又被峻劑一發，大汗淋漓，人軟得站不住。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，汗出惡風，頸背依舊僵。"
+       }
+      },
+      "xiongge": {
+       "zhichi": {
+        "r": "cured",
+        "t": "一帖下去，心中那股說不出的煩悶散了，當夜睡得安穩。"
+       },
+       "chengqi": {
+        "r": "worse",
+        "t": "又下了一次，胃中更空，煩得更厲害，連粥都喝不下。"
+       },
+       "mahuang": {
+        "r": "worse",
+        "t": "又發了一次汗，口更乾，心更煩，整夜翻來覆去。"
+       },
+       "baihu": {
+        "r": "none",
+        "t": "大寒的藥清不到胸膈裡的鬱熱，煩悶依舊，胃口反而更差。"
+       },
+       "lizhong": {
+        "r": "worse",
+        "t": "溫燥的藥助了鬱熱，心中更是懊憹，一夜沒闔眼。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，還是虛煩不得眠。"
+       }
+      },
+      "feire": {
+       "maxingshigan": {
+        "r": "cured",
+        "t": "兩帖下去，喘平了，汗也收了，夜裡能躺平睡覺了。"
+       },
+       "guizhi": {
+        "r": "worse",
+        "t": "桂枝辛溫，肺中的熱更盛，喘得更兇。",
+        "q": "發汗後，不可更行桂枝湯。"
+       },
+       "mahuang": {
+        "r": "worse",
+        "t": "再發大汗，汗出得更多，喘反而更急。"
+       },
+       "baihu": {
+        "r": "better",
+        "t": "身上的熱清了一些，喘卻沒平。"
+       },
+       "chengqi": {
+        "r": "worse",
+        "t": "邪熱在肺，攻下打錯了地方。喘沒好，又拉了幾回，人更虛了。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，汗出而喘如故。"
+       }
+      },
+      "xieli": {
+       "gegenqinlian": {
+        "r": "cured",
+        "t": "兩帖下去，利止了，喘也平了，身上的熱退了。"
+       },
+       "chengqi": {
+        "r": "worse",
+        "t": "又是攻下，拉得人都脫了形。"
+       },
+       "lizhong": {
+        "r": "worse",
+        "t": "溫燥的藥助了熱，拉得更急，肛門灼痛。"
+       },
+       "guizhi": {
+        "r": "none",
+        "t": "表雖然還沒全解，可是熱已經陷進來，下利不止，桂枝湯管不到。",
+        "q": "醫反下之，利遂不止，脈促者，表未解也。"
+       },
+       "baihu": {
+        "r": "better",
+        "t": "熱退了一些，下利卻還沒止。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，還是下利不止。"
+       }
+      },
+      "shaoyangshi": {
+       "dachaihu": {
+        "r": "cured",
+        "t": "服藥後解了一回大便，嘔止了，心口下那股拘急也鬆開了。",
+        "q": "嘔不止，心下急，鬱鬱微煩者，為未解也，與大柴胡湯下之則愈。"
+       },
+       "xiaochaihu": {
+        "r": "none",
+        "t": "這一首前醫已經給過，再吃也一樣，嘔還是止不住，心下照樣拘急。"
+       },
+       "chengqi": {
+        "r": "worse",
+        "t": "少陽還沒解就峻下，正氣又傷了一回，寒熱照樣往來，人更虛了。"
+       },
+       "guizhi": {
+        "r": "none",
+        "t": "病已不在表，藥吃了幾帖，嘔與心下急都沒動。"
+       },
+       "baihu": {
+        "r": "none",
+        "t": "清了些熱，嘔與心下急依舊。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，還是嘔不止、心下急。"
+       }
+      },
+      "shaoyangli": {
+       "huangqin": {
+        "r": "cured",
+        "t": "兩帖下去，利止了，腹痛也沒了，嘴裡也不苦了。"
+       },
+       "lizhong": {
+        "r": "worse",
+        "t": "溫中的藥助了熱，拉得更急，肛門灼熱。這是熱利，不是寒利。"
+       },
+       "gegenqinlian": {
+        "r": "better",
+        "t": "利減了一些，腹痛還在，嘴裡照樣發苦。"
+       },
+       "xiaochaihu": {
+        "r": "better",
+        "t": "口苦好了些，下利卻沒止。"
+       },
+       "chengqi": {
+        "r": "worse",
+        "t": "本來就在下利，又用攻下，拉得人都站不穩。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，還是腹痛下利。"
+       }
+      },
+      "shuifan": {
+       "zhenwu": {
+        "r": "cured",
+        "t": "幾帖下去，心悸停了，頭不暈了，身上的肉也不跳了。"
+       },
+       "mahuang": {
+        "r": "worse",
+        "t": "又發了一次汗，陽氣更虛，站都站不住，心跳得像要蹦出來。"
+       },
+       "guizhi": {
+        "r": "none",
+        "t": "藥吃了幾帖，心悸頭眩依舊，身上的肉照樣跳。"
+       },
+       "lizhong": {
+        "r": "better",
+        "t": "胃口好了些，心悸、頭眩、肉跳卻還在。"
+       },
+       "sini": {
+        "r": "better",
+        "t": "手腳暖了一點，可是心下悸、頭眩、身上的肉跳都還在。"
+       },
+       "wuling": {
+        "r": "better",
+        "t": "小便多了一些，心悸頭眩卻沒好。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，還是心悸頭眩，站不穩。"
+       }
       }
      },
      "CASES": [
@@ -1622,6 +2031,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "name": "老陳",
        "type": "佃農　窮苦",
        "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "face": "p-chen",
        "trust": 50,
        "lv": 1,
        "ord": 1,
@@ -1665,6 +2075,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "name": "文遠",
        "type": "書吏　順從",
        "img": "49fc1c80-551e-4cdd-9fb7-e6925a598c71.png",
+       "face": "p-wen",
        "trust": 60,
        "lv": 1,
        "ord": 3,
@@ -1708,6 +2119,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "name": "伯高",
        "type": "郡守之弟　權貴",
        "img": "f21ec345-fe48-44bd-ba09-d2064ba919b1.png",
+       "face": "p-bo",
        "trust": 35,
        "lv": 2,
        "keyQ": [
@@ -1750,6 +2162,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "name": "胡帳房",
        "type": "糧行帳房　固執",
        "img": "f21ec345-fe48-44bd-ba09-d2064ba919b1.png",
+       "face": "p-hu",
        "trust": 45,
        "lv": 3,
        "keyQ": [
@@ -1793,6 +2206,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "name": "阿水",
        "type": "擺渡船夫　老實",
        "img": "4e97f3aa-3216-4b4b-a68b-df7624c77c9c.png",
+       "face": "p-shui",
        "trust": 55,
        "lv": 4,
        "keyQ": [
@@ -1836,6 +2250,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "name": "阿全",
        "type": "碼頭挑夫　話少",
        "img": "4e97f3aa-3216-4b4b-a68b-df7624c77c9c.png",
+       "face": "p-quan",
        "trust": 50,
        "lv": 2,
        "keyQ": [
@@ -1879,6 +2294,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "name": "韓老爹",
        "type": "獨居老人　隱忍",
        "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "face": "p-han",
        "trust": 55,
        "lv": 3,
        "keyQ": [
@@ -1922,6 +2338,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "name": "陶師傅",
        "type": "染坊漂布師傅　認命",
        "img": "49fc1c80-551e-4cdd-9fb7-e6925a598c71.png",
+       "face": "p-tao",
        "trust": 50,
        "lv": 4,
        "keyQ": [
@@ -1958,6 +2375,350 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         "diet_stool": "大便正常。",
         "pulse_deep": "輕按重按都細得像一根線，快要摸不到。"
        }
+      },
+      {
+       "id": "qiao",
+       "pattern": "xiangqiang",
+       "name": "阿樵",
+       "type": "上山砍柴的樵夫　悶葫蘆",
+       "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "face": "p-qiao",
+       "trust": 50,
+       "lv": 2,
+       "keyQ": [
+        "pain",
+        "sweat",
+        "pulse"
+       ],
+       "intro": "砍柴的阿樵在山上吹了一夜北風，今早扛不動扁擔了。他歪著脖子進門，整個人像被釘住，轉頭得連身子一起轉。",
+       "a": {
+        "look": "面色微青，舌淡紅，苔薄白。",
+        "listen": "聲音如常，偶爾打兩個噴嚏。",
+        "chill": "怕風，有點怕冷，身上微微發熱。",
+        "sweat": "一點汗都沒有。",
+        "pain": "後頸到背上一整片僵硬，像套了一塊木板，低頭抬頭都難。頭也有點痛。",
+        "chest": "胸口不悶。",
+        "thirst": "不渴。",
+        "diet": "胃口還可以，二便正常。",
+        "sleep": "脖子僵得躺下就痛，睡不好。",
+        "pulse": "脈浮而緊。",
+        "palp": "肚子軟，按著不痛。"
+       },
+       "fu": {
+        "chill_alt": "冷熱是一起的，沒有一陣一陣。",
+        "chill_cover": "蓋了被子好一點，可是一吹風又縮起來。",
+        "sweat_wind": "沒出汗，一吹風就難受。",
+        "sweat_where": "哪裡都沒有汗。",
+        "pain_neck": "後頸和背繃得像木板，這是最難受的。",
+        "thirst_temp": "要喝也喝熱的。",
+        "diet_stool": "大便正常。",
+        "pulse_deep": "輕輕就摸到，繃得緊；重按反而沒那麼明顯。"
+       },
+       "thanks": "阿樵挑來一擔劈好的乾柴，堆在診間門口，一句話也沒說就走了。",
+       "angry": "阿樵的娘來說，兒子的脖子還是轉不過來，山也上不了。",
+       "_review": "已審",
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完"
+      },
+      {
+       "id": "fang",
+       "pattern": "xiangqiangxu",
+       "name": "方小哥",
+       "type": "書鋪夥計　手腳勤快",
+       "img": "49fc1c80-551e-4cdd-9fb7-e6925a598c71.png",
+       "face": "p-fang",
+       "trust": 55,
+       "lv": 2,
+       "keyQ": [
+        "pain",
+        "sweat",
+        "pulse"
+       ],
+       "intro": "書鋪的方小哥搬了一下午的書，汗濕了又在門口吹風，這兩天後頸僵得抬不起頭來。",
+       "a": {
+        "look": "面色微紅，舌淡，苔薄白。",
+        "listen": "鼻子有點塞。",
+        "chill": "怕風，一點點怕冷，身上微微發熱。",
+        "sweat": "額頭和後頸一直冒細汗。",
+        "pain": "後頸到背上僵得厲害，低頭看帳都難。頭也有點痛。",
+        "chest": "胸口不悶。",
+        "thirst": "不渴。",
+        "diet": "胃口還可以，二便正常。",
+        "sleep": "脖子僵，翻身就痛醒。",
+        "pulse": "脈浮而緩。",
+        "palp": "肚子軟，按著不痛。"
+       },
+       "fu": {
+        "chill_alt": "冷熱是一起的。",
+        "chill_cover": "多穿一件好一些，一開門吹到風又不行。",
+        "sweat_wind": "出了汗以後更怕風。",
+        "sweat_where": "頭頸和背上最多。",
+        "pain_neck": "後頸和背僵得像套了木枷，這是最難受的。",
+        "thirst_temp": "想喝溫的。",
+        "diet_stool": "大便正常。",
+        "pulse_deep": "輕輕就摸到，軟軟的；重按沒什麼力。"
+       },
+       "thanks": "方小哥送來一部新刻的醫書，說是掌櫃讓他挑的。",
+       "angry": "書鋪掌櫃說，方小哥脖子僵了半個月，搬不動書，只好先回鄉下了。",
+       "_review": "已審",
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完"
+      },
+      {
+       "id": "zhuang",
+       "pattern": "xiongge",
+       "name": "莊少爺",
+       "type": "布莊少東家　嬌貴",
+       "img": "f21ec345-fe48-44bd-ba09-d2064ba919b1.png",
+       "face": "p-zhuang",
+       "trust": 40,
+       "lv": 3,
+       "keyQ": [
+        "sleep",
+        "chest",
+        "pulse"
+       ],
+       "intro": "布莊的莊少爺前些日子著涼發熱，請了別的大夫，先發汗、又攻下了兩回，熱是退了。可是這幾夜他翻來覆去，一閉眼就心煩得坐起來。",
+       "a": {
+        "look": "面色微紅，舌尖紅，苔薄黃。",
+        "listen": "說話有氣無力，時時嘆氣。",
+        "chill": "不怕冷了，身上也不怎麼熱，只是心裡燥熱。",
+        "sweat": "偶爾頭上出一點汗。",
+        "pain": "頭身不痛。",
+        "chest": "心口悶熱，說不出的難受，像有什麼堵著又吐不出來。",
+        "thirst": "口有點乾，喝了也不解。",
+        "diet": "餓又吃不下，二便還算正常。",
+        "sleep": "整夜翻來覆去，一躺下就煩，坐起來又躺下。",
+        "pulse": "脈數。",
+        "palp": "心口按著軟，不硬也不痛。"
+       },
+       "fu": {
+        "chill_alt": "不冷，只是心裡燥熱。",
+        "chill_cover": "不想蓋被，蓋了更煩。",
+        "sweat_wind": "不怕風。",
+        "sweat_where": "只有頭上出一點汗。",
+        "pain_neck": "後頸不僵。",
+        "thirst_temp": "想喝涼的，喝了心裡也還是煩。",
+        "diet_stool": "大便正常。",
+        "pulse_deep": "跳得快，重按不怎麼有力。"
+       },
+       "thanks": "莊少爺讓夥計送來一匹上好的細布，說這幾晚總算睡著了。",
+       "angry": "布莊的人說，少爺越治越煩，又去請別的大夫了。",
+       "_review": "已審",
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完"
+      },
+      {
+       "id": "yue",
+       "pattern": "feire",
+       "name": "嗩吶老岳",
+       "type": "喪葬樂班的嗩吶手　嗓門大",
+       "img": "4e97f3aa-3216-4b4b-a68b-df7624c77c9c.png",
+       "face": "p-yue",
+       "trust": 50,
+       "lv": 3,
+       "keyQ": [
+        "listen",
+        "sweat",
+        "chill"
+       ],
+       "intro": "吹嗩吶的老岳前天受了寒，自己抓了發汗的藥吃。汗是出了，昨夜卻喘了起來，今天連嗩吶都吹不動。",
+       "a": {
+        "look": "面色微紅，舌紅，苔薄黃。",
+        "listen": "喘得厲害，呼吸粗，鼻翼一扇一扇。",
+        "chill": "不怎麼怕冷了，身上有點熱，可是摸著不燙手。",
+        "sweat": "一直出汗，衣服都濕了。",
+        "pain": "頭身不痛了。",
+        "chest": "胸口悶，喘不過氣。",
+        "thirst": "口渴，想喝水。",
+        "diet": "吃不太下，小便有點黃，大便還好。",
+        "sleep": "喘得躺不平，只能靠著坐。",
+        "pulse": "脈浮數。",
+        "palp": "肚子軟，按著不痛。"
+       },
+       "fu": {
+        "chill_alt": "不冷，只是有點熱。",
+        "chill_cover": "不想蓋，蓋了更喘。",
+        "sweat_wind": "出汗也不怕風。",
+        "sweat_where": "身上都有汗。",
+        "pain_neck": "後頸不僵。",
+        "thirst_temp": "想喝涼的。",
+        "diet_stool": "大便正常。",
+        "pulse_deep": "跳得快，重按還有力。"
+       },
+       "thanks": "老岳又能吹嗩吶了，特地在診間門口吹了一段喜慶的曲子。",
+       "angry": "樂班的人說，老岳喘得更厲害了，這個月的活都推了。",
+       "_review": "已審",
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完"
+      },
+      {
+       "id": "liang",
+       "pattern": "xieli",
+       "name": "涼粉阿福",
+       "type": "賣涼粉的小販　樂天",
+       "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "face": "p-liang",
+       "trust": 55,
+       "lv": 3,
+       "keyQ": [
+        "diet",
+        "sweat",
+        "pulse"
+       ],
+       "intro": "賣涼粉的阿福前幾天著涼，發熱出汗，鄰居說吃點瀉藥把火洩掉就好。這一瀉就停不下來，今天被扶進門時還在喘。",
+       "a": {
+        "look": "面色發紅，舌紅，苔黃。",
+        "listen": "有點喘，說話接不上氣。",
+        "chill": "還有一點怕風，身上發熱。",
+        "sweat": "一直出汗。",
+        "pain": "頭還有點痛，肚子一陣陣痛。",
+        "chest": "胸口有點悶。",
+        "thirst": "口渴。",
+        "diet": "一天拉了七八回，拉得又急又臭，肛門燒灼似的痛。小便黃。",
+        "sleep": "一直起來跑茅廁，睡不了。",
+        "pulse": "脈促，跳得急，偶爾停一下。",
+        "palp": "肚子按著有點痛，不硬。"
+       },
+       "fu": {
+        "chill_alt": "一直有點熱，還怕一點風。",
+        "chill_cover": "不想蓋。",
+        "sweat_wind": "出汗後有一點怕風。",
+        "sweat_where": "頭上和胸口最多。",
+        "pain_neck": "後頸有一點緊。",
+        "thirst_temp": "想喝涼的。",
+        "diet_stool": "拉得稀而急，又臭，肛門灼熱。",
+        "pulse_deep": "跳得急，重按還有力，偶爾停一下。"
+       },
+       "thanks": "阿福挑著涼粉擔子經過，硬是給我盛了一大碗。",
+       "angry": "阿福的鄰居說，他拉得人都瘦了一圈，往後不來了。",
+       "_review": "已審",
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完"
+      },
+      {
+       "id": "biao",
+       "pattern": "shaoyangshi",
+       "name": "鏢師老雷",
+       "type": "鏢局鏢頭　硬脾氣",
+       "img": "4e97f3aa-3216-4b4b-a68b-df7624c77c9c.png",
+       "face": "p-biao",
+       "trust": 45,
+       "lv": 4,
+       "keyQ": [
+        "diet",
+        "palp",
+        "chill"
+       ],
+       "intro": "鏢局的老雷病了十多天，忽冷忽熱。前面的大夫給他下了兩三回藥，又開過小柴胡湯，這幾天卻嘔個不停，心口下面揪著痛。",
+       "a": {
+        "look": "面色微黃，舌紅，苔黃。",
+        "listen": "說話粗聲，時時乾嘔。",
+        "chill": "還是一陣冷一陣熱。",
+        "sweat": "熱的時候有點汗。",
+        "pain": "頭不痛，心口下面一直揪著，又脹又急。",
+        "chest": "兩脅脹，心口下面拘急。",
+        "thirst": "口苦，想喝水。",
+        "diet": "一吃就吐，吐完還想吐。大便三天沒解，小便黃。",
+        "sleep": "心裡鬱鬱的，煩，睡不好。",
+        "pulse": "脈弦而有力。",
+        "palp": "心口下面按著又硬又痛。"
+       },
+       "fu": {
+        "chill_alt": "冷一陣，熱一陣。",
+        "chill_cover": "冷的時候蓋被，熱的時候踢掉。",
+        "sweat_wind": "不太怕風。",
+        "sweat_where": "熱的時候額頭出汗。",
+        "pain_neck": "後頸不僵。",
+        "thirst_temp": "想喝涼的。",
+        "diet_stool": "三天沒解大便，偏乾。",
+        "pulse_deep": "按下去弦而有力。"
+       },
+       "thanks": "老雷走鏢回來，帶了一包關外的老山參給我，說是路上順手買的。",
+       "angry": "鏢局的人說，老雷嘔得連水都喝不進，換了大夫。",
+       "_review": "已審",
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完"
+      },
+      {
+       "id": "hai",
+       "pattern": "shaoyangli",
+       "name": "漁家阿海",
+       "type": "打漁的漁夫　急性子",
+       "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "face": "p-hai",
+       "trust": 50,
+       "lv": 4,
+       "keyQ": [
+        "diet",
+        "thirst",
+        "pulse"
+       ],
+       "intro": "打漁的阿海出海回來就發熱，嘴裡發苦，接著肚子一陣陣痛，拉了兩天。",
+       "a": {
+        "look": "面色微紅，舌紅，苔薄黃。",
+        "listen": "聲音如常。",
+        "chill": "發熱，有時候一陣冷，一陣熱。",
+        "sweat": "有一點汗。",
+        "pain": "肚子一陣陣絞痛，痛了就想拉。",
+        "chest": "兩脅有點脹。",
+        "thirst": "嘴裡發苦，喉嚨乾。",
+        "diet": "一天拉五六回，拉的時候肛門發熱，有點黏，味道很重。不太想吃。",
+        "sleep": "肚子痛，睡不好。",
+        "pulse": "脈弦數。",
+        "palp": "肚子按著有點痛，不硬。"
+       },
+       "fu": {
+        "chill_alt": "有時候冷一下，又熱起來。",
+        "chill_cover": "冷的時候蓋一下就好。",
+        "sweat_wind": "不太怕風。",
+        "sweat_where": "額頭和身上有一點。",
+        "pain_neck": "後頸不僵。",
+        "thirst_temp": "嘴苦，想喝涼的。",
+        "diet_stool": "稀而黏，肛門灼熱。",
+        "pulse_deep": "弦而快，重按還有力。"
+       },
+       "thanks": "阿海送來一簍剛上岸的鮮魚。",
+       "angry": "漁村的人說，阿海拉得出不了海，罵我的藥不靈。",
+       "_review": "已審",
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完"
+      },
+      {
+       "id": "geng",
+       "pattern": "shuifan",
+       "name": "更夫老馮",
+       "type": "打更的更夫　固執",
+       "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "face": "p-geng",
+       "trust": 50,
+       "lv": 5,
+       "keyQ": [
+        "pain",
+        "sweat",
+        "pulse"
+       ],
+       "intro": "打更的老馮受了寒，自己灌了一大碗發汗的藥，汗出得像淋了雨。三天了，熱還沒退，今天走到門口就扶著門框，說天地都在轉。",
+       "a": {
+        "look": "面色蒼白，有點浮腫，舌淡胖，苔白滑。",
+        "listen": "聲音低。",
+        "chill": "還有點發熱，可是很怕冷。",
+        "sweat": "那天大汗之後，現在動一動就出虛汗。",
+        "pain": "頭暈得站不穩，身上的肉一跳一跳的，自己都按不住。",
+        "chest": "心口下面怦怦亂跳。",
+        "thirst": "不渴。",
+        "diet": "吃不下，小便少，大便偏稀。",
+        "sleep": "心跳得睡不著。",
+        "pulse": "脈沉細而無力。",
+        "palp": "心口下面按著跳得厲害，肚子軟。"
+       },
+       "fu": {
+        "chill_alt": "有點熱，又很怕冷，是一起的。",
+        "chill_cover": "蓋了被子還是冷。",
+        "sweat_wind": "出了虛汗更怕風。",
+        "sweat_where": "身上動一動就冒汗。",
+        "pain_neck": "後頸不僵。",
+        "thirst_temp": "只想喝熱的。",
+        "diet_stool": "大便偏稀。",
+        "pulse_deep": "輕按摸不太到，重按細細的，沒力。"
+       },
+       "thanks": "老馮夜裡打更經過，特地在診間門口多敲了一下梆子，說是報平安。",
+       "angry": "更夫行的人說，老馮暈得連梆子都拿不住，換了大夫。",
+       "_review": "已審",
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完"
       }
      ],
      "FOLLOW": {
@@ -2099,6 +2860,22 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
       "chengshu": {
        "name": "圓翳成熟期",
        "alias": "年高肝腎陰精漸虧，瞳神內翳障已深，藥力難以化開"
+      },
+      "xuere": {
+       "name": "血熱妄行",
+       "alias": "血中有熱，不循常道，溢於瞳神深處"
+      },
+      "sanjiao": {
+       "name": "少陽三焦鬱熱",
+       "alias": "三焦氣機不暢，鬱而化熱，上攻瞳神"
+      },
+      "muluo": {
+       "name": "氣滯血瘀，目絡不暢",
+       "alias": "長年勞神緊繃，氣血運行不暢，眼中脈道壅滯（內容總表 E05-1）"
+      },
+      "jingxu": {
+       "name": "精血虛損",
+       "alias": "久耗眼力心力，精血不能上榮於目（內容總表 E07-3）"
       }
      },
      "PLANS": {
@@ -2122,6 +2899,18 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "name": "清胃散結",
        "sub": "清脾胃之熱，化痰消腫，不用大苦大寒"
       },
+      "he": {
+       "name": "和解少陽",
+       "sub": "疏利三焦，如小柴胡湯之類"
+      },
+      "ling": {
+       "name": "平肝通絡",
+       "sub": "平降上壅的氣血，疏通眼中脈道，如羚羊角散之類"
+      },
+      "tian": {
+       "name": "大補精血",
+       "sub": "填精養血，用血肉有情之品，慢慢收功"
+      },
       "refer": {
        "name": "急送專科",
        "sub": "這不是湯藥來得及的病，立刻送給專治眼病的大夫"
@@ -2133,6 +2922,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "name": "阿順",
        "type": "賣餅攤販　勤快",
        "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "face": "p-ashun",
        "trust": 50,
        "lv": 1,
        "ord": 2,
@@ -2221,6 +3011,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "name": "仲安",
        "type": "抄書吏　多慮",
        "img": "49fc1c80-551e-4cdd-9fb7-e6925a598c71.png",
+       "face": "p-zhongan",
        "trust": 55,
        "lv": 2,
        "disease": "雲霧移睛",
@@ -2413,6 +3204,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "name": "萬掌櫃",
        "type": "綢緞行東家　急躁",
        "img": "f21ec345-fe48-44bd-ba09-d2064ba919b1.png",
+       "face": "p-wan",
        "trust": 40,
        "lv": 3,
        "disease": "綠風內障",
@@ -2502,6 +3294,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "name": "阿魁",
        "type": "炙肉攤主　豪爽",
        "img": "4e97f3aa-3216-4b4b-a68b-df7624c77c9c.png",
+       "face": "p-akui",
        "trust": 50,
        "lv": 2,
        "disease": "針眼",
@@ -2670,6 +3463,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "name": "阿寬",
        "type": "裁縫鋪夥計　寡言",
        "img": "49fc1c80-551e-4cdd-9fb7-e6925a598c71.png",
+       "face": "p-akuan",
        "trust": 55,
        "lv": 3,
        "disease": "上胞下垂",
@@ -2836,6 +3630,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "name": "許老先生",
        "type": "退休塾師　怕針",
        "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "face": "p-xu",
        "trust": 55,
        "lv": 4,
        "disease": "圓翳內障",
@@ -2960,6 +3755,891 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        },
        "_review": "已審",
        "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤"
+      },
+      {
+       "id": "c8",
+       "name": "鄭老東家",
+       "type": "米行老東家　好面子",
+       "img": "f21ec345-fe48-44bd-ba09-d2064ba919b1.png",
+       "face": "p-zheng",
+       "trust": 40,
+       "lv": 5,
+       "disease": "視瞻昏渺",
+       "modern": "老年性黃斑部病變（出血）",
+       "pattern": "xuere",
+       "right": "refer",
+       "wheel": "shui",
+       "keyQ": [
+        "vision",
+        "onset",
+        "tongue"
+       ],
+       "intro": "米行的鄭老東家一早被兒子扶進門，一手捂著右眼：「今早起來，右眼正中間多了一大團黑影。」",
+       "eye": {
+        "red": 0,
+        "gunk": false,
+        "haze": false,
+        "pupil": "normal",
+        "green": false
+       },
+       "eyeText": "兩眼外觀乾乾淨淨，不紅不腫，黑睛清亮。瞳神圓正，對光收放如常。外面看不出一點毛病。",
+       "eyeRight": "對。外面越乾淨，越要往裡頭想。病在瞳神最深處，是水輪。",
+       "eyeWrong": "白睛、黑睛、胞瞼都是好的。看不出毛病的地方，才是病所在：瞳神深處，是水輪。",
+       "a": {
+        "gunk": "沒有眼屎，眼淚也如常。",
+        "pain": "不痛不癢，也不怕光。",
+        "vision": "今早一睜眼，右眼正中間一大團黑影，像墨滴進水裡。四周還看得見，可是看門框是彎的。",
+        "onset": "這兩年右眼看東西就有點歪，顏色也淡，沒放在心上。今天是突然的。",
+        "habit": "每天看帳看到半夜。",
+        "diet": "愛吃燒臘、喝酒，大便偏乾。",
+        "mood": "急。我怕瞎。",
+        "tongue": "舌紅，苔薄黃。脈弦數。"
+       },
+       "out": {
+        "feng": {
+         "r": "worse",
+         "t": "疏風的藥止不住瞳神深處的血。三日後，黑影更大，正中間幾乎看不見了。"
+        },
+        "bu": {
+         "r": "worse",
+         "t": "滋補的藥性溫膩，血中的熱更盛。三日後，黑影擴大，蓋住了正中。"
+        },
+        "xie": {
+         "r": "worse",
+         "t": "方向不算全錯，可是血已經溢出來，湯藥追不上。三日後，黑影蓋住了正中。"
+        },
+        "qi": {
+         "r": "worse",
+         "t": "益氣升提，血隨氣上，黑影擴大得更快。三日後，正中間什麼都看不見了。"
+        },
+        "san": {
+         "r": "worse",
+         "t": "清胃的藥擋不住瞳神裡的血。三日後，黑影蓋住了正中。"
+        }
+       },
+       "refer": {
+        "r": "saved",
+        "trust": 15,
+        "t": "專治眼病的大夫當天就看了，說是瞳神深處出了血，要他靜養，不可用力、不可久低頭，另開了止血的藥。半個月後，黑影淡了一些。正中間那一塊還看不清，可是沒有再擴大。"
+       },
+       "late": {
+        "trust": -10,
+        "t": "我把鄭老東家送到專治眼病的大夫那裡。遲了三日，黑影已經蓋住正中，大夫說，能保住四周就不錯了。"
+       },
+       "onlyLate": true,
+       "thanks": "鄭老東家派人送來兩石新米，說那天要是在我這裡等藥，這隻眼睛就沒了。",
+       "angry": "鄭老東家逢人就說，是我耽誤了他的眼睛。",
+       "say": {
+        "worse": "大夫，黑影越來越大了，正中間什麼都看不見……"
+       },
+       "quote": {
+        "src": "",
+        "text": ""
+       },
+       "advice": "涼血止血是第一要務。先止血，消除周邊的血腫水腫。避免出血持續，嚴重影響視力。",
+       "modernNote": "現代對照：黃斑部出血要立即到眼科檢查治療；現代可在眼科治療之外，以涼血止血的藥物輔助。",
+       "cmt": {
+        "best": "外面看不出病的眼睛，最要小心。正中間突然一大片黑影、直線看成彎的，先送，再談調養。",
+        "xie": "證辨得再準，也要先問這個病等不等得起。瞳神裡出了血，湯藥追不上。",
+        "fail": "這一案要原原本本記下來。外觀乾淨、正中突然黑影、看直線變彎，是瞳神深處出血，要立刻送。"
+       },
+       "_review": "已審",
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；引文待補；佑彥 2026-11-17 審完"
+      },
+      {
+       "id": "c9",
+       "name": "沈先生",
+       "type": "茶樓琴師　求好心切",
+       "img": "49fc1c80-551e-4cdd-9fb7-e6925a598c71.png",
+       "face": "p-shen",
+       "trust": 50,
+       "lv": 4,
+       "disease": "瞳神緊小",
+       "modern": "虹彩炎",
+       "pattern": "sanjiao",
+       "right": "he",
+       "wheel": "feng",
+       "keyQ": [
+        "onset",
+        "mood",
+        "tongue"
+       ],
+       "intro": "茶樓彈琴的沈先生右眼又紅了。他一進門就說：「大夫，這是第三回了，每回都挑在要緊的時候。」",
+       "eye": {
+        "red": 2,
+        "gunk": false,
+        "haze": false,
+        "pupil": "small",
+        "green": false
+       },
+       "eyeText": "右眼白睛繞著黑睛一圈發紅，越靠近黑睛越紅。瞳神比左眼小，對光收縮遲鈍，邊緣不太圓。淚水不斷，眼屎倒沒有。",
+       "eyeRight": "看得準。紅是繞著黑睛的，瞳神縮小、邊緣不圓，病在黑睛裡頭。黑睛是風輪，屬肝。",
+       "eyeWrong": "白睛的紅是跟著來的，你看它是繞著黑睛一圈。瞳神縮小、邊緣不圓，病在黑睛裡頭，是風輪。",
+       "a": {
+        "gunk": "眼淚流個不停，沒有眼屎。",
+        "pain": "右眼痛，一見光就刺得睜不開，眼眶也痠。",
+        "vision": "看東西像隔了一層霧，有點糊。",
+        "onset": "這是第三回了。前兩回都是忙了一陣、熬了幾夜之後發的。",
+        "habit": "為了年節的堂會，日夜練琴，常常彈到三更。",
+        "diet": "吃得少，嘴裡發苦。",
+        "mood": "我做什麼都要做到最好，一出錯就睡不著。",
+        "tongue": "舌邊紅，苔薄黃。脈弦數。"
+       },
+       "out": {
+        "feng": {
+         "r": "none",
+         "t": "疏風的藥散不了裡頭的鬱熱，紅痛減了兩天又起。"
+        },
+        "bu": {
+         "r": "worse",
+         "t": "以為是體虛而用了補藥，越補發炎越重，右眼紅痛得更厲害。"
+        },
+        "xie": {
+         "r": "none",
+         "t": "苦寒直折，紅痛退了兩天又起，人反而更沒精神。這不是只清肝火就能了的。"
+        },
+        "qi": {
+         "r": "worse",
+         "t": "補氣升提，鬱熱更往上衝，紅痛更甚。"
+        },
+        "san": {
+         "r": "none",
+         "t": "清胃的藥對不上，紅痛依舊。"
+        },
+        "he": {
+         "r": "chain",
+         "t": "服藥五天，紅痛退了大半，也不那麼怕光了。這個病會反覆，要等回診再看。"
+        }
+       },
+       "refer": {
+        "back": true,
+        "r": "checked",
+        "t": "專治眼病的大夫看過，點了藥，說發作時要先把發炎壓下來，不然瞳神會黏住變形。調體質的事，交還給我。",
+        "m": "發作的時候先請專科壓住，再從三焦經絡調，兩邊都要。"
+       },
+       "late": {
+        "trust": 5,
+        "t": "我向沈先生說明，這個病我目前沒有把握，為他寫了一封引薦信。"
+       },
+       "thanks": "沈先生請我去聽了一場堂會，坐在最前排。",
+       "angry": "茶樓的人說，沈先生的眼睛又紅了，堂會差點開天窗。",
+       "chainLabel": "會反覆的病",
+       "chain": [
+        {
+         "title": "一個月後",
+         "see": "沈先生說紅痛都好了。可是年節的堂會又近了，他這幾天又彈到三更，右眼開始有點痠、有點怕光。",
+         "say": "大夫，眼睛好了，我是不是可以停藥，專心練琴了？",
+         "hint": "紅痛退了是真的。可是讓他反覆發作的原因，還在不在？",
+         "opts": [
+          {
+           "name": "說明反覆的原因，調作息與心態，疏通脈道再調一段",
+           "sub": "找出反覆發炎的原因：作息規律，放下事事求全",
+           "right": true,
+           "trust": 4,
+           "spirit": 2,
+           "t": "我告訴他：三回都發在熬夜之後。藥可以疏通，可是作息不改、事事求全，還會再發。他想了很久，答應堂會之前不再彈過三更。",
+           "m": "治好一次不難，不讓它再來才難。反覆的病，要找出反覆的原因。"
+          },
+          {
+           "name": "改用苦寒，把火徹底清乾淨",
+           "sub": "怕再發，乾脆清到底",
+           "right": false,
+           "trust": -2,
+           "spirit": -2,
+           "t": "苦寒吃了半個月，他說人越來越沒力氣。堂會前三天，右眼又紅了。",
+           "m": "千萬不要只清肝熱肝火。苦寒吃久了，正氣更虛，病邪反而相對旺盛。"
+          },
+          {
+           "name": "開些補藥，讓他把身子補起來",
+           "sub": "反覆發作是體虛，補一補",
+           "right": false,
+           "trust": -3,
+           "spirit": -3,
+           "t": "補了十天，右眼紅痛得比上一回還厲害。",
+           "m": "以為是體虛而吃補，越補，發炎越嚴重。"
+          }
+         ]
+        }
+       ],
+       "chainEnd": {
+        "well": "堂會那晚，沈先生彈完最後一曲，下台時特地朝我這邊點了點頭。",
+        "wobble": "沈先生的眼睛後來又發了一回，好在及時送了專科，瞳神沒有變形。"
+       },
+       "quote": {
+        "src": "",
+        "text": ""
+       },
+       "advice": "作息規律、減少壓力、找到反覆發炎的原因。過度焦慮與要求完美不利於治療。留意用眼姿勢，不彎腰駝背，多活動肩頸、擴胸。",
+       "modernNote": "現代對照：虹彩炎發作時需要配合西藥抑制發炎；嚴重發炎可致瞳孔變形、提早出現白內障。",
+       "cmt": {
+        "best": "紅痛退了只是一半。找出他反覆的原因，才是治這個病。",
+        "xie": "千萬不要只清肝熱肝火。苦寒吃久了，正氣更虛。",
+        "done": "這一案要記下來：反覆的病，要找出反覆的原因。",
+        "referred": "發作時請專科壓住，是對的。只是調體質的那一半，還要你自己來。",
+        "fail": "這一案沒有走上正路。紅繞黑睛、瞳神縮小、口苦脈弦、每回都在勞累後發作，要從三焦經絡著手，不能只清，也不能亂補。"
+       },
+       "_review": "已審",
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；引文待補；佑彥 2026-11-17 審完"
+      },
+      {
+       "id": "c10",
+       "name": "溫先生",
+       "type": "糧行賬房　心思細密",
+       "img": "4e97f3aa-3216-4b4b-a68b-df7624c77c9c.png",
+       "face": "p-wenxs",
+       "trust": 55,
+       "lv": 2,
+       "disease": "青風內障",
+       "modern": "慢性青光眼（開放隅角）",
+       "pattern": "muluo",
+       "right": "ling",
+       "wheel": "shui",
+       "keyQ": [
+        "pain",
+        "mood",
+        "tongue"
+       ],
+       "intro": "糧行的賬房溫先生，白天撥算盤，夜裡對帳。他說近半年傍晚常覺得眼珠發脹，眉骨痠，看燈火時外頭偶爾有一圈彩暈，睡一覺又好了。「大概是帳看多了。可是東家說我近來常算錯，我才來的。」",
+       "eye": {
+        "red": 0,
+        "gunk": false,
+        "haze": false,
+        "pupil": "normal",
+        "green": false
+       },
+       "eyeText": "兩眼不紅不腫，黑睛透亮，瞳神圓正，對光收放如常。我請他閉眼，隔著眼皮輕按眼珠，比常人硬一些。再請他盯著我的鼻子，我從旁邊慢慢移近一支筆，他總比常人晚一點才看見。",
+       "eyeRight": "對。外面看不出毛病，病在瞳神裡頭：眼珠發硬，旁邊看不全。瞳神是水輪，屬腎。只是這一位的來路，還要從他過的日子去找。",
+       "eyeWrong": "白睛、黑睛、胞瞼都乾淨。毛病在瞳神深處，眼珠發硬，旁邊看不全。瞳神是水輪，屬腎。",
+       "a": {
+        "gunk": "沒有眼屎，眼淚也正常。",
+        "pain": "不紅不癢。傍晚眼珠發脹，眉骨和額頭痠，低頭撥算盤久了更明顯。",
+        "vision": "看燈火有時外頭一圈彩暈。正前方的字看得清楚，可是走路常撞到旁邊的櫃角。",
+        "onset": "半年多了。年底盤帳那一陣最重，過了年稍好。我爹晚年也看不見，人家說是青盲。",
+        "habit": "一天坐在帳桌前七八個時辰，脖子肩膀硬得像塊板子。夜裡對帳常到三更。",
+        "diet": "吃飯匆匆，常常飯冷了才想起來吃。二便還算正常。",
+        "mood": "東家催帳，家裡兩個孩子要讀書。心裡總繃著一根弦，鬆不下來。",
+        "tongue": "舌質偏暗，舌下青筋粗。脈弦。"
+       },
+       "out": {
+        "ling": {
+         "r": "chain",
+         "t": "服藥一個月，溫先生說傍晚的脹痛輕了，燈火外頭的彩暈也少見了。這是要看很多年的病，往後要定期回診。"
+        },
+        "xie": {
+         "r": "none",
+         "t": "苦寒的藥吃下去，頭脹稍鬆，眼珠的脹和旁邊看不見的地方都沒有變，胃口倒是壞了。"
+        },
+        "qi": {
+         "r": "worse",
+         "t": "補氣上提的藥吃下去，眼珠脹得更厲害，傍晚頭痛欲裂。他的氣血是往上壅的，不能再往上提。"
+        },
+        "bu": {
+         "r": "none",
+         "t": "藥性平和，吃了沒有壞處，眼脹卻依舊。他的毛病不在虛，在堵。"
+        },
+        "tian": {
+         "r": "none",
+         "t": "大補的藥太滋膩，他吃了胸口發悶，眼脹依舊。"
+        }
+       },
+       "refer": {
+        "back": true,
+        "r": "checked",
+        "t": "專科大夫看過，說這是青風內障，眼珠比常人硬，一時沒有急險，可以調養，但要一輩子定期給人看。",
+        "m": "請人把過關，再來立法，穩當。記住：這是要看一輩子的病。"
+       },
+       "late": {
+        "trust": 4,
+        "t": "我向溫先生說明，這個病我沒有把握，替他寫了一封引薦信。"
+       },
+       "thanks": "溫先生每年年底都送來一本親手謄好的帳冊，說是給我記病歷用的。",
+       "angry": "溫先生的東家來說，賬房不肯再來了。",
+       "say": {
+        "worse": "大夫，吃了藥，眼珠脹得我一夜沒睡。"
+       },
+       "chainLabel": "要看一輩子的病",
+       "chain": [
+        {
+         "title": "一個月後",
+         "see": "溫先生說傍晚不脹了，燈火外頭的彩暈也很少見。我再按他的眼珠，比上回軟了一點；從旁邊移近的筆，看見的時候和上回差不多。",
+         "say": "大夫，我好了吧？年底帳多，天天熬藥也麻煩，那藥我就停了？",
+         "hint": "不脹了，是病退了，還是只是不痛了？",
+         "opts": [
+          {
+           "name": "說明這是要長年看的病，請他定期回來",
+           "sub": "症狀退了，病根還在。藥可以減，回診不能斷",
+           "right": true,
+           "trust": 3,
+           "spirit": 2,
+           "t": "我告訴他，這個病最怕的就是不痛不癢。藥可以改成隔日一帖，可是每個月要回來，讓我按一按眼珠、試一試旁邊看得見多少。他說，算帳的人最懂得按時。",
+           "m": "青風內障最狡猾的地方，就是不痛。病人覺得好了，醫者要記得它還在。"
+          },
+          {
+           "name": "既然好了，就停藥吧",
+           "sub": "病人說好了，就是好了",
+           "right": false,
+           "trust": 2,
+           "spirit": -3,
+           "t": "他高高興興地走了。年底盤帳之後他又來了，眼珠又脹，旁邊又少看見了一截。",
+           "m": "不脹不痛，不等於好了。這個病，回診比吃藥要緊。"
+          },
+          {
+           "name": "加重藥量，一鼓作氣",
+           "sub": "趁有效多用一點，早點斷根",
+           "right": false,
+           "trust": -2,
+           "spirit": -2,
+           "t": "藥加重了，他吃得胃口全無，自己偷偷停了藥。",
+           "m": "慢病要用慢功。他吃不下去的藥，再對也沒有用。"
+          }
+         ]
+        },
+        {
+         "title": "年底盤帳之後",
+         "see": "年底他忙了一個月，熬了好幾夜，又來了。眼脹回來一些。我試他的旁邊，靠鼻子那一側，好像比上回少看見一點點。",
+         "say": "大夫，這帳不對完，東家要扣錢的。您再給我加點藥吧。",
+         "hint": "藥是一半，另一半在他過的日子裡。",
+         "opts": [
+          {
+           "name": "藥照舊，請他找出壓力的源頭，亥時以前睡",
+           "sub": "情緒平穩、早睡，比多加一味藥有用",
+           "right": true,
+           "trust": 2,
+           "spirit": 2,
+           "t": "我沒有加藥。我問他，帳能不能分一半給徒弟。他想了很久，說可以試試。那個月，他每天亥時以前就熄了燈。",
+           "m": "晚上早睡，情緒平穩，找出壓力的源頭。衛教的話，要說到他做得到的地方。"
+          },
+          {
+           "name": "加一味黃耆補補身子",
+           "sub": "熬夜傷了氣，補一補",
+           "right": false,
+           "trust": -2,
+           "spirit": -3,
+           "t": "補氣的藥一進去，他當晚眼珠就脹得睡不著。",
+           "m": "黃耆補益脾胃、升提陽氣，條件不對時反而讓眼壓上升。他是往上壅，不是往下陷。"
+          },
+          {
+           "name": "換成清肝瀉火的藥",
+           "sub": "熬夜上了火，清一清",
+           "right": false,
+           "trust": -1,
+           "spirit": -2,
+           "t": "苦寒的藥吃了半個月，眼脹沒有退，他倒是瀉了好幾回肚子。",
+           "m": "他的脹是堵出來的，不是火燒出來的。"
+          }
+         ]
+        }
+       ],
+       "life": {
+        "firstEnd": "溫先生答應每個月來一次。往後幾年，他的眼脹時有時無，旁邊看得見的地方，大致守住了。",
+        "stages": [
+         {
+          "ch": 1,
+          "title": "十多年後",
+          "intro": "溫先生成了糧行的大掌櫃，鬢角都白了。這些年他每個月都來，從沒斷過。這一回，他是扶著門框進來的。",
+          "end": "溫先生的眼睛，一年比一年暗。他還是每個月來，由兒子牽著。",
+          "chain": [
+           {
+            "title": "十多年後",
+            "see": "正前方的字他還看得清，可是我從旁邊移近的筆，要到他鼻尖前一尺才看見。眼珠按起來，比從前硬。他說最近夜裡起來，常撞到桌角。",
+            "say": "大夫，我照您說的早睡了，藥也沒斷，怎麼還是越來越窄？",
+            "hint": "他沒有做錯什麼。這時候他最需要的，是什麼？",
+            "opts": [
+             {
+              "name": "說實話：病會走，我們能做的是讓它走慢一點",
+              "sub": "不瞞他，也不嚇他",
+              "right": true,
+              "trust": 4,
+              "spirit": 2,
+              "t": "我告訴他，這個病年紀越大越難守。這些年守住的，是他自己掙來的。他沉默了很久，說：那就讓它走慢一點。",
+              "m": "治不好的病，醫者能給的是實話和陪伴。"
+             },
+             {
+              "name": "拍胸脯說：再吃一年，一定能把視野補回來",
+              "sub": "讓他安心",
+              "right": false,
+              "trust": 3,
+              "spirit": -5,
+              "t": "他眼睛一亮。我知道，我說了一句做不到的話。",
+              "m": "許了做不到的諾，往後每一次回診，都要拿它來還。",
+              "flag": "promise"
+             },
+             {
+              "name": "換一個猛一點的方子試試",
+              "sub": "破血通絡，大力疏通",
+              "right": false,
+              "trust": -2,
+              "spirit": -3,
+              "t": "猛藥吃下去，他頭暈眼花了好幾天，看得見的地方一分也沒有回來。",
+              "m": "年紀大了，正氣也虛了。該換的是方向，不是更猛的藥。"
+             }
+            ]
+           },
+           {
+            "title": "又過了幾年",
+            "see": "他的右眼只剩中間一小塊看得見，左眼也窄了。帳已經不看了，每天在院子裡坐著。人瘦了，面色萎黃，說話有氣無力，夜裡睡不好。舌淡，脈細弱。",
+            "say": "大夫，我是不是快瞎了？",
+            "hint": "病久了，人也老了。他的證，變了沒有？",
+            "opts": [
+             {
+              "name": "改成調養氣血，先把身子養起來",
+              "sub": "病程日久，正氣不足，讓足夠的氣血送到眼睛",
+              "right": true,
+              "trust": 3,
+              "spirit": 2,
+              "t": "我把方子換成補養氣血的路子，請他每天在院子裡慢慢走一圈。他說，至少吃得下飯了。",
+              "m": "病人老了，證也跟著變。氣血兩虛的時候，先把身體調養好，才有足夠的氣血送到眼睛。"
+             },
+             {
+              "name": "守著原方不動",
+              "sub": "這麼多年都是這個方子",
+              "right": false,
+              "trust": 0,
+              "spirit": -2,
+              "t": "方子沒變，他的人卻一年比一年虛。",
+              "m": "守方是守證，不是守方子。證變了，方子就要跟著變。"
+             },
+             {
+              "name": "勸他別再吃藥了，反正也沒用",
+              "sub": "替他省點錢",
+              "right": false,
+              "trust": -6,
+              "spirit": -4,
+              "t": "他愣了一下，點點頭走了。下一回，是他兒子扶著來的。",
+              "m": "醫者先放棄，病人就真的沒有路了。只要還看得見光線，就還有機會。"
+             }
+            ]
+           },
+           {
+            "title": "那年冬天",
+            "see": "他由兒子牽著進門。兩眼只剩下光感，分得出白天黑夜。他摸到我的手，握了很久。",
+            "say": "大夫，我看不見您了。可是我認得您的聲音。",
+            "hint": "這一回，要開的不只是方子。",
+            "opts": [
+             {
+              "name": "坐下來陪他說說話，教他兒子怎麼照顧起居",
+              "sub": "眼睛的事盡力了，接下來是日子的事",
+              "right": true,
+              "trust": 4,
+              "spirit": 3,
+              "t": "我們說了一下午的話。說糧行，說那年的帳，說他爹。臨走前，他兒子把屋裡的東西該怎麼擺、院子裡的路該怎麼走，都記下了。",
+              "m": "病人看不見了，日子還要過。教家人怎麼照顧，也是醫。"
+             },
+             {
+              "name": "說自己沒有辦法了，請他另請高明",
+              "sub": "愧對他這麼多年",
+              "right": false,
+              "trust": -4,
+              "spirit": -4,
+              "t": "他說：我不是來找高明的，我是來找您的。",
+              "m": "他要的，不是另一個大夫。"
+             },
+             {
+              "name": "照舊開一帖方子，叮嚀照舊",
+              "sub": "該做的照做",
+              "right": false,
+              "neutral": true,
+              "trust": 0,
+              "spirit": 0,
+              "t": "我照舊開了方子。他收下了，說：大夫的藥，我吃了一輩子。",
+              "m": "藥照開沒有錯。只是今天他來，不只是為了拿藥。"
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "final": "blind",
+        "gap": {
+         "ch": 2,
+         "t": "每個月初一，我還是會把病歷簿翻到溫先生那一頁。他沒有再來。他兒子捎過一次口信，說老爺子腿腳不便，出不了門了，叫我別掛心。"
+        },
+        "death": {
+         "ch": 3,
+         "title": "訃聞",
+         "lines": [
+          "溫家來人報喪。溫先生是冬天走的，在睡夢中，沒有受苦。",
+          "他兒子說，老爺子看不見以後，還是天天摸著院子裡的路走一圈，說是大夫交代的。",
+          "我把病歷簿翻到他那一頁，寫上最後一行。這一頁，我寫了二十多年。"
+         ],
+         "lost": [
+          "溫家來人報喪，說溫先生冬天走了。",
+          "我想起很多年前，那個說帳太多、眼珠發脹的賬房。後來他沒有再來，我不知道他的眼睛最後怎麼樣了。"
+         ]
+        }
+       },
+       "chainEnd": {
+        "well": "溫先生還是瞎了。可是從三十幾歲到白頭，二十多年，他每個月都來，我每個月都在。病沒有被治好，他也沒有一天是一個人扛著。",
+        "better": "溫先生還是瞎了。這些年我走錯過幾步，他沒有怪我。",
+        "wobble": "溫先生還是瞎了。我常想，那些年我要是多看清一分，他會不會晚幾年才走到這一步。"
+       },
+       "quote": {
+        "src": "",
+        "text": ""
+       },
+       "advice": "晚上 11 點前睡。情緒平穩，找出壓力的源頭。避免過度辛辣烤炸，多吃深色蔬果。只要還看得見光線，視野缺損都還有機會改善。",
+       "modernNote": "現代對照：臨床仍以藥物、雷射、手術降眼壓；控制不良有一定機率失明，應持續眼科追蹤。",
+       "cmt": {
+        "best": "青風內障治不好，這一案你也沒有治好。可是你守了他二十年，守到他願意每個月來。慢病的醫者，要的就是這份耐性。",
+        "done": "這一案有走錯的地方。慢病的每一步錯，都要病人用好幾年去還。",
+        "promise": "你許過他做不到的事。他沒有怪你，可是你要記得。",
+        "referred": "交給專科是穩當的。只是這個病要看一輩子，總得有人陪他看。",
+        "fail": "不紅不痛、眼珠發脹、旁邊看不全，是青風內障。他的病在堵，不在虛，也不能往上提。"
+       },
+       "_review": "已審",
+       "_note": "2026-11-17 Claude 起草（長期病人），待佑彥審；引文待補；佑彥 2026-11-17 審完"
+      },
+      {
+       "id": "c11",
+       "name": "秀姑",
+       "type": "繡坊繡娘　手巧要強",
+       "img": "49fc1c80-551e-4cdd-9fb7-e6925a598c71.png",
+       "face": "p-xiugu",
+       "trust": 50,
+       "lv": 3,
+       "disease": "高風內障",
+       "modern": "視網膜色素變性",
+       "pattern": "jingxu",
+       "right": "tian",
+       "wheel": "shui",
+       "keyQ": [
+        "vision",
+        "diet",
+        "tongue"
+       ],
+       "intro": "繡坊的秀姑由徒弟牽著進門。她說自小天一黑就看不見，家裡人說是雀目，吃雞肝就會好，吃了半輩子也沒好。這兩年連白天也只看得見正前方一小塊，針眼要湊到鼻尖才穿得過。「大夫，我這雙手還能繡，就是眼睛不爭氣。」",
+       "eye": {
+        "red": 0,
+        "gunk": false,
+        "haze": false,
+        "pupil": "normal",
+        "green": false
+       },
+       "eyeText": "兩眼外觀乾淨，黑睛透亮，瞳神圓正，對光收放如常。我請她盯著我的鼻子，從旁邊伸手過去，手到了她眼前一尺，她才看見。屋裡稍暗一點，她就得扶著桌子走。",
+       "eyeRight": "對。外面看不出毛病，病在瞳神深處。瞳神是水輪，屬腎。精血不足，眼睛失了滋養，是這個病的根。",
+       "eyeWrong": "外面都好。毛病在瞳神深處，水輪，屬腎。",
+       "a": {
+        "gunk": "沒有眼屎。眼睛常常乾。",
+        "pain": "不痛不紅。太陽底下刺眼得厲害。",
+        "vision": "天一黑就跟瞎子一樣。白天只看得見正前方一小塊，像從竹筒裡往外看。",
+        "onset": "小時候就怕黑，十幾歲開始天黑看不見。這幾年白天看得見的地方也越來越窄。娘家一個舅舅也是這樣。",
+        "habit": "十二歲進繡坊，三十年來天天低頭繡到掌燈。",
+        "diet": "吃得少。常頭暈耳鳴，夜裡睡不安穩，腰痠沒力。",
+        "mood": "繡坊就靠我這雙眼。我不能瞎。",
+        "tongue": "人很瘦，手背的皮膚乾枯。舌淡，苔少。脈細弱。"
+       },
+       "out": {
+        "tian": {
+         "r": "chain",
+         "t": "服藥兩個月，秀姑說白天眼睛沒那麼乾澀了，頭暈也少了。夜裡還是看不見。這是要看很多年的病，往後要定期回診。"
+        },
+        "bu": {
+         "r": "none",
+         "t": "平補的藥吃了沒有壞處，可是她虧得太深，補不上去。夜裡依舊，白天也依舊。"
+        },
+        "xie": {
+         "r": "worse",
+         "t": "苦寒的藥吃下去，她人更虛了，頭暈得下不了床。"
+        },
+        "qi": {
+         "r": "none",
+         "t": "精神好了一點，看得見的地方依舊那麼窄。"
+        },
+        "ling": {
+         "r": "none",
+         "t": "疏通的藥對她太峻，人更乏了，眼睛沒有變化。"
+        }
+       },
+       "refer": {
+        "back": true,
+        "r": "checked",
+        "t": "專科大夫看過，說是高風雀目，沒有能讓它退回去的法子，能做的是延緩，叫她心裡要有準備。",
+        "m": "這個病，古今都沒有把握治好。延緩，就是我們的功課。"
+       },
+       "late": {
+        "trust": 3,
+        "t": "我向秀姑說明，這個病我沒有把握，替她寫了一封引薦信。"
+       },
+       "thanks": "秀姑的徒弟送來一方繡帕，說是師父摸著繡的。",
+       "angry": "秀姑的徒弟來說，師父不肯再吃藥了。",
+       "say": {
+        "worse": "大夫，吃了藥，我頭暈得站不起來。"
+       },
+       "chainLabel": "要看一輩子的病",
+       "chain": [
+        {
+         "title": "兩個月後",
+         "see": "她說白天眼睛不乾了，頭暈少了，睡得也好一些。我再試她的旁邊，和兩個月前差不多，沒有再窄。夜裡依舊看不見。",
+         "say": "大夫，眼睛舒服多了。什麼時候夜裡也能看見？",
+         "hint": "穩住了，是這個病最好的消息。可是她問的是另一件事。",
+         "opts": [
+          {
+           "name": "說明能穩住已經難得，要長年調養",
+           "sub": "先讓她知道能盼什麼，不能盼什麼",
+           "right": true,
+           "trust": 2,
+           "spirit": 2,
+           "t": "我說，這個病能不再往下走，已經是好消息。夜裡要看見，我不敢答應。她低頭想了很久，說：那就先守住白天。",
+           "m": "治療多可以改善白天的清晰度和夜裡的視力，卻沒辦法很快見效，更談不上治好。這句話，要讓她聽見。"
+          },
+          {
+           "name": "說再吃半年，夜裡就能看見",
+           "sub": "她需要一個盼頭",
+           "right": false,
+           "trust": 4,
+           "spirit": -4,
+           "t": "她笑了，那是我第一次看見她笑。我知道，半年後我得還她這句話。",
+           "m": "給盼頭可以，許諾不行。",
+           "flag": "promise"
+          },
+          {
+           "name": "加重補藥，一口氣補回來",
+           "sub": "虧得深，就補得猛",
+           "right": false,
+           "trust": -2,
+           "spirit": -3,
+           "t": "補得太猛，她口乾舌燥、嘴裡長瘡，眼睛一點也沒變。",
+           "m": "太虛的人經絡脈道細小，虛不受補，補得太猛反而上火。"
+          }
+         ]
+        },
+        {
+         "title": "入冬",
+         "see": "繡坊接了一批嫁衣，她天天繡到掌燈，眼睛又乾又痠，頭也暈了起來。",
+         "say": "這批活做完，我就歇。",
+         "hint": "這個病的人，多半長年大量耗損眼力。",
+         "opts": [
+          {
+           "name": "請她減活：白天繡，天黑就停，出門戴斗笠擋日頭",
+           "sub": "調養一半靠藥，一半靠少耗",
+           "right": true,
+           "trust": 2,
+           "spirit": 2,
+           "t": "她不情願，還是答應了。繡坊的活分給了兩個徒弟，她在旁邊看針腳。",
+           "m": "少耗一分，就多守一分。眼睛也要防曬。"
+          },
+          {
+           "name": "多開一味藥，讓她撐過這批活",
+           "sub": "生計要緊",
+           "right": false,
+           "trust": 1,
+           "spirit": -3,
+           "t": "嫁衣繡完了，她看得見的地方又窄了一圈。",
+           "m": "藥撐得住一時，撐不住她天天耗。"
+          },
+          {
+           "name": "藥照舊，隨她安排",
+           "sub": "她自己的身子，她自己拿主意",
+           "right": false,
+           "neutral": true,
+           "trust": 0,
+           "spirit": 0,
+           "t": "她照舊繡到掌燈。好在這一冬，沒有再壞下去。",
+           "m": "不是每一次都非得說服她。只是能勸的時候，要勸。"
+          }
+         ]
+        }
+       ],
+       "life": {
+        "firstEnd": "這幾年，秀姑的眼睛穩住了。白天她還能在繡坊裡看徒弟的針腳，夜裡由徒弟牽著回家。",
+        "stages": [
+         {
+          "ch": 1,
+          "title": "又過了幾年",
+          "intro": "秀姑又來了。她不再繡了，繡坊交給了徒弟。這一回，她是摸著牆進來的。",
+          "end": "秀姑的眼睛一年比一年暗。她還是每個月來，每次都問同一句話：大夫，快好了吧？",
+          "chain": [
+           {
+            "title": "又過了幾年",
+            "see": "她看得見的地方又窄了，只剩正中間銅錢大的一塊。她說去年冬天以後壞得很快。可是她一坐下就笑著說：聽說城東有個病人，眼睛在您這裡看好了。",
+            "say": "大夫，您治好了那麼多人，也一定能治好我。我就等著哪天看清楚徒弟的臉。",
+            "hint": "她把希望全放在你身上了。這份希望，你接不接？",
+            "opts": [
+             {
+              "name": "收下她的心意，也把實話說清楚",
+              "sub": "不奪走她的希望，也不許諾復明",
+              "right": true,
+              "trust": 2,
+              "spirit": 0,
+              "t": "我說：我會一直在，可是讓您重新看見，我做不到。我能做的，是陪您守住還看得見的。她的笑容沒變，說：大夫謙虛。",
+              "m": "你說了實話，她不肯聽，那是她的事。你沒有騙她，那是你的事。"
+             },
+             {
+              "name": "順著她說：一定會好的",
+              "sub": "她這麼盼著",
+              "right": false,
+              "trust": 3,
+              "spirit": -6,
+              "t": "她緊緊握住我的手。回家的路上，我覺得那隻手好重。",
+              "m": "她的期待是她的；你接下來，就成了你的債。",
+              "flag": "promise"
+             },
+             {
+              "name": "直說治不好，勸她別再來了",
+              "sub": "長痛不如短痛",
+              "right": false,
+              "trust": -8,
+              "spirit": -4,
+              "t": "她的笑僵在臉上。過了一個月，她還是來了，只是不再說話。",
+              "m": "實話要說，可是不能把門關上。"
+             }
+            ]
+           },
+           {
+            "title": "過了一年",
+            "see": "她看得見的地方又少了一點。她的徒弟私下拉住我說，師父每天晚上都問大夫的藥是不是換了新的、是不是快好了。她把房裡的燈都點滿，說要練夜裡看東西。",
+            "say": "大夫，這帖藥是不是比上回的強？我覺得有好一點。",
+            "hint": "久病耗身，也耗心。調方之外，還有什麼要照顧？",
+            "opts": [
+             {
+              "name": "調方之外，教她和徒弟怎麼過看不清的日子",
+              "sub": "心理調適最重要：摸著認絲線、記住屋裡的擺設",
+              "right": true,
+              "trust": 2,
+              "spirit": 2,
+              "t": "我請徒弟把屋裡的擺設固定下來，教秀姑用手指分辨絲線的粗細。她起初不肯學，說學了就是認了。後來，她自己摸著繡出了一朵梅花。",
+              "m": "心理調適最重要。與其恐慌，不如努力維持視力，也及早學會怎麼過日子。"
+             },
+             {
+              "name": "換一帖更貴的藥，讓她安心",
+              "sub": "她要的是新藥",
+              "right": false,
+              "trust": 2,
+              "spirit": -4,
+              "t": "新藥很貴。她把攢下的錢都拿了出來。看得見的地方沒有變。",
+              "m": "換藥是為了證，不是為了她的心。"
+             },
+             {
+              "name": "勸她別再點燈練眼睛",
+              "sub": "傷眼的事，要糾正",
+              "right": false,
+              "neutral": true,
+              "trust": -1,
+              "spirit": 0,
+              "t": "她把燈熄了，一晚上沒睡。徒弟說，師父哭了。",
+              "m": "話是對的。只是她點燈，不是為了練眼睛，是怕黑。"
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "ch": 2,
+          "title": "晚年",
+          "intro": "我老了，秀姑也老了。她的徒弟早已自立門戶，還是每個月牽她來一次。",
+          "end": "",
+          "chain": [
+           {
+            "title": "晚年",
+            "see": "她只剩下光感，分得出窗子在哪裡。人更瘦了，咳了一冬。她坐下來，還是那一句話。",
+            "say": "大夫，快好了吧？等我看見了，要給您繡一幅屏風。",
+            "hint": "你老了，她也老了。這一回，你想跟她說什麼？",
+            "opts": [
+             {
+              "name": "告訴她：那幅屏風，我在心裡已經看見了",
+              "sub": "不再爭能不能好，接住她這一生的心意",
+              "right": true,
+              "trust": 3,
+              "spirit": 3,
+              "t": "她愣了一下，笑了，眼淚順著臉頰流下來。她說：大夫，您早就知道了，是不是。我說是。她說：我也是。",
+              "m": "有些話，要等很多年，兩個人才都說得出口。"
+             },
+             {
+              "name": "又開一帖新方，說這回一定有效",
+              "sub": "讓她的盼頭撐下去",
+              "right": false,
+              "trust": 1,
+              "spirit": -6,
+              "t": "她把藥抱在懷裡，像抱著一樣寶貝。我沒有看她的臉。",
+              "m": "你又許了一次。這筆債，你這一生都還不完。",
+              "flag": "promise"
+             },
+             {
+              "name": "照舊開方，聽她說話",
+              "sub": "陪她坐一坐",
+              "right": false,
+              "neutral": true,
+              "trust": 1,
+              "spirit": 0,
+              "t": "我照舊開了方子，聽她說了一下午繡坊的事。",
+              "m": "陪她說說話，也是好的。"
+             }
+            ]
+           },
+           {
+            "title": "開春",
+            "see": "來的是秀姑的徒弟，只有她一個人。她說師父這一冬咳得厲害，起不了床，叫她來拿藥。",
+            "say": "大夫，師父叫我問您，春天到了，她的眼睛是不是就快好了？",
+            "hint": "病人來不了了。你要讓這帖藥帶回去什麼？",
+            "opts": [
+             {
+              "name": "開一帖養身止咳的方子，寫一句話讓徒弟唸給她聽",
+              "sub": "眼睛的藥照舊，先顧她的身子",
+              "right": true,
+              "trust": 2,
+              "spirit": 2,
+              "t": "我寫了一句：屏風的花樣，我等您說給我聽。徒弟說，她會唸給師父聽。",
+              "m": "年紀大了，先顧命，再顧眼。"
+             },
+             {
+              "name": "只開眼睛的藥",
+              "sub": "她要的是眼睛的藥",
+              "right": false,
+              "trust": 0,
+              "spirit": -3,
+              "t": "徒弟把藥帶回去了。我後來才想到，她咳了一冬，我連問都沒問。",
+              "m": "病人老了，眼睛已經不是最要緊的事。"
+             },
+             {
+              "name": "親自去她家看一看",
+              "sub": "她來不了，就我過去",
+              "right": false,
+              "neutral": true,
+              "trust": 2,
+              "spirit": -2,
+              "t": "我去了一趟。她認出我的腳步聲，說：大夫，您怎麼來了，我又不是快死了。",
+              "m": "能去就去。只是你也老了，這一趟走得你喘了好久。"
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "final": "dim",
+        "death": {
+         "ch": 2,
+         "title": "訃聞",
+         "lines": [
+          "秀姑的徒弟來了，穿著素服。",
+          "她說師父是在睡夢裡走的，年紀到了，走得很安靜。床頭擺著一幅繡了一半的屏風，是一枝梅花，針腳歪歪斜斜，是她摸著繡的。",
+          "徒弟說，師父交代，這一幅要送給大夫。她說：大夫一定看得見。"
+         ],
+         "lost": [
+          "繡坊的人來報喪，說秀姑走了，是年紀到了。",
+          "我想起很多年前，那個說自己天一黑就看不見的繡娘。後來她沒有再來，我不知道她的眼睛最後怎麼樣了。"
+         ]
+        }
+       },
+       "chainEnd": {
+        "well": "秀姑到最後都沒有看見。可是這二十年，她白天走的路、手裡的針、心裡的盼頭，都是我陪著她守的。",
+        "better": "秀姑到最後都沒有看見。這些年我有說錯話的時候，她都記得，也都原諒了。",
+        "wobble": "秀姑到最後都沒有看見。我許過她的話，我自己記得。"
+       },
+       "quote": {
+        "src": "",
+        "text": ""
+       },
+       "advice": "心理調適最重要。與其恐慌，不如努力維持視力，及早了解視覺輔具、訓練課程、社會救濟。眼睛要防曬。",
+       "modernNote": "現代對照：視網膜色素變性中西醫都沒把握完全治癒，治療多可改善白天的清晰度與夜間視力。視野快速縮小、中心視力驟降，或合併白內障、黃斑部水腫，要眼科評估。",
+       "cmt": {
+        "best": "高風內障，古今都沒有把握治好。你沒有騙她，也沒有丟下她。她把盼頭壓在你身上二十年，你接住了，也沒有讓它壓垮你們兩個。",
+        "done": "這一案有走錯的地方。治不好的病，醫者說的每一句話，病人都會記很多年。",
+        "promise": "她的期待是她的，你的承諾是你的。你許了，她就一直等。",
+        "referred": "交給專科是穩當的。只是她要的，不只是一個能看眼睛的人。",
+        "fail": "天黑看不見、看東西像從竹筒裡看，人瘦、頭暈耳鳴、腰痠，是精血虛損。平補補不上去，苦寒更傷她。"
+       },
+       "_review": "已審",
+       "_note": "2026-11-17 Claude 起草（長期病人），待佑彥審；引文待補；佑彥 2026-11-17 審完"
       }
      ]
     };
@@ -2973,7 +4653,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const WHEELS = EY.WHEELS;
     function eyeSVG(e, sel) {
         const scl = e.red === 2 ? '#f0b9ae' : (e.red === 1 ? '#f2d3ca' : '#f6f1e7');
-        const pr = e.pupil === 'dilated' ? 37 : 21;
+        const pr = e.pupil === 'dilated' ? 37 : (e.pupil === 'small' ? 14 : 21);      // small：瞳神緊小（虹彩炎）
         const pc = e.white ? '#b3b9bd' : (e.green ? '#3f6350' : '#121212');       // white：瞳神內灰白（圓翳內障）
         /* droop：上胞瞼鬆垂，蓋住黑睛上半。stye：胞瞼上的紅腫尖頭 */
         const droop = e.droop ? `<path class="zone${sel === 'rou' ? ' sel' : ''}" data-w="rou" d="M50 120 Q200 5 350 120 Q200 94 50 120 Z" fill="#d8b08c" stroke="#8a5a3a" stroke-width="1.2"/>` : '';
@@ -3082,8 +4762,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const CASE_ORD = { chen: 1, c1: 2, wen: 3 };
     const lvOf = (c) => c.lv || CASE_LV[c.id] || 1;
     function planChapter(k) {
-        const pool = SH.CASES.concat(EY.CASES).filter(c => !P[c.id] && lvOf(c) <= k + 1)
-            .map(c => ({ id: c.id, lv: lvOf(c), o: c.ord || CASE_ORD[c.id] || 10 + Math.random() * 80 }))
+        /* 長期病人（c.life）只在自己那一章上門，而且排第一位；錯過那一章就不來了，免得後面的病程超出五章 */
+        const pool = SH.CASES.concat(EY.CASES).filter(c => !P[c.id] && lvOf(c) <= k + 1 && !(c.life && lvOf(c) !== k + 1))
+            .map(c => ({ id: c.id, lv: lvOf(c), o: c.life ? 0 : (c.ord || CASE_ORD[c.id] || 10 + Math.random() * 80) }))
             .sort((a, b) => (b.lv - a.lv) || (a.o - b.o));          // 合乎這一章程度的優先，同程度隨機
         const picks = pool.slice(0, quotaOf(k)).map(x => x.id);
         const n1 = Math.ceil(picks.length / 2);
@@ -3094,7 +4775,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     /* dil：每章遇過的困境；echo：還沒浮現的回音；flags：留到結局的印記；dilLog：一生的抉擇 */
     /* 第一代的數值：energy 精力、peace 修為、money 金錢；jiji 既濟的天數、bal 目前的身心狀態、over 透支次數、poor 連續入不敷出的天數、epi 已領悟的心法 */
     const fresh = () => ({ energy: 70, peace: 0, money: 20, jiji: 0, bal: '', over: 0, poor: 0, epi: [], gives: 0,
-                           day: 1, ch: 0, chDay: 1, arr: {}, spirit: 70, skill: 0, fame: 0, study: 0, studyNext: 0, queue: [], news: [], metEye: false, learn: {}, bk: {}, needLearn: '', dil: [], echo: [], flags: {}, dilLog: [],
+                           day: 1, ch: 0, chDay: 1, arr: {}, spirit: 70, skill: 0, fame: 0, study: 0, studyNext: 0, queue: [], news: [], metEye: false, learn: {}, bk: {}, needLearn: '', dil: [], echo: [], flags: {}, dilLog: [], lifeNews: [],
                            app: { on: false, exp: 0, done: false } });       // app：學徒（第四章起）
     const S = Object.assign({ diff: 'easy', hero: 'm' }, fresh());       // hero：主角 m 男、f 女（舊存檔沒有這一欄就當男）
     const P = {};               // 病歷簿：每位病人一筆，跨門診日保存
@@ -3121,7 +4802,36 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         return { id, c, kind: sh ? 'sh' : 'eye', trust: clamp(c.trust + rep), status: 'new', due: 0, firstDay: S.day, firstCh: S.ch, visits: 0, spiritUsed: 0, spiritStart: 0, lowSpirit: false,
                  asked: [], pattern: null, paidPattern: null, round: 1, referred: false, outcome: '', lost: false,
                  bagang: [null, null, null], results: [], lastRx: null, fu: [],
-                 wheel: null, wheelOk: null, plan: null, log: [], pending: null, inChain: false, chainIdx: 0, chainRight: 0, chainDone: false, promise: false, noRefer: false, keyHit: 0 };
+                 wheel: null, wheelOk: null, plan: null, log: [], pending: null, inChain: false, chainIdx: 0, chainRight: 0, chainDone: false, promise: false, noRefer: false, keyHit: 0,
+                 stage: 0, lifeCh: 0, lifeDone: false, lastCh: S.ch };
+    }
+    /* ================= 長期病人（2026-11-17，佑彥要的跨章病程） =================
+       病例的 life：stages 是第一章之後的每一段（ch 是距初診隔幾章，title、intro、end、chain）；final 是最後一段走完時眼睛的結局；
+       gap 是病程走完後，某一章章首的一句話（他沒有來）；death 是訃聞（when：start 在那一章開門時，after 在病人最後一診之後）。
+       第一章那一段用病例本身的 chain。每一段走完，病人回家（status longterm），到 lifeCh 那一章的第一個門診日再來。 */
+    const lifeStages = (c) => (c.life ? c.life.stages : []);
+    const stageChain = (v) => (v.stage ? lifeStages(v.c)[v.stage - 1].chain : v.c.chain);
+    const lifeTotal = (c) => (c.chain || []).length + lifeStages(c).reduce((n, s) => n + s.chain.length, 0);
+    function lifeSchedule(p) {
+        const d = p.c.life && p.c.life.death;
+        if (d) S.lifeNews.push({ pid: p.id, kind: 'death', ch: p.firstCh + d.ch });
+    }
+    /* 這一則消息現在能不能說：到了那一章；訃聞若是「最後一診之後」，要等病人結案 */
+    function lifeReady(x) {
+        const p = P[x.pid];
+        if (!p || x.ch > S.ch) return false;
+        if (x.kind !== 'death') return true;
+        return p.status === 'closed' || p.status === 'lost';
+    }
+    function lifeNewsNext() {
+        const list = S.lifeNews || (S.lifeNews = []);
+        const i = list.findIndex(lifeReady);
+        if (i < 0) return null;
+        const x = list.splice(i, 1)[0], p = P[x.pid], L = p.c.life;
+        if (x.kind === 'gap') return { big: '', sub: '', lines: [narr(L.gap.t)] };
+        const d = L.death, ls = (p.lifeDone ? d.lines : (d.lost || d.lines)).map(narr);
+        p.died = true;
+        return { big: d.title || '訃聞', sub: p.c.name, lines: ls };
     }
     function maxAsk() {
         const base = V.kind === 'sh' ? { easy: 5, mid: 4 }[S.diff] || 3 : (isEasy() ? 4 : 3);
@@ -3204,7 +4914,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         memMeta = JSON.stringify(m);
         try { localStorage.setItem(META_KEY, memMeta); } catch (e) { /* 存不了就只留在這一次 */ }
     }
-    const OUT_RANK = ['痊癒', '保住視力', '明顯改善', '好轉', '轉介', '多跑一趟', '時好時壞', '無效', '惡化', '沒有回診'];
+    const OUT_RANK = ['痊癒', '保住視力', '明顯改善', '好轉', '轉介', '漸盲', '失明', '多跑一趟', '時好時壞', '無效', '惡化', '沒有回診'];
     /* 記下這位病人最好的一次結果 */
     function metaCase(p) {
         const m = loadMeta(), old = m.cases[p.id], now = p.outcome;
@@ -3625,7 +5335,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     }
     const tierOf = () => (S.peace >= 45 ? '歸真' : (S.peace >= 30 ? '通透' : (S.peace >= 15 ? '沉穩' : '青澀')));
     /* 診金：依結果給，權貴加倍、窮苦減半（病例有 pay 就用病例自己的倍數） */
-    const PAY = { '痊癒': 10, '保住視力': 10, '明顯改善': 10, '好轉': 6, '時好時壞': 4, '無效': 3, '轉介': 4, '多跑一趟': 3, '惡化': 0 };
+    const PAY = { '痊癒': 10, '保住視力': 10, '明顯改善': 10, '好轉': 6, '時好時壞': 4, '無效': 3, '轉介': 4, '多跑一趟': 3, '惡化': 0, '漸盲': 8, '失明': 8 };
     const PAY_MULT = { 'f21ec345-fe48-44bd-ba09-d2064ba919b1.png': 2, '3247410f-91ee-4a52-b562-2f239da71268.png': 0.5 };
     const payOf = (c, outcome) => Math.round((PAY[outcome] || 0) * (c.pay || PAY_MULT[c.img] || 1));
     const LIVING = [0, 4, 5, 6, 5];       // 每個門診日的生計：習醫時吃住在師父家，之後要自己撐起一間診間
@@ -3705,8 +5415,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     }
     const nextLabel = () => (S.queue.length ? '請下一位' : '今天的病人都看完了');
     const R_NAME = { cured: '痊癒', saved: '保住視力', better: '好轉', none: '無效', worse: '惡化', unneeded: '多跑一趟', checked: '先行確認', handed: '轉介',
-                     chain: '方向正確', good: '得當', ok: '穩當', bad: '失當', well: '明顯改善', wobble: '時好時壞' };
-    const R_GOOD = ['cured', 'saved', 'better', 'chain', 'good', 'ok', 'well', 'checked'];
+                     chain: '方向正確', good: '得當', ok: '穩當', bad: '失當', well: '明顯改善', wobble: '時好時壞', stable: '暫且穩住', dim: '漸盲', blind: '失明' };
+    const R_GOOD = ['cured', 'saved', 'better', 'chain', 'good', 'ok', 'well', 'checked', 'stable'];
     const rCls = (r) => (R_GOOD.includes(r) ? 'up' : 'down');
     /* 回診結果面板裡的病人立繪：手機上面板會蓋住整個看診畫面，所以把病人（改善或痊癒時是病好版）放進面板 */
     const rvFace = () => `<div class="rvface" style="background-image:url('${ptFace()}')"></div>`;
@@ -3731,6 +5441,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         if (S.ch === 0 && S.chDay === 2 && !S.flags.duMet) { S.flags.duMet = true; litHerbs(['甘草']); return story('藥行', DU, DU_MEET, dayStart); }
         if (S.ch >= 1 && !S.flags.duSupply) { S.flags.duSupply = true; S.flags.hq = herbQ(); return story('供藥', DU, DU_SUPPLY, dayStart); }
         if (S.flags.duSupply && herbQ() > (S.flags.hq || 0)) { const q = herbQ(); S.flags.hq = q; return story('藥材', `杜掌櫃送來${HQ[q]}等藥材`, DU_UP(q), dayStart); }
+        const ln = lifeNewsNext();          // 長期病人的消息：缺席、訃聞
+        if (ln) return story(ln.big, ln.sub, ln.lines, dayStart);
         saveGame();
         S.news = [];
         const back = [];
@@ -3738,7 +5450,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             if (p.lost) { p.status = 'lost'; p.outcome = '沒有回診'; metaCase(p); S.fame -= 2; if (!S.epi.includes('mortal')) addSpirit(-4); S.news.push(`${p.c.name}沒有回診。那帖藥後來怎麼樣了，我不會知道。`); }
             else back.push(p);
         });
-        const arr = (S.arr[S.chDay] || []).map(id => (P[id] = mk(id)));
+        const arr = (S.arr[S.chDay] || []).map(id => { P[id] = mk(id); lifeSchedule(P[id]); return P[id]; });
         S.queue = back.concat(arr);
         const future = Object.keys(S.arr).some(d => +d > S.chDay && S.arr[d].length);
         if (!S.queue.length && !future) return chapterEnd();          // 這一章的病人都結案了
@@ -3747,9 +5459,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const echoes = S.echoNote || [];
         hud();
         showVeil(`${chOf().name}　第${CN[S.chDay] || S.chDay}個門診日`, S.queue.length ? `候診 ${S.queue.length} 位` : '今天沒有病人上門');
-        const li = S.queue.map(p => `<li><div class="face" style="background-image:url('${faceUrl(p.c)}')"></div>
+        const li = S.queue.map(p => `<li><div class="face" style="background-image:url('${faceOf(p)}')"></div>
             <div class="who"><span class="name">${p.c.name}</span> <span class="small hint">${p.c.type}</span></div>
-            <span class="tag${p.status === 'waiting' ? ' back' : ''}">${p.status === 'waiting' ? '回診' : '新病人'}</span></li>`).join('');
+            <span class="tag${p.status === 'waiting' ? ' back' : ''}">${p.status === 'waiting' ? (p.chainIdx === 0 && p.stage ? '老病人' : '回診') : '新病人'}</span></li>`).join('');
         const news = S.news.map(t => `<div class="down small" style="margin-top:6px">${t}</div>`).join('');
         const warn = S.spirit < 20 ? '<div class="down small" style="margin-top:6px">心神不足二十。今天每一診能問的都會少一項。</div>' : '';
         teachSoon('day');
@@ -3776,7 +5488,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         V = S.queue.shift();
         V.well = false;
         sceneSetup();
-        V.visits++;
+        V.visits++; V.lastCh = S.ch;
         V.spiritStart = S.spirit;
         V.lowSpirit = S.spirit < 20;
         hud();
@@ -3815,6 +5527,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         if (bad && !S.epi.includes('mortal')) { addSpirit(-6); parts.push('自責，心神 −6'); }
         if (bad && S.epi.includes('mortal')) { perks.push(addPeace(1)); parts.push('修為 +1'); }
         if (outcome === '轉介') { perks.push(addPeace(2)); parts.push('修為 +2'); }
+        /* 長期病人：治不好的病，陪著走完也是醫者的功課。處置大多得當才長修為，不算失敗、不自責 */
+        if (V.lifeDone && V.chainRight * 2 >= lifeTotal(V.c)) { perks.push(addPeace(3)); parts.push('陪他走了這許多年，修為 +3'); }
         V.perk = perks.filter(Boolean).join('　');
         V.gain = parts.join('　');
         metaCase(V);
@@ -4313,11 +6027,12 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     /* ================= 章節 ================= */
     const GOOD4 = GOOD3.concat('好轉');
     const truthOf = (p) => (p.kind === 'sh' ? `${SH.PATTERNS[p.c.pattern].name}（${SH.PATTERNS[p.c.pattern].alias}）` : `${p.c.disease}（${p.c.modern}）`);
-    const outOf = (p) => (p.status === 'closed' ? p.outcome : (p.status === 'lost' ? '沒有回診，結果不明' : '尚在治療中'));
+    const outOf = (p) => (p.status === 'closed' ? p.outcome + (p.died ? '，已過世' : '') : (p.status === 'lost' ? '沒有回診，結果不明' : (p.status === 'longterm' ? '長期調理，往後還會再來' : '尚在治療中')));
     const caseRow = (p) => `<tr><td>${p.c.name}</td><td>${truthOf(p)}<br><span class="${GOOD4.includes(outOf(p)) ? 'up' : 'down'}">${outOf(p)}</span>　<span class="dim">共看了 ${p.visits} 次</span></td></tr>`;
     function startChapter() {
         S.chDay = 1;
         S.arr = planChapter(S.ch);
+        Object.values(P).filter(p => p.status === 'longterm' && p.lifeCh <= S.ch).forEach(p => { p.status = 'waiting'; p.due = S.day; });     // 長期病人這一章回來了
         if (S.ch >= 3 && !S.app.on) {            // 傳承章起，身邊多了一個學徒：他是早年某位病人家的孩子，沒治好的那一位優先
             S.app.on = true;
             const olds = Object.values(P).filter(p => p.firstCh <= 1 && p.id !== 'chen');
@@ -4341,7 +6056,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     }
     function chapterEnd() {
         V = null; hud();
-        const list = Object.values(P).filter(p => p.firstCh === S.ch).sort((a, b) => a.firstDay - b.firstDay);
+        const list = Object.values(P).filter(p => p.firstCh === S.ch || p.lastCh === S.ch).sort((a, b) => a.firstDay - b.firstDay);      // 長期病人這一章回來看過，也列進來
         const last = S.ch === CHAPTERS.length - 1;
         teachSoon('chapter');
         panel(`<h3>第${CN[S.ch + 1]}章　${chOf().name}　終 <span>這一章看了 <span class="px">${list.length}</span> 位病人</span></h3>
@@ -4466,8 +6181,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const list = Object.values(P).sort((a, b) => a.firstDay - b.firstDay);
         if (!list.length) return '<div class="dim">還沒有病人。</div>';
         return list.map(p => {
-            const st = p.status === 'closed' ? `<span class="tag done">已結案：${p.outcome}</span>`
+            const st = p.status === 'closed' ? `<span class="tag done">已結案：${p.outcome}${p.died ? '　已過世' : ''}</span>`
                 : p.status === 'lost' ? '<span class="tag lost">沒有回診</span>'
+                : p.status === 'longterm' ? '<span class="tag back">長期調理，往後還會再來</span>'
                 : p.status === 'waiting' ? `<span class="tag back">治療中，第 ${p.due} 個門診日回診</span>` : '<span class="tag">診間中</span>';
             const pats = p.kind === 'sh' ? SH.PATTERNS : EY.PATTERNS;
             const mine = p.pattern ? `我定的證：${pats[p.pattern].name}` : '尚未定證';
@@ -5143,11 +6859,12 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     }
     /* 慢性病：每個門診日回來一次，每一次都要分辨、要選擇 */
     function eyChain(i) {
-        const c = V.c, st = c.chain[i], n = c.chain.length;
-        const title = `第 ${i + 1} 次回診`;
-        const first = i === 0 ? `<div class="small hint" style="margin-bottom:6px">${c.out[c.right].t}</div>` : '';
+        const c = V.c, chain = stageChain(V), st = chain[i], n = chain.length;
+        const stg = V.stage ? lifeStages(c)[V.stage - 1] : null;          // 長期病人第二段起的那一段
+        const title = stg ? `${stg.title}　第 ${i + 1} 次回診` : `第 ${i + 1} 次回診`;
+        const first = i === 0 ? `<div class="small hint" style="margin-bottom:6px">${stg ? stg.intro : c.out[c.right].t}</div>` : '';
         const btns = st.opts.map((o, j) => `<button class="btn" data-o="${j}"><b>${o.name}</b><span class="sub">${o.sub}</span></button>`).join('');
-        panel(`<h3>${title}　${c.name} <span>${c.chainLabel || '慢性病'}，共要回診 <span class="px">${n}</span> 次</span></h3>${rvFace()}${first}
+        panel(`<h3>${title}　${c.name} <span>${c.chainLabel || '慢性病'}，${c.life ? '這一段' : '共'}要回診 <span class="px">${n}</span> 次</span></h3>${rvFace()}${first}
             <div class="see">${st.see}</div>
             <div class="grid" style="margin-top:10px;clear:both">${btns}</div>`);
         speak([{ who: 'patient', text: st.say }].concat(tips(st.hint)));
@@ -5163,14 +6880,30 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             if (i + 1 < n) {
                 V.chainIdx = i + 1;
                 leave(`<b class="name">${o.name}</b>${isEasy() ? `　<span class="${rCls(r)} px">${R_NAME[r]}</span>` : ''}　<span class="small hint">${delta}</span><div style="margin-top:6px">${o.t}</div>`);
+            } else if (c.life && V.stage < lifeStages(c).length) {
+                /* 長期病人：這一段走完，回家過日子，往後某一章再來 */
+                const nx = lifeStages(c)[V.stage], endT = stg ? stg.end : c.life.firstEnd;
+                V.log.push({ title: stg ? stg.title : '初診這幾回', what: `回診 ${n} 次`, r: 'stable', t: endT, shown: true });
+                V.status = 'longterm'; V.stage++; V.chainIdx = 0; V.lifeCh = V.firstCh + nx.ch;
+                V.spiritUsed += Math.max(0, V.spiritStart - S.spirit);
+                panel(`<h3>${title}　${c.name}</h3><div><b class="name">${o.name}</b>　<span class="small hint">${delta}</span></div><div style="margin-top:6px">${o.t}</div>
+                    <div style="margin-top:10px">${rvFace()}${resultHead('stable', 0)}<div style="margin-top:4px">${endT}</div><div style="clear:both"></div></div>
+                    <div class="dim small" style="margin-top:8px">這是要看很多年的病。他往後還會再來，病歷簿裡記著。</div>
+                    <div class="foot"><button class="btn go px" id="next">${nextLabel()}</button></div>`);
+                $('#next').onclick = nextPatient;
             } else {
                 V.chainDone = true;
-                /* 全對是明顯改善；錯一次（回診兩次以上的病）是好轉；其餘是時好時壞 */
-                const rr = V.chainRight >= n ? 'well' : (n > 1 && V.chainRight === n - 1 ? 'better' : 'wobble');
-                markWell(rr);
-                V.log.push({ title: '這段日子', what: `${CN[n] || n}次回診，處置得當 ${V.chainRight} 次`, r: rr, t: c.chainEnd[rr], shown: true });
+                /* 全對是明顯改善；錯一次（回診兩次以上的病）是好轉；其餘是時好時壞。長期病人的總數算全部的回診 */
+                const tot = c.life ? lifeTotal(c) : n;
+                const rr = V.chainRight >= tot ? 'well' : (tot > 1 && V.chainRight === tot - 1 ? 'better' : 'wobble');
+                const fr = c.life ? c.life.final : rr;            // 長期病人眼睛的結局是病自己決定的，處置好壞只改變這一段話
+                if (c.life) {
+                    V.lifeDone = true;
+                    if (c.life.gap) (S.lifeNews || (S.lifeNews = [])).push({ pid: V.id, kind: 'gap', ch: V.firstCh + c.life.gap.ch });
+                } else markWell(rr);
+                V.log.push({ title: c.life ? '這些年' : '這段日子', what: `${CN[tot] || tot}次回診，處置得當 ${V.chainRight} 次`, r: fr, t: c.chainEnd[rr], shown: true });
                 panel(`<h3>${title}　${c.name}</h3><div><b class="name">${o.name}</b>　<span class="small hint">${delta}</span></div><div style="margin-top:6px">${o.t}</div>
-                    <div style="margin-top:10px">${rvFace()}${resultHead(rr, 0)}<div style="margin-top:4px">${c.chainEnd[rr]}</div><div style="clear:both"></div></div>
+                    <div style="margin-top:10px">${rvFace()}${resultHead(fr, 0)}<div style="margin-top:4px">${c.chainEnd[rr]}</div><div style="clear:both"></div></div>
                     <div class="foot"><button class="btn go px" id="next">寫下醫案</button></div>`);
                 $('#next').onclick = eyRecord;
             }
@@ -5183,7 +6916,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const c = v.c, m = c.cmt || {};
         const first = (v.log.find(l => l.r !== 'checked') || {}).k || '';      // 先請專科確認無險的那一步不算
         if (v.promise && m.promise) return m.promise;
-        if (c.chain && v.chainDone) return v.chainRight >= c.chain.length ? m.best : (m.done || m.fail);
+        if (c.chain && v.chainDone) return v.chainRight >= lifeTotal(c) ? m.best : (m.done || m.fail);
         if (!c.chain && first === c.right) return (v.keyHit >= 2 || !m.lucky) ? m.best : m.lucky;
         if (first === 'refer' && m.refer) return m.refer;
         if (first === 'xie' && m.xie) return m.xie;
@@ -5209,7 +6942,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                 <tr><td>結案時</td><td>病人信任 ${V.trust}　共看了 ${V.visits} 次，耗去心神 ${V.spiritUsed}</td></tr>
                 ${gainHTML()}
             </table>
-            <div class="quote small">${c.quote.src}：「${c.quote.text}」</div>
+            ${c.quote && c.quote.text ? `<div class="quote small">${c.quote.src}：「${c.quote.text}」</div>` : ''}
             <div class="note small"><b class="hint">給病人的叮嚀</b>（取自林佑彥《眼癒力》）　${c.advice}${c.modernNote ? `<br>${c.modernNote}` : ''}</div>
             <div class="foot"><button class="btn go px" id="next">${nextLabel()}</button></div>`);
         speak(Mt(comment));
@@ -5315,13 +7048,14 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 
     /* 圖片預先載入：標題畫面出現後，趁空檔把病人與困境的圖先抓下來，看診時不會慢一拍 */
     setTimeout(() => {
-        const list = [...new Set(SH.CASES.concat(EY.CASES).filter(c => c.img || FACE[c.id]).map(faceUrl)
-            .concat(Object.values(DIL_IMG).map(f => IMG + f), Object.values(NPC_FACE), Object.values(FACE_WELL).map(f => ART + f), [heroFace(null, S.ch)]))];
+        const cs = SH.CASES.concat(EY.CASES);
+        const list = [...new Set(cs.filter(c => c.img || c.face).map(c => faceUrl(c))
+            .concat(Object.values(DIL_IMG).map(f => IMG + f), Object.values(NPC_FACE), cs.filter(c => c.face).map(c => faceUrl(c, c.life ? 'o' : 'w')), [heroFace(null, S.ch)]))];
         list.forEach((u, i) => setTimeout(() => { const im = new Image(); im.src = u; }, i * 150));
     }, 1200);
 
     /* 供測試用 */
-    window.__clinic = { JF, loadMeta, saveMeta, ACH, S, P, get V() { return V; }, SH, EY, classify, saveGame, loadGame, readSave, showTitle, setMuted, DILEMMAS,
+    window.__clinic = { JF, loadMeta, saveMeta, ACH, S, P, get V() { return V; }, stageChain, SH, EY, classify, saveGame, loadGame, readSave, showTitle, setMuted, DILEMMAS,
                         get track() { return wantTrack; }, get muted() { return muted; } };
 })();
 </script>
@@ -5393,7 +7127,7 @@ window.__bot = (function () {
             if (/^問診/.test(t)) return ask(pol);
             if (/^辨證/.test(t)) { click($(`#panel [data-p="${pol.good ? V.c.pattern : other(C().EY.PATTERNS, V.c.pattern)}"]`)); click($('#next')); return 'epattern'; }
             if ($('#panel [data-plan]')) { const k = pol.good ? V.c.right : (pol.plan || other(C().EY.PLANS, V.c.right, 'refer')); click($(`#panel [data-plan="${k}"]`) || $('#panel [data-plan]')); click($('#next')); return 'plan'; }
-            if ($('#panel [data-o]')) { const o = V.c.chain[V.chainIdx].opts; let i = pol.good ? o.findIndex(x => x.right) : o.findIndex(x => !x.right && !x.neutral); if (i < 0) i = 0; click($(`#panel [data-o="${i}"]`)); return 'chain'; }
+            if ($('#panel [data-o]')) { const o = C().stageChain(V)[V.chainIdx].opts; let i = pol.good ? o.findIndex(x => x.right) : o.findIndex(x => !x.right && !x.neutral); if (i < 0) i = 0; click($(`#panel [data-o="${i}"]`)); return 'chain'; }
         }
         if ($('#keep') && pol.keep) { click($('#keep')); return 'keep'; }
         if ($('#redo') && pol.redo) { click($('#redo')); return 'redo'; }
