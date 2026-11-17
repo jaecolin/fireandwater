@@ -786,7 +786,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const heroStage = (ch) => (ch <= 1 ? 'y' : (ch <= 3 ? 'mid' : 'old'));
     const heroFace = (sex, ch) => `${ART}h-${(sex || S.hero) === 'f' ? 'f' : 'm'}-${heroStage(ch == null ? S.ch : ch)}.webp`;
     const heroImg = () => `<i class="ph" style="background-image:url('${heroFace()}')"></i>`;
-    $('#stage').style.backgroundImage = `url('${IMG}ab8fdfe7-fb59-4655-843a-35fe9ae6ba5b.png')`;
+    /* 舞台背景：平時是標題畫面的春景水墨；章首劇情、結局換成 art/ 裡的插圖（2026-11-17 起），回到門診或標題時換回來 */
+    const setBg = (f) => { $('#stage').style.backgroundImage = `url('${f ? ART + f : IMG + 'ab8fdfe7-fb59-4655-843a-35fe9ae6ba5b.png'}')`; };
+    setBg();
     const HERO_SVG = '<svg viewBox="34 20 52 52" xmlns="http://www.w3.org/2000/svg"><rect x="34" y="20" width="52" height="52" fill="#22306e"/><path d="M40 157 L44 78 Q60 66 76 78 L80 157 Z" fill="#2C4F3E"/><circle cx="60" cy="50" r="19" fill="#DFC8A0"/><path d="M42 46 Q60 26 78 46 Q78 34 60 31 Q42 34 42 46 Z" fill="#3a3a3a"/><circle cx="60" cy="28" r="6" fill="#3a3a3a"/><path d="M50 52 Q54 55 58 52" stroke="#3a3a3a" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M62 52 Q66 55 70 52" stroke="#3a3a3a" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>';
     /* 書中師：黃庭鏡 */
     const MENTOR_SVG = '<svg viewBox="34 20 52 52" xmlns="http://www.w3.org/2000/svg"><rect x="34" y="20" width="52" height="52" fill="#3a2f55"/><path d="M40 157 L44 78 Q60 66 76 78 L80 157 Z" fill="#5b4a2f"/><circle cx="60" cy="47" r="17" fill="#DFC8A0"/><rect x="44" y="23" width="32" height="12" rx="3" fill="#1f1f1f"/><path d="M47 56 Q60 84 73 56 Q60 64 47 56 Z" fill="#eeeeee"/><path d="M50 47 h7 M63 47 h7" stroke="#3a3a3a" stroke-width="1.8" stroke-linecap="round"/><path d="M49 42 h8 M63 42 h8" stroke="#dddddd" stroke-width="2" stroke-linecap="round"/></svg>';
@@ -3833,8 +3835,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         "worse": "大夫，黑影越來越大了，正中間什麼都看不見……"
        },
        "quote": {
-        "src": "",
-        "text": ""
+        "src": "傅允科《審視瑤函．運氣原證．目昏》",
+        "text": "瞻視昏渺有多端，血少神勞與損元，若是人年過五十，要明須是覓仙丹，曾經病目後，昏渺各尋緣。"
        },
        "advice": "涼血止血是第一要務。先止血，消除周邊的血腫水腫。避免出血持續，嚴重影響視力。",
        "modernNote": "現代對照：黃斑部出血要立即到眼科檢查治療；現代可在眼科治療之外，以涼血止血的藥物輔助。",
@@ -3844,7 +3846,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         "fail": "這一案要原原本本記下來。外觀乾淨、正中突然黑影、看直線變彎，是瞳神深處出血，要立刻送。"
        },
        "_review": "已審",
-       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；引文待補；佑彥 2026-11-17 審完"
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；佑彥 2026-11-17 審完；引文由佑彥提供（本機 Excel）"
       },
       {
        "id": "c9",
@@ -3966,8 +3968,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         "wobble": "沈先生的眼睛後來又發了一回，好在及時送了專科，瞳神沒有變形。"
        },
        "quote": {
-        "src": "",
-        "text": ""
+        "src": "傅允科《審視瑤函．運氣原證．瞳神縮小》",
+        "text": "瞳神細小，精氣俱傷，元陽耗散，欲墜神光，莫使沒盡，醫術無方。"
        },
        "advice": "作息規律、減少壓力、找到反覆發炎的原因。過度焦慮與要求完美不利於治療。留意用眼姿勢，不彎腰駝背，多活動肩頸、擴胸。",
        "modernNote": "現代對照：虹彩炎發作時需要配合西藥抑制發炎；嚴重發炎可致瞳孔變形、提早出現白內障。",
@@ -3979,7 +3981,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         "fail": "這一案沒有走上正路。紅繞黑睛、瞳神縮小、口苦脈弦、每回都在勞累後發作，要從三焦經絡著手，不能只清，也不能亂補。"
        },
        "_review": "已審",
-       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；引文待補；佑彥 2026-11-17 審完"
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；佑彥 2026-11-17 審完；引文由佑彥提供（本機 Excel）"
       },
       {
        "id": "c10",
@@ -4274,8 +4276,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         "wobble": "溫先生還是瞎了。我常想，那些年我要是多看清一分，他會不會晚幾年才走到這一步。"
        },
        "quote": {
-        "src": "",
-        "text": ""
+        "src": "傅允科《審視瑤函》",
+        "text": "青風內障肝膽病，精液虧兮氣不正，哭泣憂鬱風氣痰，幾般難使陽光靜，莫教綠色上瞳神，散失光華休怨命。"
        },
        "advice": "晚上 11 點前睡。情緒平穩，找出壓力的源頭。避免過度辛辣烤炸，多吃深色蔬果。只要還看得見光線，視野缺損都還有機會改善。",
        "modernNote": "現代對照：臨床仍以藥物、雷射、手術降眼壓；控制不良有一定機率失明，應持續眼科追蹤。",
@@ -4287,7 +4289,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         "fail": "不紅不痛、眼珠發脹、旁邊看不全，是青風內障。他的病在堵，不在虛，也不能往上提。"
        },
        "_review": "已審",
-       "_note": "2026-11-17 Claude 起草（長期病人），待佑彥審；引文待補；佑彥 2026-11-17 審完"
+       "_note": "2026-11-17 Claude 起草（長期病人），待佑彥審；佑彥 2026-11-17 審完；引文由佑彥提供（本機 Excel）"
       },
       {
        "id": "c11",
@@ -4626,8 +4628,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         "wobble": "秀姑到最後都沒有看見。我許過她的話，我自己記得。"
        },
        "quote": {
-        "src": "",
-        "text": ""
+        "src": "傅允科《審視瑤函》",
+        "text": "高風俗號是雞盲，為類朱雞夜不明，因損元陽真氣弱，亦能致禍勿言輕，能知變理，不治自寧，不知戒忌，何止雙盲，陰陽否塞為中滿，不久魂飛入北溟。"
        },
        "advice": "心理調適最重要。與其恐慌，不如努力維持視力，及早了解視覺輔具、訓練課程、社會救濟。眼睛要防曬。",
        "modernNote": "現代對照：視網膜色素變性中西醫都沒把握完全治癒，治療多可改善白天的清晰度與夜間視力。視野快速縮小、中心視力驟降，或合併白內障、黃斑部水腫，要眼科評估。",
@@ -4639,7 +4641,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         "fail": "天黑看不見、看東西像從竹筒裡看，人瘦、頭暈耳鳴、腰痠，是精血虛損。平補補不上去，苦寒更傷她。"
        },
        "_review": "已審",
-       "_note": "2026-11-17 Claude 起草（長期病人），待佑彥審；引文待補；佑彥 2026-11-17 審完"
+       "_note": "2026-11-17 Claude 起草（長期病人），待佑彥審；佑彥 2026-11-17 審完；引文由佑彥提供（本機 Excel）"
       }
      ]
     };
@@ -4715,13 +4717,13 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
           end: [{ text: '師父翻了翻我的病歷簿，沒有說好，也沒有說不好。' }, { who: SHM, text: '都記下來了，就好。' },
                 { who: SHM, text: '《易》有一卦叫既濟，水在火上，飯才煮得熟。醫者的身和心也是這樣，哪一頭偏了，都看不好病人。' },
                 { text: '那時候，我只記住了前半句。' }] },
-        { name: '立業', quota: 2, heart: '怕沒人來',
+        { name: '立業', quota: 2, heart: '怕沒人來', bg: 'bg-s-sign.webp',
           lines: [{ text: '幾年過去。我要走的那天，師父沒有送藥，也沒有送書。' },
                   { who: SHM, text: '這本簿子是空的。往後沒有人替你看方子了。錯了，是你的。對了，也不全是你的。' },
                   { text: '我在城南賃了一間小屋，掛上自己的招牌。母親來看過一次。她摸了摸那塊招牌，沒有說話。' },
                   { text: '這一回，米和柴都得自己掙。我開始怕一件從前沒怕過的事：沒有人來。' }],
           end: [{ text: '招牌掛了幾年，漆有些褪了。認得這塊招牌的人，倒是多了。' }, { text: '我慢慢明白，招牌是病人替我掛上去的。' }] },
-        { name: '盛年', quota: 2, heart: '怕治不好',
+        { name: '盛年', quota: 2, heart: '怕治不好', bg: 'bg-s-bench.webp',
           lines: () => {
               const w = chenWas();
               const chen = w === 'good' ? '長凳上有張熟面孔。老陳陪著孫子來，見了我只點點頭，說：大夫忙，我們等。'
@@ -4734,7 +4736,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
           end: [{ text: '我開始記不住每一位病人的名字。這讓我有些不安。' },
                 { text: '倒是病歷簿的邊上，多了幾行小字。白睛和黑睛表面那層膜出毛病的人，皮膚、口鼻也常不安穩。眼珠深處血絡出事的人，心與血脈多半先有徵兆。' },
                 { text: '五輪說得到眼睛的表面，說不到這麼深的地方。我還說不清，先記著。' }] },
-        { name: '傳承', quota: 2, heart: '怕說我不知道',
+        { name: '傳承', quota: 2, heart: '怕說我不知道', bg: 'bg-s-mother.webp',
           lines: () => {
               const p = S.app.parent ? P[S.app.parent] : null;
               const who = p ? (S.app.why === 'bad'
@@ -4750,7 +4752,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
           end: [{ text: '我看著小滿替病人診脈的樣子，想起師父當年看我的眼神。' }, { who: APP, text: '師父，您病歷簿邊上這些小字是什麼？' },
                 { who: '我', text: '人在娘胎裡，是一層一層長出來的。我在想，眼睛的每一層，和身上哪一處是同一個來處。' },
                 { who: APP, text: '那晶珠和神膏呢？' }, { who: '我', text: '我歸在腎。道理還說不圓，可是照著治，是對的。想清楚了，再告訴你。' }] },
-        { name: '晚年', quota: 2, heart: '怕來不及',
+        { name: '晚年', quota: 2, heart: '怕來不及', bg: 'bg-s-oldhome.webp',
           lines: [{ text: '我回了一趟師父的舊居。屋子還在，藥櫃空了。窗下那張我坐了三年的凳子，也還在。' },
                   { text: '我的眼睛也花了。看診的時候，得把病人的手拉近一點。' }, { text: '來的人少了。我有更多時間，把每一位看清楚。' }],
           end: [{ text: '我把診間的鑰匙交了出去。病歷簿，我自己留著。' }] }
@@ -5036,8 +5038,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         else if (after) { const f = after; after = null; $('#dlg-more').classList.add('hidden'); f(); }
     };
     /* 劇情段落：收起病人與自己的狀態牌，只留場景與對話。big 是黑底題字 */
-    function story(big, sub, lines, done) {
+    function story(big, sub, lines, done, bg) {
         V = null;
+        if (bg) { setBg(bg); const d0 = done; done = () => { setBg(); d0(); }; }
         $('#ui').classList.add('story'); $('#ui').classList.remove('clinic');
         $('#panel-win').classList.add('hidden'); $('#night').classList.add('hidden');
         $('#scene').classList.remove('hidden'); $('#scene').classList.add('bare');
@@ -5437,7 +5440,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     }
     $('#veil').onclick = () => { clearTimeout(veilTimer); $('#veil').classList.add('hidden'); };
     function dayStart() {
-        V = null;
+        V = null; setBg();
         if (S.ch === 0 && S.chDay === 2 && !S.flags.duMet) { S.flags.duMet = true; litHerbs(['甘草']); return story('藥行', DU, DU_MEET, dayStart); }
         if (S.ch >= 1 && !S.flags.duSupply) { S.flags.duSupply = true; S.flags.hq = herbQ(); return story('供藥', DU, DU_SUPPLY, dayStart); }
         if (S.flags.duSupply && herbQ() > (S.flags.hq || 0)) { const q = herbQ(); S.flags.hq = q; return story('藥材', `杜掌櫃送來${HQ[q]}等藥材`, DU_UP(q), dayStart); }
@@ -5642,6 +5645,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        echo 是下一章才浮現的後果；flag 留到結局。req 不成立時選項反灰。 */
     const DIL_IMG = { transfer: 'cd9b590b-31a5-493b-ab36-8bfde23ec1ef.png', queue: '7f36b791-c12b-4694-939d-451a0d4f359a.png', debate: '3421f183-8919-466f-af5d-eb791d39621b.png',
                       terminal: '791ad5b6-bb1b-4050-b3c6-37fe87df9a29.png', wealth: '6a306648-e3e6-4d86-9e39-a137525c7e03.png', midnight: 'daaf1090-5895-42a3-9d3e-dc10276cd3ae.png', apprentice: '3421f183-8919-466f-af5d-eb791d39621b.png' };
+    /* 2026-11-17 新畫的三張：原本借用別的困境的圖 */
+    const DIL_ART = { apprentice: 'bg-d-apprentice.webp', renown: 'bg-d-renown.webp', aging: 'bg-d-aging.webp' };
     const DILEMMAS = {
         transfer: {
             title: '焦慮的轉嫁',
@@ -5824,7 +5829,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const text = d.text(ctx);
         teachSoon('dilemma');
         panel(`<h3>困境　${d.title} <span>此刻的我：精力 ${S.energy}　心神 ${S.spirit}　修為 ${S.peace}　醫術 ${S.skill}　聲望 ${S.fame}　金錢 ${S.money}</span></h3>
-            <div class="dwrap"><div class="dimg" style="background-image:url('${IMG}${DIL_IMG[d.img || id]}')"></div><div class="see">${text}</div></div>
+            <div class="dwrap"><div class="dimg" style="background-image:url('${DIL_ART[id] ? ART + DIL_ART[id] : IMG + DIL_IMG[d.img || id]}')"></div><div class="see">${text}</div></div>
             <div class="octs">${rows.map((x, i) => `<button class="octw" data-d="${i}" ${x.locked ? 'disabled' : ''}><span class="oct"><b>${x.o.name}</b></span>
                 <span class="sub"><b>${x.o.sub}</b><br>${x.locked ? x.o.reqText : x.v.hint}</span></button>`).join('')}</div>`);
         speak(narr(text));
@@ -6052,7 +6057,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             S.echoNote.push({ t, seen: !!sc });
         });
         S.echo = S.echo.filter(e => e.ch > S.ch);
-        story(`第${CN[S.ch + 1]}章　${chOf().name}`, CHAPTERS[S.ch].heart ? '心結　' + CHAPTERS[S.ch].heart : '', linesOf(CHAPTERS[S.ch].lines).concat(scenes), dayStart);
+        story(`第${CN[S.ch + 1]}章　${chOf().name}`, CHAPTERS[S.ch].heart ? '心結　' + CHAPTERS[S.ch].heart : '', linesOf(CHAPTERS[S.ch].lines).concat(scenes), dayStart, CHAPTERS[S.ch].bg);
     }
     function chapterEnd() {
         V = null; hud();
@@ -6079,6 +6084,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const poor = reason === 'poverty';          // 連續入不敷出，診間開不下去（第一代的貧病交加）
         if (poor) S.flags.poverty = true;
         const list = Object.values(P).sort((a, b) => a.firstDay - b.firstDay);
+        setBg(poor ? 'bg-e-poor.webp' : 'bg-e-book.webp');           // 結局插圖：貧病交加、著書傳世
         const rows = CHAPTERS.map((ch, i) => {
             const ps = list.filter(p => p.firstCh === i);
             return ps.length ? `<tr><td colspan="2"><b class="name">第${CN[i + 1]}章　${ch.name}</b></td></tr>${ps.map(caseRow).join('')}` : '';
@@ -6126,7 +6132,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         lines.push({ who: '我', text: '想學醫？先學會坐著，看我怎麼看病人。' });
         lines.push({ who: '我', text: '看病人，先把他看清楚，再去想方子。' });
         lines.push({ who: '我', text: '方子開出去，結果不全在你手上。你能做的是看清楚，記下來，等他回來。' });
-        story('', '', lines, () => finale(list, picks));
+        story('', '', lines, () => finale(list, picks), 'bg-e-heir.webp');      // 燈下來者
     }
     function finale(list, picks) {
         const n = list.length, ok = list.filter(p => GOOD3.includes(p.outcome)).length;
@@ -6136,6 +6142,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const poor = !!S.flags.poverty;
         const meta = settleMeta(list, poor);          // 這一輪的成就，寫進札記
         const r = n ? ok / n : 0;
+        /* 最後一頁的插圖：貧病交加；常把自己耗到見底是燃盡而逝；看好過半、身心也顧得住是天年圓滿；其餘是著書傳世 */
+        setBg(poor ? 'bg-e-poor.webp' : (S.over >= 3 ? 'bg-e-burnout.webp' : (r >= 0.5 ? 'bg-e-good.webp' : 'bg-e-book.webp')));
         const parts = [];
         parts.push(r >= 0.8 ? `這一生記在簿子上的有 ${n} 位病人，看好了 ${ok} 位。` : (r >= 0.5 ? `這一生記在簿子上的有 ${n} 位病人，看好了 ${ok} 位，一半多一些。` : `這一生記在簿子上的有 ${n} 位病人，看好的只有 ${ok} 位。`));
         if (refN) parts.push(`有 ${refN} 位，我交給了別的大夫。`);
@@ -6956,7 +6964,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         b.onclick = () => { S.hero = b.dataset.hero; $$('#opt-hero .btn').forEach(x => x.classList.toggle('on', x === b)); };
     });
     function showTitle() {
-        clearInterval(typing); typing = null; queue = []; after = null;
+        clearInterval(typing); typing = null; queue = []; after = null; setBg();
         clearTimeout(veilTimer);
         if (introBgm) introBgm = false; else playTrack('');       // 剛從片頭進來：片頭的音樂繼續放
         ['#ui', '#book', '#veil', '#t-new', '#t-notes', '#t-saves'].forEach(s => $(s).classList.add('hidden'));
