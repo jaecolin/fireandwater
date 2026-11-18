@@ -5446,6 +5446,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         if (S.flags.duSupply && herbQ() > (S.flags.hq || 0)) { const q = herbQ(); S.flags.hq = q; return story('藥材', `杜掌櫃送來${HQ[q]}等藥材`, DU_UP(q), dayStart); }
         const ln = lifeNewsNext();          // 長期病人的消息：缺席、訃聞
         if (ln) return story(ln.big, ln.sub, ln.lines, dayStart);
+        if (S.flags.redeemNext) return redeem();                               // 公堂之後，第一位治好的病人
+        if ((S.flags.mal || 0) >= MAL_COURT && !S.flags.court) return court();  // 誤治四筆：病家告官
+        if ((S.flags.malQ || []).length) return dispute(S.flags.malQ.shift()); // 病家上門理論
         saveGame();
         S.news = [];
         const back = [];
@@ -5535,6 +5538,12 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         V.perk = perks.filter(Boolean).join('　');
         V.gain = parts.join('　');
         metaCase(V);
+        /* 誤治（2026-11-18）：自己開業後，藥不對證（無效）或治到惡化（急症耽誤到失明也算）各記一筆。
+           惡化的病家隔天上門理論；累積四筆會被告官。告官之後第一位治好的病人，是重新站起來的時候 */
+        const worse = outcome === '惡化' || (outcome === '失明' && !V.c.life);
+        if (S.ch >= 1 && (worse || outcome === '無效')) S.flags.mal = (S.flags.mal || 0) + 1;
+        if (S.ch >= 1 && worse) (S.flags.malQ = S.flags.malQ || []).push(V.id);
+        if (GOOD3.includes(outcome) && S.flags.court && !S.flags.redeemed) S.flags.redeemNext = V.id;
         hud();
     }
     /* ================= 音樂與音效 =================
@@ -5856,6 +5865,78 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             $('#next').onclick = freeAction;
         });
     }
+    /* ================= 誤治與醫糾（2026-11-18，依 11-16 的規劃做精簡版） =================
+       輕：沒回診、惡化扣聲望（原本就有）。中：病家上門理論（dispute），三種回應影響聲望、修為、金錢。
+       重：誤治累積四筆，病家告官（court），賠銀、停業、閉門重讀醫書。之後第一位治好的病人是救贖（redeem）。
+       一直誤治又沒看好幾位的，結局是「庸醫」（finale）。法條不引原文：沒有核對過的條文不寫進遊戲 */
+    const MAL_COURT = 4, MAL_QUACK = 6;
+    const DISPUTE_OPTS = [
+        { name: '誠心致歉，退還診金', sub: '是我看錯了，該擔的我擔', money: -8, fame: -1, peace: 2, spirit: -3,
+          log: '我當著候診的人向他們賠了不是，把診金退了回去，又包了一份藥錢。他們的臉色緩了下來。走之前，那位家人說：至少你認了。' },
+        { name: '把病情和我的判斷說清楚', sub: '哪一步看錯、往後怎麼補救，一五一十說明', skill: 1, peace: 1, spirit: -5,
+          log: '我把當初怎麼看、哪一步看錯、現在該怎麼補救，一條一條說給他們聽。他們聽完沒有說話，拿了我寫的單子，轉去別處看了。這件事我記進了病歷簿。' },
+        { name: '推說是病人沒照叮嚀', sub: '藥沒有錯，是他自己不忌口', fame: -3, peace: -2, blame: true,
+          log: '我說藥是對的，是他自己沒照叮嚀。他們罵了幾句走了。那天下午，候診的長凳空了一半。' }
+    ];
+    function dispute(pid) {
+        V = null; hud();
+        const p = P[pid];
+        if (!p) return dayStart();
+        const text = `${p.c.name}的家人一早就站在診間門口。「吃了你的藥，人反而更糟了。大夫，你給個說法！」候診的人都轉過頭來看。`;
+        panel(`<h3>醫糾　${p.c.name}的家人 <span>此刻的我：心神 ${S.spirit}　修為 ${S.peace}　聲望 ${S.fame}　金錢 ${S.money}</span></h3>
+            <div class="see">${text}</div>
+            <div class="octs">${DISPUTE_OPTS.map((o, i) => `<button class="octw" data-d="${i}"><span class="oct"><b>${o.name}</b></span><span class="sub">${o.sub}</span></button>`).join('')}</div>`);
+        speak(narr(text));
+        $$('#panel [data-d]').forEach(b => b.onclick = () => {
+            const o = DISPUTE_OPTS[+b.dataset.d];
+            addSpirit(o.spirit || 0);
+            S.fame += o.fame || 0;
+            S.money = Math.max(0, S.money + (o.money || 0));
+            if (o.blame) S.flags.blame = (S.flags.blame || 0) + 1;
+            const perk = [o.skill ? addSkill(o.skill) : '', o.peace ? addPeace(o.peace) : ''].filter(Boolean).join('　');
+            S.dilLog.push(`醫糾（${o.name}）`);
+            hud();
+            const delta = [o.spirit ? `心神 ${signed(o.spirit)}` : '', o.peace ? `修為 ${signed(o.peace)}` : '', o.fame ? `聲望 ${signed(o.fame)}` : '',
+                           o.money ? `金錢 ${signed(o.money)}` : '', o.skill ? `醫術 ${signed(o.skill)}` : ''].filter(Boolean).join('　');
+            panel(`<h3>醫糾 <span>${o.name}</span></h3><div>${o.log}</div>
+                <div class="small hint" style="margin-top:8px">${delta}</div>${perk ? `<div style="margin-top:6px"><b class="name">${perk}</b></div>` : ''}
+                <div class="small dim" style="margin-top:6px">藥不對證、治到惡化都算誤治，累積 ${MAL_COURT} 次，病家會告官。</div>
+                <div class="foot"><button class="btn go px" id="next">繼續</button></div>`);
+            speak(narr(o.log));
+            $('#next').onclick = dayStart;
+        });
+    }
+    function court() {
+        V = null;
+        const pid = (S.flags.malQ || []).slice(-1)[0];
+        const name = P[pid] ? P[pid].c.name : '一位病人';
+        S.flags.court = true; S.flags.malQ = [];
+        S.money = Math.max(0, S.money - 20); S.fame -= 8; addSpirit(-10); addSkill(2);
+        S.dilLog.push('公堂');
+        hud();
+        const blamed = (S.flags.blame || 0) > 0;
+        story('公堂', '賠銀二十兩，醫館停業半個月', [
+            { text: '一大早，縣衙的差役敲開了診間的門。' },
+            { text: `${name}的家人遞了狀子，告我誤治傷人。` },
+            { text: '公堂上，縣太爺翻著我的病歷簿，一頁一頁問：這一帖是怎麼開的？為什麼這樣開？' },
+            { text: blamed ? '問到那幾位我推說病人不忌口的，我答不上來。堂下有人冷笑了一聲。' : '有的我答得出來，有的答不出來。' },
+            { text: '判下來：賠銀二十兩，醫館停業半個月。' },
+            { text: '那半個月，我把師父給的書從頭再讀了一遍。常常讀到深夜，讀到自己開錯的那一頁。' },
+            { text: '（金錢 −20　聲望 −8　心神 −10　醫術 +2）' }
+        ], dayStart);
+    }
+    function redeem() {
+        const p = P[S.flags.redeemNext];
+        S.flags.redeemNext = ''; S.flags.redeemed = true;
+        addPeace(3); addSpirit(8); hud();
+        story('重拾', p ? p.c.name : '', [
+            { text: '公堂之後，我看每一位病人都比從前慢。' },
+            { text: `${p ? p.c.name : '那位病人'}來道謝那天，我送他到門口，站了很久。` },
+            { text: '師父說過，方子開出去，結果不全在你手上。可是看清楚，是在我手上的。' },
+            { text: '那天夜裡，我把公堂上答不出來的那幾頁病歷，一頁一頁補上了。' },
+            { text: '（修為 +3　心神 +8）' }
+        ], dayStart);
+    }
     const NIGHT = {
         rest: ['我關了診間的門，吃了頓熱飯，早早睡了。', '我把燈吹熄得比平常早。窗外有人在收晾了一天的藥材。', '我什麼也沒想，洗了把臉就躺下。這一覺沒有夢。'],
         sit: ['我關上門，坐了一個時辰。念頭來了又走，我只是看著。', '我坐著，聽自己的呼吸。白天那幾張臉一張一張浮上來，又一張一張沉下去。', '我坐到香燒完。心裡那些「要是當時」，慢慢安靜了。'],
@@ -6142,8 +6223,10 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const poor = !!S.flags.poverty;
         const meta = settleMeta(list, poor);          // 這一輪的成就，寫進札記
         const r = n ? ok / n : 0;
+        const mal = S.flags.mal || 0;
+        const quack = !poor && mal >= MAL_QUACK && r < 0.5;  // 庸醫（2026-11-18）：誤治六次以上，又看好不到一半
         /* 最後一頁的插圖：貧病交加；常把自己耗到見底是燃盡而逝；看好過半、身心也顧得住是天年圓滿；其餘是著書傳世 */
-        setBg(poor ? 'bg-e-poor.webp' : (S.over >= 3 ? 'bg-e-burnout.webp' : (r >= 0.5 ? 'bg-e-good.webp' : 'bg-e-book.webp')));
+        setBg(poor || quack ? 'bg-e-poor.webp' : (S.over >= 3 ? 'bg-e-burnout.webp' : (r >= 0.5 ? 'bg-e-good.webp' : 'bg-e-book.webp')));
         const parts = [];
         parts.push(r >= 0.8 ? `這一生記在簿子上的有 ${n} 位病人，看好了 ${ok} 位。` : (r >= 0.5 ? `這一生記在簿子上的有 ${n} 位病人，看好了 ${ok} 位，一半多一些。` : `這一生記在簿子上的有 ${n} 位病人，看好的只有 ${ok} 位。`));
         if (refN) parts.push(`有 ${refN} 位，我交給了別的大夫。`);
@@ -6154,23 +6237,26 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         if (S.flags.farewell) parts.push(`${friend}，我陪他走到了最後。`);
         if (S.flags.guilt) parts.push(`${friend}，我始終覺得是自己沒有救回來。`);
         if (S.flags.friend === '老陳' && S.dil.includes('terminal')) parts.push('他是我的第一位病人，也是最後一位。');
+        if (S.flags.court) parts.push(S.flags.redeemed ? '我上過一次公堂。那天答不出來的問題，後來我都想清楚了。' : '我上過一次公堂。那天答不出來的問題，到老都還答不出來。');
         if (S.flags.handover) parts.push('眼睛花了之後，看不清的地方，我交給了後輩。');
         if (S.app.done) parts.push('我帶出了一個徒弟，小滿。他如今也有自己的病歷簿了。');
         else if (S.app.on && !poor) parts.push('小滿還沒出師，診間就交到了他手上。往後的路，他得自己走。');
         if (S.ch >= 1) parts.push(poor ? '師父給的那本簿子，還沒有寫滿。' : '師父給的那本空簿子，我寫滿了。');
-        parts.push(poor ? '我付不出診間的開銷，把門板上好了。書沒有寫成，病歷簿我還留著。' : '沒有哪一個醫者是十全的。治好的和沒治好的，我都留在書裡。');
+        parts.push(poor ? '我付不出診間的開銷，把門板上好了。書沒有寫成，病歷簿我還留著。'
+            : (quack ? `街上的人提起我，說的是那個庸醫。這一生我誤治了 ${mal} 位病人，他們說得不全錯。` : '沒有哪一個醫者是十全的。治好的和沒治好的，我都留在書裡。'));
         /* 身心的回顧與留給自己的一問（沿用第一代的結局回顧） */
         const names = S.epi.map(id => EPI.find(e => e.id === id).name);
-        const mirror = [`身心相濟的日子有 <b>${S.jiji}</b> 天，把精力用到見底 <b>${S.over}</b> 次。`,
+        const mirror = [`身心相濟的日子有 <b>${S.jiji}</b> 天，把精力用到見底 <b>${S.over}</b> 次${mal ? `，誤治 <b>${mal}</b> 次` : ''}。`,
                         `修為到了「${tierOf()}」${names.length ? '，領悟了' + names.join('、') : '，還沒有領悟任何心法'}。`];
         let q = '這一生裡，哪一個選擇最像現實中的我？';
-        if (S.over >= 3) q = '現實裡，我上一次明知該停卻仍硬撐，是什麼時候？';
+        if (quack) q = '現實裡，我有沒有一再犯同一個錯，卻沒有停下來看一看？';
+        else if (S.over >= 3) q = '現實裡，我上一次明知該停卻仍硬撐，是什麼時候？';
         else if (poor) q = '我把什麼看得比自己的生計還重？那樣東西，現實裡值得嗎？';
         else if (promise) q = '現實裡，我答應過哪一件其實做不到的事？';
         else if (refN === 0 && n >= 8) q = '現實裡，有哪一件事是我其實做不到，卻說不出口的？';
         else if (S.jiji >= 10) q = '是什麼讓我在這一生裡照顧得好自己？現實中少了哪一樣？';
         hud();
-        panel(`<h3>${poor ? "貧病交加" : "全書完"} <span>醫術 ${S.skill}　修為 ${S.peace}（${tierOf()}）　聲望 ${S.fame}　金錢 ${S.money}</span></h3>
+        panel(`<h3>${poor ? "貧病交加" : (quack ? "庸醫" : "全書完")} <span>醫術 ${S.skill}　修為 ${S.peace}（${tierOf()}）　聲望 ${S.fame}　金錢 ${S.money}</span></h3>
             <div>${parts.join('<br>')}</div>
             ${picks.length ? `<div class="quote small" style="margin-top:10px">卷首：${picks.map(id => `${P[id].c.name}案（${truthOf(P[id])}，${P[id].outcome}）`).join('；')}</div>` : ''}
             ${S.dilLog.length ? `<div class="small hint" style="margin-top:8px">一生的抉擇：${S.dilLog.join('、')}</div>` : ''}
@@ -6180,7 +6266,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                 <div class="dim" style="margin-top:4px">成就與看過的病人都記在標題畫面的「杏林札記」。</div></div>
             <div class="note small">病例會陸續增加，每一輪遇到的病人會不同。結局裡的胚胎對應定位法只是概略，出自《眼癒力》第一章；定位僅供參考，不能取代辨證。</div>
             <div class="foot"><button class="btn go px" id="home">回到標題</button></div>`);
-        speak(narr(poor ? '（這一生，停在這裡）' : '（全書完）'));
+        speak(narr(poor ? '（這一生，停在這裡）' : (quack ? '（這一生，留下的是一個名聲）' : '（全書完）')));
         $('#home').onclick = showTitle;
     }
 
@@ -7104,7 +7190,7 @@ window.__bot = (function () {
         if ($('#ui').classList.contains('story')) { click($('#dlg')); return 'story'; }
         if (!$('#coach').classList.contains('hidden')) { st.acts.coach = (st.acts.coach || 0) + 1; click($('#co-ok')); return 'coach'; }
         if (inHub()) { const c = $('#sc-cmds .octw.cur'); if (!c) return 'stuck:hub'; click(c); return 'hub'; }
-        if (/^(全書完|貧病交加)/.test(t) && $('#home')) return 'end';
+        if (/^(全書完|貧病交加|庸醫)/.test(t) && $('#home')) return 'end';
         if (V && V.tutor) { const g = $('.guide'); if (g) { click(g); return 'tutor'; } }
         if ($('#panel [data-d]')) { const en = $$('#panel [data-d]').filter(b => !b.disabled); click(pol.dil === 'first' ? en[0] : en[Math.floor(Math.random() * en.length)]); return 'dilemma'; }
         if ($('#panel [data-pick]')) { $$('#panel [data-pick]').slice(0, 3).forEach(b => click($(`#panel [data-pick="${b.dataset.pick}"]`))); click($('#next')); return 'book'; }
