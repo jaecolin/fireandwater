@@ -20,7 +20,6 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="https://yylin.tw/images/yylin.tw/favicon.png">
 <link rel="apple-touch-icon" href="https://yylin.thothcdn.com/images/yylin.tw/upload_file/e19069d3-0b05-41fd-9280-0763bcdfbcde.png">
-<link rel="preload" as="image" href="https://yylin.tw/images/yylin.tw/upload_file/ab8fdfe7-fb59-4655-843a-35fe9ae6ba5b.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&display=swap" rel="stylesheet">
@@ -443,12 +442,12 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 .btn.go:disabled { filter: grayscale(1) brightness(0.62); color: var(--dim); background: linear-gradient(180deg, var(--gold-hi), #b8892e 50%, var(--gold-dark)); }
 
 /* 小按鈕：病歷簿、聲音、跳過、合上 */
-.bookbtn, .skip, .snd, #book-x, #t-intro {
+.bookbtn, .skip, .snd, #book-x, #t-intro, #t-clear-btn {
     padding: 3px 11px; border: 1px solid var(--gold); background: linear-gradient(180deg, rgba(47, 64, 154, 0.9), rgba(10, 16, 54, 0.92));
     box-shadow: 0 0 0 1px var(--gold-dark); color: var(--name);
 }
-.bookbtn::before, .skip::before, .snd::before, #book-x::before, #t-intro::before { display: none; }
-.bookbtn:hover, .skip:hover, .snd:hover, #book-x:hover, #t-intro:hover { background: linear-gradient(180deg, rgba(70, 90, 190, 0.95), rgba(20, 30, 90, 0.95)); }
+.bookbtn::before, .skip::before, .snd::before, #book-x::before, #t-intro::before, #t-clear-btn::before { display: none; }
+.bookbtn:hover, .skip:hover, .snd:hover, #book-x:hover, #t-intro:hover, #t-clear-btn:hover { background: linear-gradient(180deg, rgba(70, 90, 190, 0.95), rgba(20, 30, 90, 0.95)); }
 
 /* 八綱：每一綱是一對八角鈕 */
 .axis { gap: 14px; margin: 10px 0; justify-content: center; }
@@ -860,17 +859,20 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const heroStage = (ch) => (ch <= 1 ? 'y' : (ch <= 3 ? 'mid' : 'old'));
     const heroFace = (sex, ch) => `${ART}h-${(sex || S.hero) === 'f' ? 'f' : 'm'}-${heroStage(ch == null ? S.ch : ch)}.webp`;
     const heroImg = () => `<i class="ph" style="background-image:url('${heroFace()}')"></i>`;
-    /* 舞台背景：平時是標題畫面的春景水墨；章首劇情、結局換成 art/ 裡的插圖（2026-11-17 起），回到門診或標題時換回來 */
+    /* 舞台背景（2026-11-22 佑彥選甲）：標題畫面是杏林醫館 bg-title.webp（setBg('title')）；看診時是白天醫館室內 bg-day.webp（setBg() 不給檔名）；
+       章首劇情、結局、店內換成 art/ 裡的插圖，回到門診或標題時換回來 */
     let panN = 0, bgNow = '';
     const setBg = (f) => {
         const st = $('#stage');
         if ((f || '') === bgNow) return;               // 同一張圖不重來，搖攝才不會跳回起點
         bgNow = f || '';
-        st.style.backgroundImage = `url('${f ? ART + f : IMG + 'ab8fdfe7-fb59-4655-843a-35fe9ae6ba5b.png'}')`;
+        const still = !f || f === 'title';
+        st.style.backgroundImage = `url('${ART}${f === 'title' ? 'bg-title.webp' : (f || 'bg-day.webp')}')`;
+        st.style.backgroundPosition = f === 'title' ? '74% 50%' : '';      // 手機直式也看得到右邊那間醫館
         st.classList.remove('pan', 'rev');
-        if (f) { void st.offsetWidth; st.classList.add('pan'); st.classList.toggle('rev', panN++ % 2 === 1); }      // 插圖才搖攝，平時的春景不動
+        if (!still) { void st.offsetWidth; st.classList.add('pan'); st.classList.toggle('rev', panN++ % 2 === 1); }      // 插圖才搖攝，標題與看診的背景不動
     };
-    setBg();
+    setBg('title');
     const HERO_SVG = '<svg viewBox="34 20 52 52" xmlns="http://www.w3.org/2000/svg"><rect x="34" y="20" width="52" height="52" fill="#22306e"/><path d="M40 157 L44 78 Q60 66 76 78 L80 157 Z" fill="#2C4F3E"/><circle cx="60" cy="50" r="19" fill="#DFC8A0"/><path d="M42 46 Q60 26 78 46 Q78 34 60 31 Q42 34 42 46 Z" fill="#3a3a3a"/><circle cx="60" cy="28" r="6" fill="#3a3a3a"/><path d="M50 52 Q54 55 58 52" stroke="#3a3a3a" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M62 52 Q66 55 70 52" stroke="#3a3a3a" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>';
     /* 書中師：黃庭鏡 */
     const MENTOR_SVG = '<svg viewBox="34 20 52 52" xmlns="http://www.w3.org/2000/svg"><rect x="34" y="20" width="52" height="52" fill="#3a2f55"/><path d="M40 157 L44 78 Q60 66 76 78 L80 157 Z" fill="#5b4a2f"/><circle cx="60" cy="47" r="17" fill="#DFC8A0"/><rect x="44" y="23" width="32" height="12" rx="3" fill="#1f1f1f"/><path d="M47 56 Q60 84 73 56 Q60 64 47 56 Z" fill="#eeeeee"/><path d="M50 47 h7 M63 47 h7" stroke="#3a3a3a" stroke-width="1.8" stroke-linecap="round"/><path d="M49 42 h8 M63 42 h8" stroke="#dddddd" stroke-width="2" stroke-linecap="round"/></svg>';
@@ -10526,7 +10528,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     });
     $('#petals').innerHTML = Array.from({ length: 16 }, () => `<i style="left:${Math.round(Math.random() * 110)}%;animation-duration:${(9 + Math.random() * 9).toFixed(1)}s;animation-delay:-${(Math.random() * 18).toFixed(1)}s;transform:scale(${(0.6 + Math.random() * 0.7).toFixed(2)})"></i>`).join('');
     function showTitle() {
-        clearInterval(typing); typing = null; queue = []; after = null; setBg();
+        clearInterval(typing); typing = null; queue = []; after = null; setBg('title');
         clearTimeout(veilTimer);
         if (introBgm) introBgm = false; else playTrack('');       // 剛從片頭進來：片頭的音樂繼續放
         ['#ui', '#book', '#veil', '#t-new', '#t-notes', '#t-saves', '#t-clear'].forEach(s => $(s).classList.add('hidden'));
