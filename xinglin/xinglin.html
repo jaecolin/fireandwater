@@ -52,6 +52,11 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     overflow: hidden; background: #111 center / cover no-repeat;
 }
 .stage::before { content: ''; position: absolute; inset: 0; background: rgba(6, 10, 34, 0.45); }
+/* 搖攝（2026-11-22 佑彥：開場故事的場景慢慢移動，讓被遮住的部分出現）：插圖是 3:2，手機直式只看得到中間一段，所以左右來回慢慢移；每換一張圖換一個方向 */
+.stage.pan { animation: pan 22s ease-in-out infinite alternate; }
+.stage.pan.rev { animation-direction: alternate-reverse; }
+@keyframes pan { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
+@media (prefers-reduced-motion: reduce) { .stage.pan { animation: none; } }
 .ui { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 9px; padding: 11px; }
 
 .win {
@@ -642,11 +647,21 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 .spot.cur i { width: 20px; height: 20px; background: rgba(255, 224, 102, 0.7); }
 .spot.off b { color: var(--dim); border-color: var(--gold-dark); }
 .spot.off i { border-color: var(--dim); background: none; animation: none; }
+/* 城南地圖上治好的病人家（2026-11-22 第二期）：門口一點暖黃的燈光 */
+/* 店內圖（藥行、書肆）：店的視窗上方一條，慢慢左右搖 */
+.shopimg { height: clamp(110px, 28vh, 230px); margin: 0 0 10px; border: 1px solid var(--gold-dark); border-radius: 3px; background: center / cover no-repeat; animation: pan 24s ease-in-out infinite alternate; }
+@media (prefers-reduced-motion: reduce) { .shopimg { animation: none; } }
+.spot.pt b { font-size: 0.8em; padding: 1px 6px; letter-spacing: 0.05em; color: #f3e6c4; border-color: var(--gold-dark); }
+.lamp { position: absolute; width: 26px; height: 26px; transform: translate(-50%, -110%); border-radius: 50%; pointer-events: none;
+        background: radial-gradient(circle, rgba(255, 214, 120, 0.95) 0 3px, rgba(255, 190, 80, 0.45) 5px, transparent 70%); animation: flick 2.6s ease-in-out infinite alternate; }
+@keyframes flick { from { opacity: 0.75; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .lamp { animation: none; } }
 .nt-tip { position: absolute; z-index: 3; width: 15em; padding: 7px 10px; pointer-events: none; font-size: 0.88em; line-height: 1.55; }
 .nt-info { position: absolute; z-index: 2; left: 50%; bottom: 3%; transform: translateX(-50%); width: min(94%, 36em); padding: 5px 12px; background: rgba(6, 10, 34, 0.82); font-size: 0.92em; text-align: center; line-height: 1.6; }
 .nt-info .foot { margin-top: 6px; justify-content: center; }
 @media (max-width: 640px) {
     .spot b { padding: 1px 5px; font-size: 0.82em; letter-spacing: 0.05em; } .spot i { width: 11px; height: 11px; }
+    .spot.pt b { font-size: 0.7em; padding: 0 3px; } .spot.pt { gap: 1px; } .spot.pt i { width: 8px; height: 8px; }
     /* 手機：圖靠上，說明框放在圖的下方，不蓋住熱點 */
     .night { align-items: flex-start; }
     .nt-info { left: 0; bottom: auto; top: calc(100% + 12px); transform: none; width: 100%; box-sizing: border-box; }
@@ -765,6 +780,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
                 <button class="btn snd" style="font-size:0.86em;padding:3px 12px">聲音：開</button>
                 <button class="btn" id="t-intro" style="font-size:0.86em;padding:3px 12px">重看片頭</button>
+                <button class="btn" id="t-clear-btn" style="font-size:0.86em;padding:3px 12px">清除紀錄</button>
             </div>
             <div class="tver">試玩版 0.7　向早年的國產角色扮演遊戲致意<br>內容僅供體驗玩法，不能作為診療依據。病人皆為虛構。</div>
         </div>
@@ -772,6 +788,16 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             <h1>杏林札記</h1>
             <div id="t-notes-body"></div>
             <div class="foot"><button class="btn" id="t-notes-back">返回</button></div>
+        </div>
+        <div class="win hidden" id="t-clear">
+            <h3>清除紀錄</h3>
+            <div class="small" style="line-height:1.7">紀錄只存在這台裝置的瀏覽器裡，刪了就找不回來。</div>
+            <ul class="list" id="t-clear-list">
+                <li data-clr="saves">只刪存檔<div class="small dim">自動存檔與三格手動存檔。杏林札記、成就留著</div></li>
+                <li data-clr="all" style="margin-top:6px">全部清除<div class="small dim">存檔，加上杏林札記、成就、圖鑑點亮的藥。聲音設定留著</div></li>
+            </ul>
+            <div class="small down hidden" id="t-clear-ask" style="margin-top:8px;clear:both"></div>
+            <div class="foot"><button class="btn" id="t-clear-back">返回</button><button class="btn go px" id="t-clear-go" disabled>刪除</button></div>
         </div>
         <div class="win hidden" id="t-saves">
             <h1>重溫舊夢</h1>
@@ -835,7 +861,15 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const heroFace = (sex, ch) => `${ART}h-${(sex || S.hero) === 'f' ? 'f' : 'm'}-${heroStage(ch == null ? S.ch : ch)}.webp`;
     const heroImg = () => `<i class="ph" style="background-image:url('${heroFace()}')"></i>`;
     /* 舞台背景：平時是標題畫面的春景水墨；章首劇情、結局換成 art/ 裡的插圖（2026-11-17 起），回到門診或標題時換回來 */
-    const setBg = (f) => { $('#stage').style.backgroundImage = `url('${f ? ART + f : IMG + 'ab8fdfe7-fb59-4655-843a-35fe9ae6ba5b.png'}')`; };
+    let panN = 0, bgNow = '';
+    const setBg = (f) => {
+        const st = $('#stage');
+        if ((f || '') === bgNow) return;               // 同一張圖不重來，搖攝才不會跳回起點
+        bgNow = f || '';
+        st.style.backgroundImage = `url('${f ? ART + f : IMG + 'ab8fdfe7-fb59-4655-843a-35fe9ae6ba5b.png'}')`;
+        st.classList.remove('pan', 'rev');
+        if (f) { void st.offsetWidth; st.classList.add('pan'); st.classList.toggle('rev', panN++ % 2 === 1); }      // 插圖才搖攝，平時的春景不動
+    };
     setBg();
     const HERO_SVG = '<svg viewBox="34 20 52 52" xmlns="http://www.w3.org/2000/svg"><rect x="34" y="20" width="52" height="52" fill="#22306e"/><path d="M40 157 L44 78 Q60 66 76 78 L80 157 Z" fill="#2C4F3E"/><circle cx="60" cy="50" r="19" fill="#DFC8A0"/><path d="M42 46 Q60 26 78 46 Q78 34 60 31 Q42 34 42 46 Z" fill="#3a3a3a"/><circle cx="60" cy="28" r="6" fill="#3a3a3a"/><path d="M50 52 Q54 55 58 52" stroke="#3a3a3a" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M62 52 Q66 55 70 52" stroke="#3a3a3a" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>';
     /* 書中師：黃庭鏡 */
@@ -7850,6 +7884,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     /* 第一代的數值：energy 精力、peace 修為、money 金錢；jiji 既濟的天數、bal 目前的身心狀態、over 透支次數、poor 連續入不敷出的天數、epi 已領悟的心法 */
     const fresh = () => ({ energy: 70, peace: 0, money: 20, jiji: 0, bal: '', over: 0, poor: 0, epi: [], gives: 0,
                            day: 1, ch: 0, chDay: 1, arr: {}, spirit: 70, skill: 0, fame: 0, study: 0, studyNext: 0, queue: [], news: [], metEye: false, learn: {}, bk: {}, needLearn: '', dil: [], echo: [], flags: {}, dilLog: [], lifeNews: [],
+                           debt: 0, debtDays: 0, hqBoost: 0, owned: {}, today: {}, duBuys: 0,       // 2026-11-22 上街：欠杜掌櫃的藥錢、欠了幾天、上等藥材還有幾天、書肆買來的書、今天早上做的事
                            app: { on: false, exp: 0, done: false } });       // app：學徒（第四章起）
     const S = Object.assign({ diff: 'easy', hero: 'm' }, fresh());       // hero：主角 m 男、f 女（舊存檔沒有這一欄就當男）
     const P = {};               // 病歷簿：每位病人一筆，跨門診日保存
@@ -8155,6 +8190,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const review = (t) => (V && V.kind === 'sh' && S.ch > 0 ? [narr('要是師父看了這一案，大概會說：'), { who: SHM, text: t }] : [Mt(t)]);
 
     /* ================= 畫面更新 ================= */
+    /* 左上的地點：白天醫館、上街、夜醫館的圖開著時，寫那個地方（2026-11-22） */
+    const SPOT_PLACE = { morning: '清晨的醫館', street: '城南街上', night: '夜裡的醫館' };
+    const spotPlace = () => (!$('#night').classList.contains('hidden') && SPOT_PLACE[$('#night').dataset.phase]) || '';
     function hud() {
         const face = $('#pt-face');
         if (V) {
@@ -8164,7 +8202,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             $('#g-tr').style.width = V.trust + '%'; $('#v-tr').innerHTML = `${V.trust}<small>/100</small>`;
         } else {
             face.style.backgroundImage = '';
-            $('#pt-name').textContent = '候診室'; $('#pt-type').textContent = '';
+            $('#pt-name').textContent = spotPlace() || '候診室'; $('#pt-type').textContent = '';
             $('#tr-row').classList.add('hidden');
         }
         $('#me-face').innerHTML = heroImg();
@@ -8343,8 +8381,10 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         day: { t: '門診日', sel: '#next', x: () => '每個門診日先看候診名單，新病人和回診的人都在這裡。按「開始看診」，一位一位看。每天開門時會自動存檔，回標題後可以從「重溫舊夢」接著玩。' },
         revisit: { t: '回診', x: () => '方子對不對，要等病人回來才知道。回診時先看他吃藥後怎麼樣，再決定守方、改方或轉介。' },
         fee: { t: '診金', sel: '.s-mn', x: () => '看完一位病人就有診金，記在「金錢」。窮苦人家給得少，權貴給得多；沒治好，診金也少。' },
-        night: { t: '門診後', at: 'top', sel:() => ($('#nt-pic .spot.cur') ? '#nt-pic .spot.cur' : '#nt-pic [data-act="rest"]'),
+        night: { t: '門診後', at: 'top', phase: 'night', sel:() => ($('#nt-pic .spot.cur') ? '#nt-pic .spot.cur' : '#nt-pic [data-act="rest"]'),
                  x: () => `門診後只能做一件事，做完就天亮。${hoverTip()}。${$('#nt-pic .spot.cur') ? '今晚該讀的書，書案已經亮著。' : '累了就休養，心亂就靜坐，想多學就研讀。'}` },
+        morning: { t: '白天醫館', at: 'top', phase: 'morning', sel: '#nt-pic [data-act="open"]', x: () => `開門前可以先做一件事：整理藥櫃、晒藥搗藥、晨練，或直接「開門看診」。${hoverTip()}。` },
+        street: { t: '上街', at: 'top', phase: 'street', sel: '#nt-pic [data-act="home"]', x: () => `看完診可以上街做一件事。地圖上標著名字的是治療中的病人家，點了去探望；門口亮燈的是治好的人家。也可以施藥、到藥行買上等藥材（錢不夠可以賒帳）或請教藥材、書肆買書、茶樓聽消息${isEasy() ? '（有時聽得到明天誰要上門）' : ''}。不想逛就「回醫館」。` },
         living: { t: '生計', sel: '.s-mn', x: () => '自立門戶之後，每天收工要付生計；用了杜掌櫃的藥材，還要付藥錢。錢不夠就三餐不繼，連續幾天付不出來，診間就開不下去。' },
         jiji: { t: '既濟', sel: '.v-bal', x: () => '收工時精力與心神都在五成以上、相差不大，就是「既濟」：身心會自己回復，修為也會增長。偏了一邊是「未濟」，門診後做的事，要往不足的那一邊補。' },
         tired: { t: '量力而為', x: () => '精力不到三十，研讀讀不下書；心神不到三十，休養睡不安穩；不到二十，看診能問的變少。累的時候，先把自己顧好。' },
@@ -8375,6 +8415,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const k = coachQ.shift();
         if (!k || !tutOn()) return;
         const L = LESSONS[k];
+        if (L.phase && spotPlace() !== SPOT_PLACE[L.phase]) return coachFlush();      // 白天醫館、上街、夜醫館的卡片只在那個畫面出（下次到那裡會再排進來）
         markTaught(k);
         const sel = typeof L.sel === 'function' ? L.sel() : L.sel;
         coachOn = sel ? $$(sel).filter(e => e.offsetParent !== null) : [];
@@ -8436,14 +8477,14 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const BOOKS = {
         sh: { name: '《傷寒論》', short: '傷寒', who: '張仲景', how: '開局就會',
               lv: ['外感看診', '定證少耗心神 1', '方證相應時，纏綿未解的機率減半'] },
-        jg: { name: '《金匱要略》', short: '金匱', who: '張仲景', how: '立業之後，門診後研讀',
+        jg: { name: '《金匱要略》', short: '金匱', who: '張仲景', how: '立業之後，到書肆買來研讀',
               lv: ['選方時開放《金匱》病篇', '翻到《金匱》病篇時，若眼前是外感，會提醒回《傷寒》找', '待定（之後有雜病病人再定）'],
               meet: [narr('那本空白病歷簿，我一直以為是空的。今晚翻到最後，才看見師父在末幾頁用小字抄了《金匱要略》的篇目，旁邊註著：雜病，要另外讀。'),
                      narr('我找來《金匱要略》，從第一篇讀起。《傷寒》講病怎麼一路傳變；《金匱》一篇一篇，講的是雜病。'),
                      narr('往後開方，除了《傷寒》的十二類，我也能翻《金匱》的病篇了。')] },
         eye: { name: '《目經大成》', short: '目經', who: EYM, how: '遇到第一位眼病病人之後',
                lv: ['眼病看診', '察目看錯時，書中師提點一句，不再耗心神', '慢性眼病每次回診，信任多 +2'] },
-        bc: { name: '《本草綱目》', short: '本草', who: LSZ, how: '杜掌櫃開始供藥之後',
+        bc: { name: '《本草綱目》', short: '本草', who: LSZ, how: '杜掌櫃開始供藥之後，到書肆買來研讀',
               lv: ['本草圖鑑的卡片看得到歸經與功效', '藥材品質升一級', '藥材品質再升一級，杜掌櫃留道地藥材給我'],
               meet: [narr('杜掌櫃的藥送來那晚，我把藥一味一味倒在桌上，才發現好些我只認得名字。'),
                      narr('我翻開《本草綱目》。書頁之間，有位背著藥簍的長者抬起頭來。'),
@@ -8451,7 +8492,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                      narr('往後杜掌櫃送來的藥，好壞我分得出來了。')] }
     };
     const bookLv = (k) => { if (k !== 'sh' && !S.learn[k]) return 0; const n = (S.bk || {})[k] || 0; return n >= 7 ? 3 : (n >= 3 ? 2 : 1); };
-    const bookOpen = (k) => (k === 'jg' ? S.ch >= 1 : (k === 'bc' ? !!S.flags.duSupply : false));      // 還沒結識、但今晚可以讀的
+    const bookOpen = (k) => (k === 'jg' ? S.ch >= 1 && !!S.owned.jg : (k === 'bc' ? !!S.flags.duSupply && !!S.owned.bc : false));      // 還沒結識、但今晚可以讀的（2026-11-22 起要先到書肆買）
+    const bookSale = (k) => !bookLv(k) && !S.owned[k] && (k === 'jg' ? S.ch >= 1 : (k === 'bc' ? !!S.flags.duSupply : false));     // 書肆裡買得到、還沒買的
     const bookNeed = (k) => { const lv = bookLv(k); return lv >= 3 ? 0 : (lv === 2 ? 7 : 3) - ((S.bk || {})[k] || 0); };
     const readables = () => Object.keys(BOOKS).filter(k => bookLv(k) || bookOpen(k));
 
@@ -8467,10 +8509,13 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         let q = S.flags.duSupply ? 1 : 0;
         if (S.skill >= 20 || bookLv('bc') >= 2) q++;
         if (bookLv('bc') >= 3) q++;
+        if (S.flags.duCold) q = Math.min(q, 1);          // 欠杜掌櫃的帳太久，他不再給上等的（2026-11-22）
         return Math.min(3, q);
     }
-    const fateP = () => HQ_FATE[herbQ()] * (bookLv('sh') >= 3 ? 0.5 : 1);
-    const herbNote = () => (S.flags.duSupply ? `${HQ[herbQ()]}等，杜掌櫃供藥` : '師父藥櫃裡的藥，成色粗了些');
+    /* 在藥行買的上等藥材（或還清帳時杜掌櫃送的）：往後幾個門診日，藥材多升一級 */
+    const herbQNow = () => Math.min(3, herbQ() + ((S.hqBoost || 0) > 0 ? 1 : 0));
+    const fateP = () => HQ_FATE[herbQNow()] * (bookLv('sh') >= 3 ? 0.5 : 1) * (S.today && S.today.sorted ? 0.5 : 1);
+    const herbNote = () => (S.flags.duSupply ? `${HQ[herbQNow()]}等，杜掌櫃供藥` : `${HQ[herbQNow()]}等，師父藥櫃裡的藥`) + ((S.hqBoost || 0) > 0 ? `（藥行買的上等藥材還能用 ${S.hqBoost} 天）` : '');
     const DU_MEET = [narr('這天門診前，師父帶我進城，到杜家藥行取藥。'),
         { who: DU, text: '喲，這就是你收的徒弟？瘦是瘦了點，眼睛倒還亮。' },
         narr('掌櫃抓來兩把甘草，一把粗、一把細，叫我聞，又叫我嚼。'),
@@ -8526,9 +8571,11 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     $('#veil').onclick = () => { clearTimeout(veilTimer); $('#veil').classList.add('hidden'); };
     function dayStart() {
         V = null; setBg();
-        if (S.ch === 0 && S.chDay === 2 && !S.flags.duMet) { S.flags.duMet = true; litHerbs(['甘草']); return story('藥行', DU, DU_MEET, dayStart); }
+        if (S.ch === 0 && S.chDay === 2 && !S.flags.duMet) { S.flags.duMet = true; litHerbs(['甘草']); return story('藥行', DU, DU_MEET, dayStart, 'bg-du-in.webp'); }
         if (S.ch >= 1 && !S.flags.duSupply) { S.flags.duSupply = true; S.flags.hq = herbQ(); return story('供藥', DU, DU_SUPPLY, dayStart); }
         if (S.flags.duSupply && herbQ() > (S.flags.hq || 0)) { const q = herbQ(); S.flags.hq = q; return story('藥材', `杜掌櫃送來${HQ[q]}等藥材`, DU_UP(q), dayStart); }
+        if (S.debt > 0 && S.debtDays >= 3 && !S.flags.debtWarn) { S.flags.debtWarn = true; return story('藥錢', DU, DEBT_WARN, dayStart); }
+        if (S.debt > 0 && S.debtDays >= 7 && !S.flags.duCold) { S.flags.duCold = true; S.hqBoost = 0; S.fame -= 2; return story('藥錢', DU, DEBT_COLD, dayStart); }
         const ln = lifeNewsNext();          // 長期病人的消息：缺席、訃聞
         if (ln) return story(ln.big, ln.sub, ln.lines, dayStart);
         if ((S.flags.thanksQ || []).length) return thanksScene(S.flags.thanksQ.shift());
@@ -8551,6 +8598,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const echoes = S.echoNote || [];
         hud();
         showVeil(`${chOf().name}　第${CN[S.chDay] || S.chDay}個門診日`, S.queue.length ? `候診 ${S.queue.length} 位` : '今天沒有病人上門');
+        morning((mnote) => {          // 2026-11-22：開門前先在白天的醫館做一件事，做完才到候診長凳
         const li = S.queue.map(p => `<li><div class="face" style="background-image:url('${faceOf(p)}')"></div>
             <div class="who"><span class="name">${p.c.name}</span> <span class="small hint">${p.c.type}</span></div>
             <span class="tag${p.status === 'waiting' ? ' back' : ''}">${p.status === 'waiting' ? (p.chainIdx === 0 && p.stage ? '老病人' : '回診') : '新病人'}</span></li>`).join('');
@@ -8561,6 +8609,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         if (S.ch >= 1) teachSoon('menu');
         if (S.energy < 30 || S.spirit < 30) teachSoon('tired');
         panel(`<h3>${chOf().name}　第 ${S.chDay} 個門診日 <span>候診 <span class="px">${S.queue.length}</span> 位</span></h3>
+            ${mnote ? `<div class="note small" style="margin:0 0 8px"><b class="hint">早上</b>　${mnote}</div>` : ''}
             ${echoes.map(e => `<div class="note small" style="margin:0 0 8px"><b class="hint">回音</b>　${e.t}</div>`).join('')}
             ${S.queue.length ? `<div class="bench" style="background-image:url('${ART}bg-s-bench.webp')">${S.queue.map((p, i) => `<button class="bp" data-bq="${i}" style="background-image:url('${faceOf(p)}')" title="${p.c.name}　${p.c.type}"><span>${p.c.name}<i>${p.status === 'waiting' ? (p.chainIdx === 0 && p.stage ? '老病人' : '回診') : ''}</i></span></button>`).join('')}</div>
             <div class="small dim">點長凳上的人，就請他先進來；直接按「開始看診」照排隊的順序。</div>` : '<div class="dim">今天沒有病人上門。</div>'}${news}${warn}
@@ -8573,6 +8622,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         speak(lines);
         $('#next').onclick = nextPatient;
         $$('#panel [data-bq]').forEach(b => b.onclick = () => { const q = S.queue.splice(+b.dataset.bq, 1)[0]; S.queue.unshift(q); nextPatient(); });
+        });
     }
     function thanksScene(pid) {
         const p = P[pid];
@@ -8588,7 +8638,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     function nextPatient() {
         if (!S.queue.length) {
             if (S.ch === 4 && S.chDay === 1 && !S.flags.seen_aging) return dilemma('aging');        // 晚年的第一天，多一個困境
-            return (S.chDay === 2 && !S.dil[S.ch]) ? dilemma() : freeAction();                       // 每章第二天看完診，遇上一次困境
+            return (S.chDay === 2 && !S.dil[S.ch]) ? dilemma() : street();                           // 每章第二天看完診，遇上一次困境；之後上街
         }
         V = S.queue.shift();
         V.well = false;
@@ -8603,7 +8653,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             if (S.epi.includes('pause')) addSpirit(2);
             hud();
             V.status = 'seeing'; (V.kind === 'sh' ? shStart : eyStart)();
-        } else { addEnergy(-3); addSpirit(S.app.on ? -1 : -2); hud(); teachSoon('revisit'); (V.kind === 'sh' ? shRevisit : eyReturn)(); }     // 回診也要用心，只是比初診省力；有學徒幫忙記錄更省
+        } else { addEnergy(-3); addSpirit(S.today && S.today.prep ? 0 : (S.app.on ? -1 : -2)); hud(); teachSoon('revisit'); (V.kind === 'sh' ? shRevisit : eyReturn)(); }     // 回診也要用心，只是比初診省力；有學徒幫忙記錄更省
     }
     /* 處置完畢，病人離開。結果要等回診才揭曉 */
     function leave(what) {
@@ -8933,7 +8983,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     function dilemma(force) {
         V = null; hud();
         const id = force || pickDilemma();
-        if (!id) return freeAction();
+        if (!id) return street();
         if (force) S.flags['seen_' + id] = true; else S.dil[S.ch] = id;
         playTrack('dilemma');
         const d = DILEMMAS[id], ctx = d.ctx ? d.ctx() : {};
@@ -8965,7 +9015,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                 ${v.echo ? '<div class="small dim" style="margin-top:6px">這個選擇的後果，日後才會看見。</div>' : ''}
                 <div class="foot"><button class="btn go px" id="next">繼續</button></div>`);
             speak(narr(v.log));
-            $('#next').onclick = freeAction;
+            $('#next').onclick = street;
         });
     }
     /* ================= 誤治與醫糾（2026-11-18，依 11-16 的規劃做精簡版） =================
@@ -9056,6 +9106,186 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             { text: '（修為 +3　心神 +8）' }
         ], dayStart);
     }
+    /* ================= 白天醫館與上街（2026-11-22 佑彥選甲，第一期） =================
+       一天分四段：白天醫館（開門前做一件事，或直接開門）→ 看診 → 上街（做一件事，或直接回醫館）→ 夜醫館（休養、靜坐、研讀、帶徒）。
+       探望、施藥從夜醫館搬到上街；上街多了杜家藥行（上等藥材、錢不夠可以賒帳）、書肆（《金匱》《本草》要買來才讀得到，也有閒書）、
+       茶樓（入門與業餘聽得到明天誰要上門）。賒帳牽動劇情：欠了三天杜掌櫃提一句（DEBT_WARN），七天不還他不再給上等藥材、街坊傳開（DEBT_COLD），
+       還清了他把帳本那頁撕掉、送一包好藥（DEBT_CLEAR）。圖：bg-day.webp（夜醫館修圖改成清晨，家具位置不變）、bg-street.webp（城南街景）。 */
+    const MORN_POS = { open: [91, 40], cabinet: [72, 30], dry: [74, 51], drill: [30, 54], prep: [50, 43] };
+    /* 第二期（2026-11-22）：上街換成城南地圖 bg-map.webp。店的位置在 MAP_POS；民宅在 HOUSE_POS，病人依上門的先後分到一戶（超過就輪回第一戶）。
+       治療中的病人，家門口標名字，點了去探望；治好的病人，家門口亮一盞燈 */
+    const MAP_POS = { home: [51, 50], tea: [13, 36], book: [48, 29], du: [84, 39], give: [85, 18], kin: [20, 62] };
+    const HOUSE_POS = [[32, 50], [83, 60], [16, 21], [63, 20], [41, 44], [93, 53], [30, 26], [69, 25], [30, 37], [94, 70], [39, 20], [61, 32]];      // 排成前後兩戶離得遠，同時治療中的幾位名字才不會疊在一起
+    const houseOf = (id) => Object.keys(P).indexOf(id) % HOUSE_POS.length;
+    const HERB_PRICE0 = 8, REGULAR_AT = 3;
+    const herbPrice = () => (S.flags.duRegular ? 6 : HERB_PRICE0);
+    /* 今晚要付的生計（和 dayEnd 的算法一樣）。上街花錢會讓今晚付不出來時，說明裡先提醒（2026-11-22 自動試玩發現業餘、入門常在茶樓、書肆把錢花光） */
+    const livingCost = () => (LIVING[S.ch] || 0) + (S.app.on && !S.app.done ? 1 : 0) + (S.flags.duSupply ? HQ_COST[herbQ()] : 0);
+    const HERB_PRICE = 8, BOOK_PRICE = 12, IDLE_PRICE = 3, TEA_PRICE = 2, DEBT_MAX = 24, BOOST_DAYS = 3;
+    const DEBT_WARN = [narr('一早，杜掌櫃的夥計送藥來，順手遞上一張帳單。'),
+        { who: DU, text: '帳先記著，不急。不過做藥材生意的，月底也得跟山裡的藥農結帳。' },
+        narr('帳單上的數字不大，我卻看了很久。')];
+    const DEBT_COLD = [narr('這天送來的藥，成色明顯差了。'),
+        { who: DU, text: '上等的貨，我先留給付現銀的客人。你的帳清了，我們再說。' },
+        narr('話說得客氣，街坊卻都聽見了。城南開始有人傳，說我連藥錢都付不出來。'),
+        narr('（聲望 −2。帳還清以前，杜掌櫃不給上等藥材）')];
+    const DEBT_CLEAR = [{ who: DU, text: '清了？好。' },
+        narr('杜掌櫃把帳本那一頁撕下來，當著我的面揉成一團。'),
+        { who: DU, text: '這包是今年新收的，算我的。做醫的手頭緊，我年輕時也見過。往後別硬撐，缺錢先說一聲。' },
+        narr('（往後三個門診日，藥材升一級）')];
+    const DU_REGULAR = [{ who: DU, text: '又是你。這個月第幾回了？' },
+        narr('杜掌櫃沒等我回答，從櫃台底下摸出一個小木匣，裡面一格一格放著切好的藥片。'),
+        { who: DU, text: '這是我自己留著對貨用的樣子。山裡送來的貨，先跟它比過，才上櫃。' },
+        { who: DU, text: '你肯常來，我也不跟你算那麼細了。往後上等的貨，一包算你六。' },
+        narr('（往後上等藥材一包 6）')];
+    const caseById = (id) => SH.CASES.find(c => c.id === id) || EY.CASES.find(c => c.id === id);
+    function morning(done) {
+        S.today = {};
+        const back = S.queue.filter(p => p.status === 'waiting').length;
+        const lit = loadMeta().herbs || [], unlit = Object.keys(SH.HERBS).filter(k => !lit.includes(k));
+        const acts = [
+            { a: 'open', name: '開門看診', cur: true, sub: S.queue.length ? `候診的有 ${S.queue.length} 位。直接開門，請病人進來` : '今天沒有病人上門。直接開門' },
+            { a: 'cabinet', name: '整理藥櫃', sub: `把藥一格一格清點，篩去碎末。精力 −3。今天方證相應時，纏綿未解的機率減半${unlit.length ? '；本草圖鑑點亮一味還沒用過的藥' : ''}` },
+            { a: 'dry', name: '晒藥搗藥', sub: S.ch === 0 ? '幫師父把藥攤到院子裡晒，搗好今天要用的。精力 −6，金錢 +3（師父給的零用）' : '把收來的藥材攤開晒、搗好備用，多的賣給街坊。精力 −6，金錢 +4' },
+            { a: 'drill', name: '晨練', sub: '在院子裡打一套八段錦。精力 +5，心神 +1' }
+        ];
+        if (S.app.on && back) acts.push({ a: 'prep', name: '備藥', sub: `和小滿把今天回診的藥先備好。精力 −2，今天回診的 ${back} 位不耗心神` });
+        speak(narr(S.ch === 0 ? '天剛亮。師父還在後院，醫館的門還沒開。' : (S.queue.length ? '天剛亮。門外已經有人在等了。' : '天剛亮。今天門外很安靜。')));
+        const doAct = (a) => {
+            let note = '';
+            if (a === 'cabinet') {
+                addEnergy(-3); S.today.sorted = true;
+                const k = unlit[0];
+                if (k) litHerbs([SH.HERBS[k].name]);
+                note = `我把藥櫃清點了一遍，篩去碎末。${k ? `認得了${SH.HERBS[k].name}（本草圖鑑點亮）。` : ''}今天方證相應時，纏綿未解的機率減半。`;
+            } else if (a === 'dry') { addEnergy(-6); S.money += S.ch === 0 ? 3 : 4; note = `我把藥攤開晒，搗好了備用。金錢 +${S.ch === 0 ? 3 : 4}。`; }
+            else if (a === 'drill') { addEnergy(5); addSpirit(1); note = '我在院子裡打了一套八段錦，身上暖了起來。精力 +5，心神 +1。'; }
+            else if (a === 'prep') { addEnergy(-2); S.today.prep = true; note = '我和小滿把回診的藥先備好了。今天回診的病人不耗心神。'; }
+            hud(); done(note);
+        };
+        spotShow(acts, doAct, { img: 'bg-day.webp', pos: MORN_POS, phase: 'morning', lead: `開門前可以先做一件事，或直接開門。精力 ${S.energy}　心神 ${S.spirit}　金錢 ${S.money}` });
+    }
+    function street() {
+        V = null; hud();
+        const waiting = Object.values(P).filter(p => p.status === 'waiting');
+        const books = ['jg', 'bc'].filter(bookSale);
+        const need = livingCost(), short = (price) => (S.money >= price && S.money - price < need ? `。<b class="down">花了就付不出今晚的生計（${need}）</b>` : '');
+        const pos = Object.assign({}, MAP_POS), taken = {};
+        const visits = waiting.map(p => {
+            const id = Object.keys(P).find(k => P[k] === p), h = houseOf(id), n = taken[h] = (taken[h] || 0) + 1;
+            pos['v-' + id] = [HOUSE_POS[h][0] + (n - 1) * (HOUSE_POS[h][0] > 80 ? -8 : 8), HOUSE_POS[h][1] + (n - 1) * 4];
+            return { a: 'v-' + id, name: p.c.name, pt: true, cur: p.lost || p.trust < 40,
+                sub: `${p.c.name}的家。治療中，信任 ${Math.round(p.trust)}${p.lost ? '；他已經不打算再來了' : ''}。去探望：精力 −4，信任 +8` };
+        });
+        const lit = new Set(Object.keys(P).filter(k => P[k].status === 'closed' && GOOD3.includes(P[k].outcome)).map(houseOf));
+        const lamps = [...lit].map(h => `<span class="lamp" style="left:${HOUSE_POS[h][0]}%;top:${HOUSE_POS[h][1]}%" title="治好的病人家"></span>`).join('');
+        const acts = [
+            { a: 'home', name: '回醫館', sub: '不逛了，直接回醫館' },
+            ...visits,
+            ...(waiting.length ? [] : [{ a: 'kin', name: `看${kin().who}`, sub: `沒有治療中的病人。去看看${kin().who}。精力 −2，心神 +8，修為 +1` }]),
+            { a: 'tea', name: '茶樓', sub: `喝一壺茶，聽街坊說話。金錢 −${TEA_PRICE}，心神 +4${isEasy() ? '。也許聽得到明天誰要上門' : ''}${short(TEA_PRICE)}` },
+            { a: 'book', name: '書肆', cur: books.length > 0 && S.money >= BOOK_PRICE, sub: books.length ? `有${books.map(k => BOOKS[k].name).join('、')}，買了夜裡就能讀（${BOOK_PRICE}）；也有閒書${short(BOOK_PRICE)}` : `買閒書（${IDLE_PRICE}），夜裡翻幾頁，讓腦子歇一歇${short(IDLE_PRICE)}` },
+            { a: 'du', name: '藥行', off: !S.flags.duMet, sub: !S.flags.duMet ? '還不認識藥行的掌櫃' : `杜家藥行。上等藥材一包 ${herbPrice()}，往後三個門診日藥材升一級；錢不夠可以賒帳；也可以向杜掌櫃請教藥材${S.debt ? `。現在欠 ${S.debt}` : ''}` },
+            { a: 'give', name: '施藥', off: S.money < 15, sub: S.money >= 15 ? `拿出金錢 15，替城牆根下付不起藥錢的人抓藥。聲望 +3，修為 +2${short(15)}` : '需金錢 15：手頭不寬裕' }
+        ];
+        speak(narr((S.ch === 0 ? '看完了診，師父讓我上街走走。' : '看完了診，我鎖上診間的門，到街上走走。') + (lit.size ? `城南有 ${lit.size} 戶人家，門口的燈是為我點的。` : '')));
+        const doAct = (a) => {
+            if (a === 'home') return freeAction();
+            if (a === 'kin') { addEnergy(-2); addSpirit(8); const pk = addPeace(1); const k = kin(); return freeAction(k.text + (pk ? `<br><b class="name">${pk}</b>` : '')); }
+            if (a.startsWith('v-')) {
+                const p = P[a.slice(2)];
+                addEnergy(-4); p.trust = clamp(p.trust + 8);
+                const kept = p.lost; p.lost = false;
+                return freeAction(`我去探望了${p.c.name}，坐了一會，問了問吃藥後的情形。${kept ? '他本來不打算再來了，見我上門，神色緩了下來。' : '他有些意外，也有些高興。'}`);
+            }
+            if (a === 'give') { S.money -= 15; S.fame += 3; S.gives++; const pk = addPeace(2); return freeAction(night('give') + (pk ? `<br><b class="name">${pk}</b>` : '')); }
+            if (a === 'tea') return teaHouse();
+            if (a === 'book') return bookShop();
+            if (a === 'du') return duShop();
+        };
+        spotShow(acts, doAct, { img: 'bg-map.webp', pos, phase: 'street', deco: lamps, lead: `上街可以做一件事，或直接回醫館。金錢 ${S.money}${need ? `（今晚生計 ${need}）` : ''}${S.debt ? `　欠杜掌櫃 ${S.debt}` : ''}　精力 ${S.energy}　心神 ${S.spirit}` });
+    }
+    /* 店裡：和看診一樣，點了在下面看說明，按確定才買 */
+    function shop(title, sub, items, said, img) {
+        let cur = '';
+        if (img) setBg(img);                        // 第二期：藥行、書肆的店內圖
+        const draw = () => {
+            const it = items.find(x => x.k === cur);
+            panel(`${img ? `<div class="shopimg" style="background-image:url('${ART}${img}')"></div>` : ''}<h3>${title} <span>${sub()}</span></h3>
+                <div class="grid">${items.map(x => `<button class="btn${cur === x.k ? ' on' : ''}" data-shop="${x.k}"><b>${x.name}</b></button>`).join('')}</div>
+                <div class="stick">${eyInfo(it && it.name, it && it.desc)}
+                <div class="foot"><button class="btn" id="back">回街上</button><button class="btn go px" id="shop-go" ${it && !it.off ? '' : 'disabled'}>${it && it.go ? it.go : '就這樣'}</button></div></div>`);
+            $('#pt-name').textContent = title;
+            $$('#panel [data-shop]').forEach(b => b.onclick = () => { cur = b.dataset.shop; draw(); });
+            $('#back').onclick = street;
+            $('#shop-go').onclick = () => { if (it && !it.off) it.run(); };
+        };
+        draw();
+        if (said) speak(said);
+    }
+    function duShop() {
+        const HERB_PRICE = herbPrice();
+        const cold = !!S.flags.duCold, top = herbQ() >= 3, can = S.money >= HERB_PRICE, credit = !can && S.debt + HERB_PRICE <= DEBT_MAX;
+        const lit = loadMeta().herbs || [], unlit = Object.keys(SH.HERBS).filter(k => !lit.includes(SH.HERBS[k].name) && !lit.includes(k));
+        const asked = !!(S.today && S.today.askDu), hk = unlit[0], hb = hk && SH.HERBS[hk];
+        const buyDesc = cold ? '杜掌櫃說，帳清了再給上等的。'
+            : top ? '我用的已經是道地藥材，不必再買。'
+            : can ? `金錢 −${HERB_PRICE}。往後三個門診日，藥材從${HQ[herbQ()]}等升一級，方證相應時病去得更乾淨。${S.money - HERB_PRICE < livingCost() ? `<b class="down">買了就付不出今晚的生計（${livingCost()}）</b>` : ''}`
+            : credit ? `手頭不夠，先記在帳上（欠 ${S.debt} 變成 ${S.debt + HERB_PRICE}）。往後三個門診日藥材升一級。欠久了，杜掌櫃會記在心上。`
+            : `已經欠了 ${S.debt}，杜掌櫃不肯再賒。`;
+        const items = [
+            { k: 'buy', name: can || cold || top ? '上等藥材' : '賒上等藥材', go: can ? '買' : '賒帳', off: cold || top || (!can && !credit), desc: buyDesc, run: () => {
+                const owe = S.money < HERB_PRICE;
+                if (owe && S.debt + HERB_PRICE > DEBT_MAX) return street();
+                if (owe) S.debt += HERB_PRICE; else S.money -= HERB_PRICE;
+                S.hqBoost = BOOST_DAYS; S.duBuys = (S.duBuys || 0) + 1; hud();
+                const msg = owe ? `我在杜家藥行賒了一包上等藥材。杜掌櫃在帳本上記了一筆，什麼也沒說。（欠 ${S.debt}）` : '我在杜家藥行買了一包上等藥材。往後三個門診日，藥材升一級。';
+                if (S.duBuys >= REGULAR_AT && !S.flags.duRegular) { S.flags.duRegular = true; return story('熟客', DU, DU_REGULAR, () => freeAction(msg), 'bg-du-in.webp'); }
+                freeAction(owe ? `我在杜家藥行賒了一包上等藥材。杜掌櫃在帳本上記了一筆，什麼也沒說。（欠 ${S.debt}）` : '我在杜家藥行買了一包上等藥材。往後三個門診日，藥材升一級。');
+            } },
+            { k: 'ask', name: '請教藥材', go: '請教', off: asked || !hb, desc: asked ? '今天已經請教過了，杜掌櫃還有生意要做。' : (!hb ? '櫃上的藥，我都認得了。' : `精力 −2。請杜掌櫃拿一味我還沒用過的藥給我看（本草圖鑑點亮一味）。`), run: () => {
+                if (!hb) return street();
+                S.today.askDu = true; addEnergy(-2); litHerbs([hb.name]); hud();
+                story('請教', DU, [narr(`杜掌櫃從櫃上拉開一格抽屜，抓出一小撮${hb.name}，攤在我掌心。`),
+                    { who: DU, text: `${hb.name}，性${hb.q}，味${hb.flavor}。你們醫家說它入${hb.meridian}，能${hb.use}。` },
+                    { who: DU, text: '我們做藥材的，看的是另一回事：乾不乾、有沒有霉、切面乾不乾淨、聞起來對不對。這幾樣不對，方子再對也是白搭。' },
+                    narr(`（本草圖鑑點亮${hb.name}）`)], () => freeAction(`我向杜掌櫃請教了${hb.name}。`), 'bg-du-in.webp');
+            } },
+            { k: 'pay', name: '還帳', go: '還', off: !S.debt || !S.money, desc: !S.debt ? '沒有欠帳。' : (S.money ? `還 ${Math.min(S.debt, S.money)}（現在欠 ${S.debt}）。${S.money >= S.debt ? '一次還清。' : '還一部分。'}` : '手上沒有錢可以還。'), run: () => {
+                const n = Math.min(S.debt, S.money);
+                S.money -= n; S.debt -= n; hud();
+                if (S.debt) return freeAction(`我先還了杜掌櫃 ${n}。還欠 ${S.debt}。`);
+                S.debtDays = 0; S.flags.debtWarn = false;
+                if (!S.flags.duCold) return freeAction(`我把欠杜掌櫃的 ${n} 還清了。`);
+                S.flags.duCold = false; S.hqBoost = BOOST_DAYS;
+                story('還清', DU, DEBT_CLEAR, () => freeAction(`我把欠杜掌櫃的帳還清了。`), 'bg-du-in.webp');
+            } }
+        ];
+        shop('杜家藥行', () => `金錢 ${S.money}${S.debt ? `　欠 ${S.debt}` : ''}　藥材 ${HQ[herbQNow()]}等`, items,
+            { who: DU, text: cold ? '帳還沒清，上等的貨我先留著。' : (S.debt ? '來啦。帳的事不急，先看藥。' : '來啦。今天的貨不錯，要不要看看？') }, 'bg-du-in.webp');
+    }
+    function bookShop() {
+        const items = ['jg', 'bc'].filter(bookSale).map(k => ({ k, name: BOOKS[k].name, go: '買', off: S.money < BOOK_PRICE,
+            desc: `金錢 −${BOOK_PRICE}${S.money < BOOK_PRICE ? '（錢不夠）' : ''}。買回去，夜裡在書案就能讀。讀了學會：${BOOKS[k].lv[0]}。${S.money >= BOOK_PRICE && S.money - BOOK_PRICE < livingCost() ? `<b class="down">買了就付不出今晚的生計（${livingCost()}）</b>` : ''}`,
+            run: () => { if (S.money < BOOK_PRICE) return street(); S.money -= BOOK_PRICE; S.owned[k] = true; hud(); freeAction(`我在書肆買了一部${BOOKS[k].name}，夾在腋下走回醫館。`); } }));
+        items.push({ k: 'idle', name: '閒書', go: '買', off: S.money < IDLE_PRICE, desc: `金錢 −${IDLE_PRICE}，心神 +6。一本話本小說，夜裡翻幾頁，讓腦子歇一歇。`,
+            run: () => { if (S.money < IDLE_PRICE) return street(); S.money -= IDLE_PRICE; addSpirit(6); hud(); freeAction('我在書肆挑了一本話本小說。看病以外的事，偶爾也該想一想。心神 +6。'); } });
+        shop('書肆', () => `金錢 ${S.money}`, items, narr('書肆裡一股紙和墨的味道。掌櫃從書堆後面抬了一下頭。'), 'bg-books.webp');
+    }
+    /* 茶樓：入門與業餘聽得到明天要上門的新病人（病例開頭的那一句），以及誰明天回診；進階與專業只聽得到街坊對醫館的評價 */
+    function teaHouse() {
+        const paid = S.money >= TEA_PRICE;
+        if (paid) S.money -= TEA_PRICE;
+        addSpirit(paid ? 4 : 2); hud();
+        const said = [];
+        if (isEasy()) {
+            (S.arr[S.chDay + 1] || []).forEach(id => { const c = caseById(id); if (c && !P[id]) said.push(`隔壁桌說起：「${c.intro.split('。')[0]}。」聽說明天要來看。`); });
+            Object.values(P).filter(p => p.status === 'waiting' && !p.lost && p.due <= S.day + 1).slice(0, 2).forEach(p => said.push(`${p.c.name}的鄰居說，他明天會來回診。`));
+        }
+        if (!said.length) said.push(S.fame >= 10 ? '鄰桌的茶客說，城南有位大夫看病看得仔細。說的好像是我。'
+            : (S.fame < 0 ? '有人壓低聲音說，城南那位大夫，最近好像不太靈光。我把茶喝完就走了。' : '茶客聊的都是家常：收成、米價、誰家娶媳婦。沒聽到誰病了。'));
+        freeAction(`${paid ? '我在茶樓喝了一壺茶。' : '身上沒帶錢，我在茶樓門口的長凳坐了一會。'}${said.join('')}${paid ? '心神 +4。' : '心神 +2。'}`);
+    }
     const NIGHT = {
         rest: ['我關了診間的門，吃了頓熱飯，早早睡了。', '我把燈吹熄得比平常早。窗外有人在收晾了一天的藥材。', '我什麼也沒想，洗了把臉就躺下。這一覺沒有夢。'],
         sit: ['我關上門，坐了一個時辰。念頭來了又走，我只是看著。', '我坐著，聽自己的呼吸。白天那幾張臉一張一張浮上來，又一張一張沉下去。', '我坐到香燒完。心裡那些「要是當時」，慢慢安靜了。'],
@@ -9073,7 +9303,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         if (chenOf()) return { who: '老陳', text: pick(['我去看了老陳。他坐在田埂上曬太陽，說：大夫，你也老了。', '老陳留我吃飯。桌上那盤雞蛋，和許多年前他提來診間的一樣。']) };
         return { who: '師父的舊居', text: '我又去了一趟師父的舊居，在那張凳子上坐了一會。' };
     }
-    function freeAction() {
+    function freeAction(note) {          // note：上街做的那件事（2026-11-22 起探望、施藥搬到上街）
         V = null; hud();
         const waiting = Object.values(P).filter(p => p.status === 'waiting');
         const eye = S.energy < 30, heart = S.spirit < 30;        // 第一代的肉身警訊：精力低讀不下書，心神低歇不安穩
@@ -9083,12 +9313,12 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             { a: 'sit', name: '靜坐', sub: '關上門，坐一個時辰。心神 +14，修為 +2' },
             { a: 'study', name: '研讀', off: eye, cur: !!book, sub: eye ? '精力不足 30：眼壓飆高，視物模糊，讀不下書'
                 : (book ? `讀${book.book}，學會看${book.kind}。精力 −4，醫術 +1` : `選一部醫書讀。精力 −4，醫術 +1，下個門診日每位新病人可多問一項${readables().some(k => !bookLv(k)) ? '。<b class="name">有一部還沒讀過的書</b>' : ''}`) },
-            { a: 'visit', name: '探望', sub: waiting.length ? '出門去看看治療中最讓我放不下的那一位。精力 −4，信任 +8' : `沒有治療中的病人。出門去看看${kin().who}。精力 −2，心神 +8，修為 +1` },
-            { a: 'give', name: '施藥', off: S.money < 15, sub: S.money >= 15 ? '拿出金錢 15，替付不起藥錢的人抓藥。聲望 +3，修為 +2' : '需金錢 15：手頭不寬裕' }
         ];
         if (S.app.on && !S.app.done) acts.push({ a: 'teach', name: '帶徒', sub: `把今天的病人一位一位講給小滿聽。精力 −3，醫術 +1，聲望 +1。小滿的歷練 ${S.app.exp}/3` });
         chapterTrack();
-        speak(book ? [narr('最後一位病人離開了。天色還早。'), narr(`白天那位${book.kind}的病人，明天還會來。我得把${book.book}讀一讀。`)] : narr('最後一位病人離開了。天色還早。'));
+        const home = narr(S.ch === 0 ? '回到師父的醫館，天色暗了下來。' : '回到醫館，天色暗了下來。');
+        const said = (note ? [narr(note.replace(/<[^>]+>/g, ''))] : []).concat(home);
+        speak(book ? said.concat(narr(`白天那位${book.kind}的病人，明天還會來。我得把${book.book}讀一讀。`)) : said);
         const doAct = (a) => {
             if (a === 'rest') { addEnergy(heart ? 9 : 18); addSpirit(heart ? 2 : 5); dayEnd(heart ? '我早早躺下，心卻跳得厲害，翻來覆去到半夜才闔眼。' : night('rest')); }
             else if (a === 'sit') { addSpirit(14); const pk = addPeace(2); dayEnd(night('sit'), pk); }
@@ -9120,21 +9350,28 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                 dayEnd(`我去探望了${p.c.name}，坐了一會，問了問他吃藥後的情形。${kept ? '他本來不打算再來了，見我上門，神色緩了下來。' : '他有些意外，也有些高興。'}`);
             }
         };
-        nightShow(acts, doAct);
+        nightShow(acts, doAct, note);
     }
     /* 夜醫館：六件事放在背景圖上。電腦上滑鼠移過去看耗掉與得到什麼、點一下就做；手機上點一下先看說明，再按確定。
        圖固定 3:2，依可用空間縮放（不裁切），熱點用圖上的百分比座標 */
     const NIGHT_POS = { rest: [12, 49], sit: [28, 56], study: [50, 43], teach: [51, 63], give: [74, 47], visit: [91, 40] };
     const canHover = () => !!(window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches);
     let nightFit = null;
-    function nightShow(acts, doAct) {
+    const nightShow = (acts, doAct, note) => spotShow(acts, doAct, { img: 'bg-night.webp', pos: NIGHT_POS, phase: 'night', note });
+    /* 三段共用（2026-11-22）：白天醫館 morning、上街 street、夜醫館 night，都是一張圖加上幾個熱點 */
+    function spotShow(acts, doAct, o) {
+        const POS = o.pos;
         $('#scene').classList.add('hidden'); $('#panel-win').classList.add('hidden'); $('#night').classList.remove('hidden');
+        $('#night').dataset.phase = o.phase;
+        setBg();                                    // 從藥行、書肆出來
+        $('#panel').innerHTML = '';                 // 收起的視窗裡不留上一個畫面（自動試玩靠視窗內容判斷在哪一步）
+        if (!V) $('#pt-name').textContent = SPOT_PLACE[o.phase];
         const pic = $('#nt-pic'), hover = canHover();
-        pic.style.backgroundImage = $('#night').style.backgroundImage = `url('${ART}bg-night.webp')`;
-        pic.innerHTML = acts.map(x => `<button class="spot${x.off ? ' off' : ''}${x.cur ? ' cur' : ''}" data-act="${x.a}" style="left:${NIGHT_POS[x.a][0]}%;top:${NIGHT_POS[x.a][1]}%"><i></i><b>${x.name}</b></button>`).join('')
-            + '<div class="win nt-tip hidden" id="nt-tip"></div><div class="win nt-info" id="nt-info"></div>';
+        pic.style.backgroundImage = $('#night').style.backgroundImage = `url('${ART}${o.img}')`;
+        pic.innerHTML = acts.map(x => `<button class="spot${x.off ? ' off' : ''}${x.cur ? ' cur' : ''}${x.pt ? ' pt' : ''}" data-act="${x.a}" style="left:${POS[x.a][0]}%;top:${POS[x.a][1]}%"><i></i><b>${x.name}</b></button>`).join('')
+            + (o.deco || '') + '<div class="win nt-tip hidden" id="nt-tip"></div><div class="win nt-info" id="nt-info"></div>';
         const info = $('#nt-info');
-        const base = `<span class="small dim">精力 ${S.energy}　心神 ${S.spirit}。兩者都在五成以上且相差不大，就是既濟。</span><br><span class="small hint">${hover ? '滑鼠移到要做的事上，看會耗掉與得到什麼；點一下就去做。' : '點一下要做的事，看清楚耗掉與得到什麼，再按「確定」。'}</span>`;
+        const base = (o.note ? `<span class="small">${o.note}</span><br>` : '') + `<span class="small dim">${o.lead || `精力 ${S.energy}　心神 ${S.spirit}。兩者都在五成以上且相差不大，就是既濟。`}</span><br><span class="small hint">${hover ? '滑鼠移到要做的事上，看會耗掉與得到什麼；點一下就去做。' : '點一下要做的事，看清楚耗掉與得到什麼，再按「確定」。'}</span>`;
         info.innerHTML = base;
         nightFit = () => {
             const n = $('#night');
@@ -9150,7 +9387,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         };
         const desc = (x) => `<b class="name">${x.name}</b>　${x.sub}`;
         $$('#nt-pic .spot').forEach(b => {
-            const x = acts.find(y => y.a === b.dataset.act), [px, py] = NIGHT_POS[x.a];
+            const x = acts.find(y => y.a === b.dataset.act), [px, py] = POS[x.a];
             const tip = () => {
                 if (!hover) return;
                 const t = $('#nt-tip');
@@ -9170,7 +9407,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             };
         });
         nightFit(); requestAnimationFrame(nightFit);
-        coachCheck(); requestAnimationFrame(() => { if (!$('#night').classList.contains('hidden')) teach('night'); });        // 等圖排好位置，卡片才放得準
+        coachCheck(); requestAnimationFrame(() => { if (!$('#night').classList.contains('hidden')) teach(o.phase); });        // 等圖排好位置，卡片才放得準
     }
     window.addEventListener('resize', () => { if (nightFit && !$('#night').classList.contains('hidden')) nightFit(); });
     /* 研讀選書：只有一部可讀就直接讀 */
@@ -9221,6 +9458,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         if (bal) teachSoon('jiji');
         addEnergy(8); addSpirit(5);         // 夜裡歇息
         S.study = S.studyNext; S.studyNext = 0;
+        if (S.hqBoost > 0) S.hqBoost--;                                   // 藥行買的上等藥材，一天用掉一天
+        S.debtDays = S.debt > 0 ? (S.debtDays || 0) + 1 : 0;              // 欠杜掌櫃的帳，欠了幾天
         hud();
         const open = Object.values(P).filter(p => p.status === 'waiting').length;
         const pk = perks.filter(Boolean).join('　');
@@ -9798,7 +10037,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const o = k.near ? { r: 'better', t: k.t } : (SH.OUTCOME[V.c.pattern][k.cls] || SH.OUTCOME[V.c.pattern].other);     // 沒有特別寫的組合，一律當成藥不對證
         const res = { rx: pick ? k.label : rxText(rx), cls: k.cls, r: o.r, t: (k.viaHead && o.r !== 'cured' ? `${k.label}屬${k.viaHead}。` : '') + o.t, q: o.q || '', fate: false, why: k.why || '', shown: false };
         if (o.r === 'cured' && !k.full) { res.r = 'better'; res.t = '方向是對的，症狀減了幾分，卻沒有全退。配伍不全，藥力未到。'; }
-        else if (o.r === 'cured' && V.round === 1 && !V.tutor && Math.random() < fateP()) { res.r = 'better'; res.fate = true; res.t = '方證相應，症狀減了大半，卻還有些纏綿未解。' + (herbQ() < 2 ? '藥材的成色，或許也有關係。' : ''); }
+        else if (o.r === 'cured' && V.round === 1 && !V.tutor && Math.random() < fateP()) { res.r = 'better'; res.fate = true; res.t = '方證相應，症狀減了大半，卻還有些纏綿未解。' + (herbQNow() < 2 ? '藥材的成色，或許也有關係。' : ''); }
         V.lastRx = pick ? { pick: pickF, fam: pickFam } : clone(rx);
         const fk = pick ? fkeyOf(pickF) : (SH.FORMULAS[k.cls] ? k.cls : '');      // 開出去的是哪一首成方（要有方後注才有加減與叮嚀）
         afterRx(res, fk);
@@ -10290,7 +10529,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         clearInterval(typing); typing = null; queue = []; after = null; setBg();
         clearTimeout(veilTimer);
         if (introBgm) introBgm = false; else playTrack('');       // 剛從片頭進來：片頭的音樂繼續放
-        ['#ui', '#book', '#veil', '#t-new', '#t-notes', '#t-saves'].forEach(s => $(s).classList.add('hidden'));
+        ['#ui', '#book', '#veil', '#t-new', '#t-notes', '#t-saves', '#t-clear'].forEach(s => $(s).classList.add('hidden'));
         const mm = loadMeta();
         $('#t-notes-info').textContent = mm.runs ? `行醫 ${mm.runs} 輪　成就 ${mm.ach.length}/${ACH.length}` : '還是空白的';
         $('#ui').classList.remove('story');
@@ -10382,6 +10621,28 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         $('#t-main').classList.add('hidden'); $('#t-saves').classList.remove('hidden');
     };
     $('#t-saves-back').onclick = () => { $('#t-saves').classList.add('hidden'); $('#t-main').classList.remove('hidden'); };
+    /* 清除紀錄（2026-11-22 佑彥要）：先選刪哪些，再按「刪除」，按鈕變成「確定刪除」要再按一次。片頭看過與否、聲音設定不刪 */
+    let clrPick = '', clrArmed = false;
+    const clrDraw = () => {
+        $$('#t-clear-list li').forEach(li => li.classList.toggle('sel', li.dataset.clr === clrPick));
+        $('#t-clear-go').disabled = !clrPick;
+        $('#t-clear-go').textContent = clrArmed ? '確定刪除' : '刪除';
+        const ask = $('#t-clear-ask');
+        ask.classList.toggle('hidden', !clrArmed);
+        ask.textContent = clrArmed ? (clrPick === 'all' ? '存檔、杏林札記與成就都會刪掉，回到第一次玩的樣子。再按一次「確定刪除」。' : '存檔會刪掉，杏林札記與成就留著。再按一次「確定刪除」。') : '';
+    };
+    $('#t-clear-btn').onclick = () => { clrPick = ''; clrArmed = false; clrDraw(); $('#t-main').classList.add('hidden'); $('#t-clear').classList.remove('hidden'); };
+    $$('#t-clear-list li').forEach(li => li.onclick = () => { clrPick = li.dataset.clr; clrArmed = false; clrDraw(); });
+    $('#t-clear-back').onclick = () => { $('#t-clear').classList.add('hidden'); $('#t-main').classList.remove('hidden'); };
+    $('#t-clear-go').onclick = () => {
+        if (!clrPick) return;
+        if (!clrArmed) { clrArmed = true; clrDraw(); return; }
+        store.del();
+        [1, 2, 3].forEach(n => { delete memSlot[n]; try { localStorage.removeItem(slotKey(n)); } catch (e) { /* 讀不到就算了 */ } });
+        if (clrPick === 'all') { memMeta = null; try { localStorage.removeItem(META_KEY); } catch (e) { /* 同上 */ } }
+        $('#t-clear').classList.add('hidden');
+        showTitle();
+    };
     $$('.snd').forEach(b => { b.textContent = muted ? '聲音：關' : '聲音：開'; b.onclick = () => setMuted(!muted); });
     $('#start').onclick = () => {
         const m = loadMeta(), sel = $('#opt-tut .btn.on');
@@ -10402,7 +10663,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     }, 1200);
 
     /* 供測試用 */
-    window.__clinic = { JF, loadMeta, saveMeta, ACH, S, P, get V() { return V; }, stageChain, SH, EY, classify, saveGame, loadGame, readSave, showTitle, setMuted, DILEMMAS, dilemma, dispute,
+    window.__clinic = { JF, loadMeta, saveMeta, ACH, S, P, livingCost, get V() { return V; }, stageChain, SH, EY, classify, saveGame, loadGame, readSave, showTitle, setMuted, DILEMMAS, dilemma, dispute,
                         get track() { return wantTrack; }, get muted() { return muted; } };
 })();
 </script>
@@ -10425,6 +10686,26 @@ window.__bot = (function () {
     }
     function pickAct(pol) {
         const S = C().S, has = (a) => { const b = $(`#night [data-act="${a}"]`); return b && !b.classList.contains('off'); };
+        const cur = (a) => { const b = $(`#night [data-act="${a}"]`); return b && b.classList.contains('cur'); };
+        const ph = $('#night').dataset.phase;
+        if (ph === 'morning') {
+            if (pol.act !== 'smart') return 'open';
+            if (S.energy < 45) return 'drill';
+            if (has('prep')) return 'prep';
+            if (S.money < 15 && S.energy > 60) return 'dry';
+            return S.energy > 75 ? 'cabinet' : 'open';
+        }
+        if (ph === 'street') {
+            if (pol.act !== 'smart' || st.shopDay === S.day) return 'home';
+            const w = Object.values(C().P).filter(p => p.status === 'waiting');
+            if (w.some(p => p.lost || p.trust < 40)) { const p = w.slice().sort((x, y) => x.trust - y.trust)[0]; return 'v-' + Object.keys(C().P).find(k => C().P[k] === p); }
+            const spare = S.money - C().livingCost();
+            if (cur('book') && spare >= 12) return 'book';
+            if (S.money > 70 && has('give')) return 'give';
+            if (has('du') && (pol.debt ? S.debt < 16 : spare >= 20) && !S.hqBoost && Math.random() < 0.5) return 'du';
+            if (S.spirit < 55 && spare >= 2) return 'tea';
+            return 'home';
+        }
         if (S.needLearn && has('study')) return 'study';
         if (pol.act === 'smart') {
             if (S.energy < 50) return 'rest';
@@ -10447,8 +10728,13 @@ window.__bot = (function () {
         if (V && V.tutor) { const g = $('.guide'); if (g) { click(g); return 'tutor'; } }
         if ($('#panel [data-d]')) { const en = $$('#panel [data-d]').filter(b => !b.disabled); click(pol.dil === 'first' ? en[0] : en[Math.floor(Math.random() * en.length)]); if ($('#d-go')) click($('#d-go')); return 'dilemma'; }
         if ($('#panel [data-pick]')) { $$('#panel [data-pick]').slice(0, 3).forEach(b => click($(`#panel [data-pick="${b.dataset.pick}"]`))); click($('#next')); return 'book'; }
+        if ($('#panel [data-shop]') && !$('#panel-win').classList.contains('hidden')) {          // 店裡：照順序找第一樣買得起的；都買不了就回街上，今天不再逛
+            const S = C().S, bs = $$('#panel [data-shop]');
+            for (const b of bs) { click($(`#panel [data-shop="${b.dataset.shop}"]`)); if (!$('#shop-go').disabled) { st.acts['shop-' + b.dataset.shop] = (st.acts['shop-' + b.dataset.shop] || 0) + 1; click($('#shop-go')); return 'shop'; } }
+            st.shopDay = S.day; click($('#back')); return 'shop-none';
+        }
         if ($('#panel [data-rd]')) { const bs = $$('#panel [data-rd]'); click(bs.find(b => b.classList.contains('cur')) || bs[Math.floor(Math.random() * bs.length)]); return 'read'; }
-        if (!$('#night').classList.contains('hidden') && $('#night [data-act]')) { const a = pickAct(pol); st.acts[a] = (st.acts[a] || 0) + 1; click($(`#night [data-act="${a}"]`)); if ($('#nt-go')) click($('#nt-go')); return 'act'; }
+        if (!$('#night').classList.contains('hidden') && $('#night [data-act]')) { const a = pickAct(pol); const ka = ($('#night').dataset.phase || '')[0] + ':' + (a.startsWith('v-') ? 'visit' : a); st.acts[ka] = (st.acts[ka] || 0) + 1; click($(`#night [data-act="${a}"]`)); if ($('#nt-go')) click($('#nt-go')); return 'act'; }
         if (V && V.kind === 'sh') {
             const p = pol.good ? V.c.pattern : other(C().SH.PATTERNS, V.c.pattern);
             if (/四診蒐集/.test(t)) return ask(pol);
