@@ -54,7 +54,7 @@ body { font-family: 'Noto Serif TC', serif; }
 @keyframes bloom { 0% { transform: scale(0); opacity: 0; } 25% { opacity: 1; } 100% { transform: scale(1); opacity: 0.85; } }
 
 /* 3. 水墨山水、霧、白鶴 */
-#land .bg { position: absolute; inset: -4%; background: center / cover no-repeat; filter: grayscale(0.55) brightness(0.15) contrast(1.05); transform: scale(1.14); }
+#land .bg { position: absolute; inset: -4%; background: 74% 50% / cover no-repeat; filter: grayscale(0.55) brightness(0.15) contrast(1.05); transform: scale(1.14); }
 #land.on .bg { animation: reveal 9s ease-out forwards; }
 @keyframes reveal { 60% { filter: grayscale(0.4) brightness(0.85) contrast(1.05); } 100% { filter: grayscale(0.25) brightness(1) contrast(1); transform: scale(1.02); } }
 #land .mist { position: absolute; left: -40%; width: 180%; height: 38%; background: radial-gradient(ellipse at center, rgba(235,238,240,0.55), transparent 65%); filter: blur(10px); opacity: 0; }
@@ -138,7 +138,8 @@ body { font-family: 'Noto Serif TC', serif; }
     'use strict';
     var $ = function (s) { return document.querySelector(s); };
     var XL = window.XL || {};
-    var IMG = 'https://yylin.tw/images/yylin.tw/upload_file/ab8fdfe7-fb59-4655-843a-35fe9ae6ba5b.png';   // 遊戲標題畫面用的水墨背景，片頭最後一幕和遊戲標題接得起來
+    /* 遊戲標題畫面的背景（2026-11-22 換成杏林醫館），片頭最後一幕和遊戲標題接得起來。網站上從遊戲檔的位置推出 art/，本機用旁邊的 art/ */
+    var IMG = ((XL.game && XL.game[0]) || '').replace(/[^/]*$/, '') + 'art/bg-title.webp';
     var MUSIC = 'https://cdn.jsdelivr.net/gh/jaecolin/fireandwater@main/' + encodeURIComponent('春日微風.mp3');
     var LOGO = XL.logo || '素材/logo-yylin.png';
     var store = { get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) { /* 存不了就算了 */ } } };
