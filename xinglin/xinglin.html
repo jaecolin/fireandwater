@@ -113,6 +113,22 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 .ans { margin: 0; padding: 0; list-style: none; }
 .ans li { padding: 2px 0; border-bottom: 1px dashed rgba(255, 255, 255, 0.12); }
 .ans li b { color: var(--name); margin-right: 8px; }
+/* 業餘難度（2026-11-22）：關鍵症狀的標籤、名詞解釋、三選一 */
+.keytag { display: inline-block; margin-right: 6px; padding: 0 6px; border-radius: 8px; background: #b8862e; color: #1a1205; font-size: 0.78em; font-weight: 700; vertical-align: 1px; }
+.gl { border-bottom: 1px dashed var(--gold-hi); cursor: help; }
+#gl-pop { position: fixed; z-index: 60; max-width: 18em; padding: 7px 10px; font-size: 0.88em; line-height: 1.55; background: rgba(6, 10, 34, 0.96); border: 1px solid var(--gold); border-radius: 4px; color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); }
+#gl-pop b { color: var(--name); }
+.am-pick .btn { text-align: left; }
+.am-pick .btn .sub { display: block; margin-top: 2px; }
+/* 候診室（2026-11-22）：長凳上坐著今天的病人，點誰就請誰進來 */
+.bench { position: relative; height: 12.5em; margin: 4px 0 8px; border: 1px solid var(--gold-dark); border-radius: 3px; background: #2a2418 center 60% / cover no-repeat; display: flex; align-items: flex-end; justify-content: center; gap: 2px; padding: 0 6px; overflow: hidden; }
+.bench::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6, 10, 34, 0.1), rgba(6, 10, 34, 0.55)); }
+.bp { position: relative; flex: 1 1 0; max-width: 7.5em; height: 11.5em; padding: 0; border: 0; cursor: pointer; background: bottom center / contain no-repeat; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5)); transition: transform 0.15s; }
+.bp:hover, .bp:focus-visible { transform: translateY(-4px); }
+.bp span { position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%); white-space: nowrap; padding: 1px 7px; font-size: 0.8em; color: var(--name); background: rgba(6, 10, 34, 0.85); border: 1px solid var(--gold); border-radius: 3px; }
+.bp span i { font-style: normal; color: var(--up); margin-left: 4px; }
+@media (max-width: 640px) { .bench { height: 10.5em; } .bp { height: 9.8em; } .bp span { font-size: 0.72em; padding: 0 4px; } }
+.thank-face { float: left; width: 7.5em; height: 10em; margin: 0 10px 6px 0; background: bottom center / contain no-repeat; }
 .ans li.fu { padding-left: 1.6em; border-bottom-style: dotted; font-size: 0.94em; }
 .ans li.fu b { color: var(--hint); }
 .ans li.fu .btn { padding: 2px 10px; font-size: 0.92em; }
@@ -128,7 +144,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 .slot .t { color: var(--hint); font-size: 0.82em; }
 .slot .h { color: var(--name); }
 .herbs { display: flex; flex-wrap: wrap; gap: 7px; }
-.herb { flex: 1 1 170px; cursor: pointer; border: 1px solid rgba(232, 197, 106, 0.6); border-radius: 3px; padding: 5px 9px; background: rgba(255, 255, 255, 0.05); text-align: left; text-shadow: 1px 1px 0 #000; }
+.herb { flex: 1 1 96px; cursor: pointer; border: 1px solid rgba(232, 197, 106, 0.6); border-radius: 3px; padding: 5px 9px; background: rgba(255, 255, 255, 0.05); text-align: left; text-shadow: 1px 1px 0 #000; }
 .herb:hover { background: rgba(255, 255, 255, 0.14); }
 .herb.used { opacity: 0.45; }
 .herb .n { font-weight: 700; }
@@ -175,8 +191,19 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 /* 開場 */
 .title {
     position: absolute; inset: 0; display: flex; padding: 14px; overflow-y: auto;
-    background: radial-gradient(ellipse 72% 62% at 50% 40%, rgba(34, 22, 10, 0.42), rgba(6, 4, 3, 0.96) 78%);
+    background: radial-gradient(ellipse 72% 62% at 50% 40%, rgba(34, 22, 10, 0.28), rgba(6, 4, 3, 0.9) 80%);
 }
+/* 2026-11-22 標題畫面：杏花慢慢飄落；新遊戲的選項改成按鈕只寫名稱，選了在下面出現說明 */
+.petals { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.petals i { position: absolute; top: -4%; width: 10px; height: 8px; background: #f6dcdc; border-radius: 70% 0 70% 0; opacity: 0.8; box-shadow: 0 0 4px rgba(255, 220, 220, 0.5); animation: petal linear infinite; }
+@keyframes petal { 0% { transform: translate(0, 0) rotate(0); } 100% { transform: translate(-14vw, 112vh) rotate(600deg); } }
+@media (prefers-reduced-motion: reduce) { .petals { display: none; } }
+.title > .tscreen, .title > .win { position: relative; z-index: 1; }
+.opt.pick .btn { flex: 1 1 20%; text-align: center; font-weight: 700; }
+.opt.pick .btn small { display: none; }
+.opt.pick.two .btn { flex: 1 1 40%; }
+.optinfo { margin-top: 6px; padding: 7px 10px; min-height: 3.2em; border-left: 3px solid var(--gold); background: rgba(255, 255, 255, 0.04); color: var(--hint); font-size: 0.86em; line-height: 1.55; }
+#opt-hero.pick .hface { float: none; display: block; margin: 0 auto 4px; width: 4.4em; height: 4.4em; }
 .title .win { width: min(560px, 100%); margin: auto; }
 .title h1 { margin: 0 0 2px; font-size: 1.5em; color: var(--name); text-align: center; letter-spacing: 0.15em; }
 .title .sub { text-align: center; color: var(--hint); margin-bottom: 12px; }
@@ -460,7 +487,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 /* 藥材：物品清單 */
 .herbs { gap: 0 16px; }
 .herb {
-    position: relative; flex: 1 1 250px; border: 0; border-bottom: 1px dashed rgba(255, 255, 255, 0.14); border-radius: 0;
+    position: relative; flex: 1 1 100px; border: 0; border-bottom: 1px dashed rgba(255, 255, 255, 0.14); border-radius: 0;
     background: none; padding: 5px 8px 5px 26px; color: #fff; outline: none;
 }
 .herb::before {
@@ -471,6 +498,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 .herb:hover::before, .herb:focus-visible::before { opacity: 1; animation: nudge 0.55s ease-in-out infinite alternate; }
 .herb.used { opacity: 1; background: linear-gradient(90deg, rgba(232, 197, 106, 0.2), rgba(232, 197, 106, 0)); }
 .herb.used .n { color: var(--name); }
+.herb.on::before { opacity: 1; }
 .herb.used::before { content: '✓'; border: 0; width: auto; height: auto; left: 6px; top: 4px; color: var(--up); opacity: 1; filter: none; animation: none; }
 
 /* 標題選單的游標也換成同一個 */
@@ -486,7 +514,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     .slots { gap: 6px; }
     .slot { width: 23.5%; min-width: 78px; height: 84px; padding: 4px 4px; }
     .slot .h { font-size: 0.86em; }
-    .herb { flex: 1 1 100%; }
+    .herb { flex: 1 1 30%; }
 }
 @media (prefers-reduced-motion: reduce) { .btn::before, .herb::before, .tmenu button::before { animation: none !important; } }
 
@@ -723,6 +751,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     <div class="win coach hidden" id="coach"></div>
 
     <div class="title" id="title">
+        <div class="petals" id="petals" aria-hidden="true"></div>
         <div class="tscreen" id="t-main">
             <div class="tlogo">
                 <div class="tsmall small">水火既濟</div>
@@ -758,24 +787,27 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 
             <!-- 「怎麼玩」的條列文字（2026-11-17 拿掉）：改成邊玩邊教，第一次遇到的畫面才由師父說一句 -->
             <h2>教學</h2>
-            <div class="opt" id="opt-tut">
+            <div class="opt pick two" id="opt-tut">
                 <button class="btn on" data-tut="on">邊玩邊教<small>第一次玩建議開著。該看哪裡會發光，師父說一句；看過的不再出現。</small></button>
                 <button class="btn" data-tut="off">不用教<small>已經熟悉的人。之後可以在選單的「系統」重新打開。</small></button>
             </div>
+            <div class="optinfo" id="opt-tut-info"></div>
 
             <h2>難度</h2>
-            <div class="opt" id="opt-diff">
+            <div class="opt pick" id="opt-diff">
+                <button class="btn" data-diff="amateur">業餘<small>不必懂中醫。你是醫館的藥童，跟著師父看病、抓藥。一天約兩位病人，關鍵症狀會標出來，名詞點一下就有解釋，每一步都三選一；開錯藥只是好得慢，不會出事。</small></button>
                 <button class="btn on" data-diff="easy">入門<small>一輪約三、四十分鐘，一天約三位病人。問診項數多，師父會提點，看得到藥材功效，可套用成方。</small></button>
                 <button class="btn" data-diff="mid">進階<small>一輪約一個半小時，一天約五位病人。只有習醫章有提點；立業章起從類方加減選方。</small></button>
                 <button class="btn" data-diff="hard">專業<small>一天約五位病人。問診項數少，沒有提點，每一帖都一味一味自己配，對錯到醫案才揭曉。</small></button>
             </div>
-            <div class="small dim" style="margin-top:4px">病例還在陸續增加。目前進階與專業每天上門的病人，會比上面寫的少一些。</div>
+            <div class="optinfo" id="opt-diff-info"></div>
 
             <h2>主角</h2>
-            <div class="opt" id="opt-hero">
-                <button class="btn on" data-hero="m"><i class="hface"></i>男醫者<small>劇情相同，只有外觀不同。</small></button>
-                <button class="btn" data-hero="f"><i class="hface"></i>女醫者<small>立繪會隨年紀，從青年、中年走到晚年。</small></button>
+            <div class="opt pick two" id="opt-hero">
+                <button class="btn on" data-hero="m"><i class="hface"></i>男醫者<small>劇情相同，只有外觀不同。立繪會隨年紀，從青年、中年走到晚年。</small></button>
+                <button class="btn" data-hero="f"><i class="hface"></i>女醫者<small>劇情相同，只有外觀不同。立繪會隨年紀，從青年、中年走到晚年。</small></button>
             </div>
+            <div class="optinfo" id="opt-hero-info"></div>
 
             <div class="foot"><button class="btn" id="t-back">返回</button><button class="btn go px" id="start">開始坐診</button></div>
             <div class="disclaimer">內容經過大幅簡化，僅供體驗玩法，不能作為診療依據；藥材份數並非真實劑量。病人皆為虛構。證型、方藥、病名對照與原文引用皆待中醫師審定。</div>
@@ -1138,6 +1170,132 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "flavor": "苦",
        "meridian": "心、小腸、膀胱",
        "use": "通利血脈，利尿通淋（《傷寒論》的通草，即今之木通）"
+      },
+      "shengdi": {
+       "name": "生地黃",
+       "q": "寒",
+       "flavor": "甘、苦",
+       "meridian": "心、肝、腎",
+       "use": "清熱涼血，養陰生津"
+      },
+      "maidong": {
+       "name": "麥門冬",
+       "q": "微寒",
+       "flavor": "甘、微苦",
+       "meridian": "心、肺、胃",
+       "use": "養陰潤肺，益胃生津，清心除煩"
+      },
+      "taoren": {
+       "name": "桃仁",
+       "q": "平",
+       "flavor": "苦、甘",
+       "meridian": "心、肝、大腸",
+       "use": "活血祛瘀，潤腸通便，止咳平喘"
+      },
+      "wuweizi": {
+       "name": "五味子",
+       "q": "溫",
+       "flavor": "酸、甘",
+       "meridian": "肺、心、腎",
+       "use": "收斂固澀，益氣生津，補腎寧心"
+      },
+      "gualoushi": {
+       "name": "栝蔞實",
+       "q": "寒",
+       "flavor": "甘、微苦",
+       "meridian": "肺、胃、大腸",
+       "use": "清熱化痰，寬胸散結，潤燥滑腸"
+      },
+      "ejiao": {
+       "name": "阿膠",
+       "q": "平",
+       "flavor": "甘",
+       "meridian": "肺、肝、腎",
+       "use": "補血止血，滋陰潤燥"
+      },
+      "maziren": {
+       "name": "麻子仁",
+       "q": "平",
+       "flavor": "甘",
+       "meridian": "脾、胃、大腸",
+       "use": "潤腸通便"
+      },
+      "yinchen": {
+       "name": "茵陳蒿",
+       "q": "微寒",
+       "flavor": "苦、辛",
+       "meridian": "脾、胃、肝、膽",
+       "use": "清利濕熱，利膽退黃"
+      },
+      "jingmi": {
+       "name": "粳米",
+       "q": "平",
+       "flavor": "甘",
+       "meridian": "脾、胃",
+       "use": "補中益氣，健脾和胃，除煩止渴"
+      },
+      "huashi": {
+       "name": "滑石",
+       "q": "寒",
+       "flavor": "甘、淡",
+       "meridian": "膀胱、肺、胃",
+       "use": "利尿通淋，清熱解暑"
+      },
+      "muli": {
+       "name": "牡蠣",
+       "q": "微寒",
+       "flavor": "鹹",
+       "meridian": "肝、膽、腎",
+       "use": "重鎮安神，潛陽補陰，軟堅散結，收斂固澀"
+      },
+      "gualougen": {
+       "name": "栝蔞根",
+       "q": "微寒",
+       "flavor": "甘、微苦",
+       "meridian": "肺、胃",
+       "use": "清熱瀉火，生津止渴，消腫排膿"
+      },
+      "jizihuang": {
+       "name": "雞子黃",
+       "q": "平",
+       "flavor": "甘",
+       "meridian": "心、腎",
+       "use": "滋陰潤燥，養血"
+      },
+      "chishizhi": {
+       "name": "赤石脂",
+       "q": "溫",
+       "flavor": "甘、酸、澀",
+       "meridian": "大腸、胃",
+       "use": "澀腸止瀉，收斂止血"
+      },
+      "wuzhuyu": {
+       "name": "吳茱萸",
+       "q": "熱",
+       "flavor": "辛、苦",
+       "meridian": "肝、脾、胃、腎",
+       "use": "散寒止痛，降逆止嘔，助陽止瀉"
+      },
+      "baitouweng": {
+       "name": "白頭翁",
+       "q": "寒",
+       "flavor": "苦",
+       "meridian": "胃、大腸",
+       "use": "清熱解毒，涼血止痢"
+      },
+      "huangbai": {
+       "name": "黃柏",
+       "q": "寒",
+       "flavor": "苦",
+       "meridian": "腎、膀胱、大腸",
+       "use": "清熱燥濕，瀉火除蒸，解毒療瘡"
+      },
+      "qinpi": {
+       "name": "秦皮",
+       "q": "寒",
+       "flavor": "苦、澀",
+       "meridian": "肝、膽、大腸",
+       "use": "清熱燥濕，收澀止痢，明目"
       }
      },
      "FORMULAS": {
@@ -1197,7 +1355,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         "chen": [
          "zhimu"
         ],
-        "zuo": [],
+        "zuo": [
+         "jingmi"
+        ],
         "shi": [
          "gancao"
         ]
@@ -1678,6 +1838,484 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         "q": "先煮麻黃，減二升，去上沫，內諸藥，煮取三升，去滓，溫服一升，日三服。",
         "g": "chang"
        }
+      },
+      "xiaoqinglong": {
+       "name": "小青龍湯",
+       "slots": {
+        "jun": [
+         "mahuang"
+        ],
+        "chen": [
+         "guizhi",
+         "xixin",
+         "ganjiang"
+        ],
+        "zuo": [
+         "shaoyao",
+         "wuweizi",
+         "banxia"
+        ],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "解表散寒，溫肺化飲，治傷寒表不解、心下有水氣、咳喘。",
+       "ding": {
+        "say": "先煮麻黃撇去浮沫，再下其餘的藥，溫服",
+        "q": "先煮麻黃，減二升，去上沫，內諸藥，煮取三升，去滓，溫服一升。",
+        "g": "chang"
+       }
+      },
+      "guizhihoupo": {
+       "name": "桂枝加厚朴杏子湯",
+       "slots": {
+        "jun": [
+         "guizhi"
+        ],
+        "chen": [
+         "shaoyao",
+         "houpo",
+         "xingren"
+        ],
+        "zuo": [
+         "shengjiang",
+         "dazao"
+        ],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "解肌祛風，降氣平喘，治太陽病下之微喘、表未解。",
+       "ding": {
+        "say": "溫服，蓋被取微汗",
+        "q": "溫服一升，覆取微似汗。",
+        "g": "fu"
+       }
+      },
+      "linggui": {
+       "name": "茯苓桂枝白朮甘草湯",
+       "slots": {
+        "jun": [
+         "fuling"
+        ],
+        "chen": [
+         "guizhi"
+        ],
+        "zuo": [
+         "baizhu"
+        ],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "溫陽化飲，健脾利水，治心下逆滿、氣上衝胸、起則頭眩。",
+       "ding": {
+        "say": "分三次溫服",
+        "q": "分溫三服。",
+        "g": "chang"
+       }
+      },
+      "taohe": {
+       "name": "桃核承氣湯",
+       "slots": {
+        "jun": [
+         "taoren"
+        ],
+        "chen": [
+         "dahuang",
+         "guizhi"
+        ],
+        "zuo": [
+         "mangxiao"
+        ],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "破血下瘀，治熱結膀胱、少腹急結、其人如狂。",
+       "ding": {
+        "say": "飯前溫服，一日三次；服後會微微腹瀉",
+        "q": "先食溫服五合，日三服，當微利。",
+        "g": "li"
+       }
+      },
+      "xiaoxianxiong": {
+       "name": "小陷胸湯",
+       "slots": {
+        "jun": [
+         "gualoushi"
+        ],
+        "chen": [
+         "huanglian"
+        ],
+        "zuo": [
+         "banxia"
+        ],
+        "shi": []
+       },
+       "note": "清熱化痰，寬胸散結，治小結胸病、正在心下、按之則痛。",
+       "ding": {
+        "say": "先煮栝蔞實，再下其餘的藥，分三次溫服",
+        "q": "先煮栝蔞，取三升，去滓，內諸藥，煮取二升，去滓，分溫三服。",
+        "g": "chang"
+       }
+      },
+      "shengjiangxiexin": {
+       "name": "生薑瀉心湯",
+       "slots": {
+        "jun": [
+         "shengjiang"
+        ],
+        "chen": [
+         "banxia",
+         "huangqin",
+         "huanglian"
+        ],
+        "zuo": [
+         "ganjiang",
+         "renshen",
+         "dazao"
+        ],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "和胃消痞，宣散水氣，治心下痞硬、乾噫食臭、腹中雷鳴下利。",
+       "ding": {
+        "say": "煮好去渣，再煎濃縮，溫服，一日三次",
+        "q": "去滓，再煎取三升，溫服一升，日三服。",
+        "g": "chang"
+       }
+      },
+      "zhigancao": {
+       "name": "炙甘草湯",
+       "slots": {
+        "jun": [
+         "gancao"
+        ],
+        "chen": [
+         "shengdi",
+         "renshen",
+         "ejiao"
+        ],
+        "zuo": [
+         "maidong",
+         "maziren",
+         "guizhi",
+         "shengjiang"
+        ],
+        "shi": [
+         "dazao"
+        ]
+       },
+       "note": "益氣滋陰，通陽復脈，治脈結代、心動悸。",
+       "ding": {
+        "say": "用清酒和水同煮，阿膠最後烊化，溫服，一日三次",
+        "q": "以清酒七升，水八升，先煮八味，取三升，去滓，內膠烊消盡，溫服一升，日三服。",
+        "g": "jiu"
+       }
+      },
+      "tiaowei": {
+       "name": "調胃承氣湯",
+       "slots": {
+        "jun": [
+         "dahuang"
+        ],
+        "chen": [
+         "mangxiao"
+        ],
+        "zuo": [],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "緩下熱結，和胃，治發汗不解、蒸蒸發熱、屬胃。",
+       "ding": {
+        "say": "芒硝最後放，微煮到滾，小口小口地溫服",
+        "q": "內芒硝，更上火微煮令沸，少少溫服之。",
+        "g": "shao"
+       }
+      },
+      "yinchenhao": {
+       "name": "茵陳蒿湯",
+       "slots": {
+        "jun": [
+         "yinchen"
+        ],
+        "chen": [
+         "zhizi"
+        ],
+        "zuo": [
+         "dahuang"
+        ],
+        "shi": []
+       },
+       "note": "清熱利濕退黃，治身黃如橘子色、小便不利、腹微滿。",
+       "ding": {
+        "say": "先煮茵陳，再下梔子、大黃，分三次服；服後小便會變多、顏色深紅，黃從小便退",
+        "q": "小便當利，尿如皂莢汁狀，色正赤，一宿腹減，黃從小便去也。",
+        "g": "niao"
+       }
+      },
+      "baihurenshen": {
+       "name": "白虎加人參湯",
+       "slots": {
+        "jun": [
+         "shigao"
+        ],
+        "chen": [
+         "zhimu",
+         "renshen"
+        ],
+        "zuo": [
+         "jingmi"
+        ],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "清熱益氣生津，治大汗出後大煩渴不解、脈洪大。",
+       "ding": {
+        "say": "和粳米同煮，米熟湯成，溫服，一日三次",
+        "q": "煮米熟，湯成，去滓，溫服一升，日三服。",
+        "g": "chang"
+       }
+      },
+      "maziren": {
+       "name": "麻子仁丸",
+       "slots": {
+        "jun": [
+         "maziren"
+        ],
+        "chen": [
+         "xingren",
+         "shaoyao"
+        ],
+        "zuo": [
+         "dahuang",
+         "zhishi",
+         "houpo"
+        ],
+        "shi": []
+       },
+       "note": "潤腸泄熱，行氣通便，治脾約、大便硬、小便數。",
+       "ding": {
+        "say": "做成蜜丸，每次十丸，一日三次，慢慢加量，大便通了就好",
+        "q": "蜜和丸，如梧桐子大，飲服十丸，日三服，漸加，以知為度。",
+        "g": "wan"
+       }
+      },
+      "zhuling": {
+       "name": "豬苓湯",
+       "slots": {
+        "jun": [
+         "zhuling"
+        ],
+        "chen": [
+         "fuling",
+         "zexie"
+        ],
+        "zuo": [
+         "huashi",
+         "ejiao"
+        ],
+        "shi": []
+       },
+       "note": "滋陰清熱利水，治脈浮發熱、渴欲飲水、小便不利。",
+       "ding": {
+        "say": "先煮四味，阿膠最後烊化，溫服，一日三次",
+        "q": "先煮四味，取二升，去滓，內阿膠烊消，溫服七合，日三服。",
+        "g": "chang"
+       }
+      },
+      "chaihuguizhi": {
+       "name": "柴胡桂枝湯",
+       "slots": {
+        "jun": [
+         "chaihu"
+        ],
+        "chen": [
+         "guizhi",
+         "huangqin",
+         "shaoyao"
+        ],
+        "zuo": [
+         "renshen",
+         "banxia",
+         "shengjiang",
+         "dazao"
+        ],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "和解少陽，解肌發表，治發熱微惡寒、支節煩疼、微嘔、心下支結。",
+       "ding": {
+        "say": "煮好去渣，溫服",
+        "q": "煮取三升，去滓，溫服一升。",
+        "g": "chang"
+       }
+      },
+      "chaigui": {
+       "name": "柴胡桂枝乾薑湯",
+       "slots": {
+        "jun": [
+         "chaihu"
+        ],
+        "chen": [
+         "guizhi",
+         "huangqin",
+         "ganjiang"
+        ],
+        "zuo": [
+         "gualougen",
+         "muli"
+        ],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "和解少陽，溫化水飲，治胸脅滿微結、小便不利、渴而不嘔、但頭汗出。",
+       "ding": {
+        "say": "溫服，一日三次；第一次服了會有點煩，再服，出了汗就好",
+        "q": "初服微煩，復服，汗出便愈。",
+        "g": "fan"
+       }
+      },
+      "guizhishaoyao": {
+       "name": "桂枝加芍藥湯",
+       "slots": {
+        "jun": [
+         "shaoyao"
+        ],
+        "chen": [
+         "guizhi"
+        ],
+        "zuo": [
+         "shengjiang",
+         "dazao"
+        ],
+        "shi": [
+         "gancao"
+        ]
+       },
+       "note": "溫脾和絡，緩急止痛，治誤下之後腹滿時痛。藥味同桂枝湯，芍藥加倍為君。",
+       "ding": {
+        "say": "分三次溫服；就是桂枝湯把芍藥加重",
+        "q": "溫分三服。本云：桂枝湯，今加芍藥。",
+        "g": "chang"
+       }
+      },
+      "fuzitang": {
+       "name": "附子湯",
+       "slots": {
+        "jun": [
+         "fuzi"
+        ],
+        "chen": [
+         "renshen",
+         "baizhu",
+         "fuling"
+        ],
+        "zuo": [
+         "shaoyao"
+        ],
+        "shi": []
+       },
+       "note": "溫經助陽，祛寒除濕，治身體痛、手足寒、骨節痛、背惡寒、脈沉。",
+       "ding": {
+        "say": "溫服，一日三次",
+        "q": "溫服一升，日三服。",
+        "g": "chang"
+       }
+      },
+      "huanglianejiao": {
+       "name": "黃連阿膠湯",
+       "slots": {
+        "jun": [
+         "huanglian"
+        ],
+        "chen": [
+         "huangqin",
+         "ejiao"
+        ],
+        "zuo": [
+         "shaoyao",
+         "jizihuang"
+        ],
+        "shi": []
+       },
+       "note": "滋陰降火，交通心腎，治心中煩、不得臥。",
+       "ding": {
+        "say": "先煮三味，阿膠烊化，稍涼後再打入雞子黃攪勻，溫服，一日三次",
+        "q": "先煮三物，取二升，去滓，內膠烊盡，小冷，內雞子黃，攪令相得，溫服七合，日三服。",
+        "g": "ji"
+       }
+      },
+      "taohua": {
+       "name": "桃花湯",
+       "slots": {
+        "jun": [
+         "chishizhi"
+        ],
+        "chen": [
+         "ganjiang"
+        ],
+        "zuo": [
+         "jingmi"
+        ],
+        "shi": []
+       },
+       "note": "溫中澀腸固脫，治下利不止、便膿血、腹痛、小便不利。",
+       "ding": {
+        "say": "和粳米同煮，服時調入赤石脂末；一服就好，剩下的別再服",
+        "q": "溫服七合，內赤石脂末方寸匕，日三服。若一服愈，餘勿服。",
+        "g": "zhi"
+       }
+      },
+      "wuzhuyu": {
+       "name": "吳茱萸湯",
+       "slots": {
+        "jun": [
+         "wuzhuyu"
+        ],
+        "chen": [
+         "shengjiang",
+         "renshen"
+        ],
+        "zuo": [
+         "dazao"
+        ],
+        "shi": []
+       },
+       "note": "溫中補虛，降逆止嘔，治乾嘔、吐涎沫、頭痛。",
+       "ding": {
+        "say": "溫服，一次七合，一日三次",
+        "q": "溫服七合，日三服。",
+        "g": "chang"
+       }
+      },
+      "baitouweng": {
+       "name": "白頭翁湯",
+       "slots": {
+        "jun": [
+         "baitouweng"
+        ],
+        "chen": [
+         "huanglian",
+         "huangbai"
+        ],
+        "zuo": [
+         "qinpi"
+        ],
+        "shi": []
+       },
+       "note": "清熱解毒，涼血止痢，治熱利下重、渴欲飲水。",
+       "ding": {
+        "say": "溫服；不好，再服一碗",
+        "q": "溫服一升。不愈，更服一升。",
+        "g": "geng"
+       }
       }
      },
      "PATTERNS": {
@@ -1911,6 +2549,226 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        ],
        "law": "溫經解表",
        "formula": "mafuxin"
+      },
+      "shuiyin": {
+       "name": "太陽傷寒兼水飲",
+       "alias": "表寒未解，心下有水氣，咳喘吐清稀痰",
+       "bagang": [
+        "表",
+        "寒",
+        "實"
+       ],
+       "law": "解表散寒，溫肺化飲",
+       "formula": "xiaoqinglong"
+      },
+      "zhongfengchuan": {
+       "name": "太陽中風兼喘",
+       "alias": "誤下之後表邪未解，肺氣上逆而微喘",
+       "bagang": [
+        "表",
+        "寒",
+        "虛"
+       ],
+       "law": "解肌祛風，降氣平喘",
+       "formula": "guizhihoupo"
+      },
+      "shuiqi": {
+       "name": "太陽病水氣上衝",
+       "alias": "吐下之後傷了脾陽，水氣上衝，起則頭眩",
+       "bagang": [
+        "裡",
+        "寒",
+        "虛"
+       ],
+       "law": "溫陽化飲，健脾利水",
+       "formula": "linggui"
+      },
+      "xuxue": {
+       "name": "太陽蓄血",
+       "alias": "熱與血結在下焦，少腹急結，其人如狂",
+       "bagang": [
+        "裡",
+        "熱",
+        "實"
+       ],
+       "law": "破血下瘀",
+       "formula": "taohe"
+      },
+      "xiaojiexiong": {
+       "name": "太陽小結胸",
+       "alias": "痰熱互結在心下，按之則痛",
+       "bagang": [
+        "裡",
+        "熱",
+        "實"
+       ],
+       "law": "清熱化痰，寬胸散結",
+       "formula": "xiaoxianxiong"
+      },
+      "shuiqipi": {
+       "name": "太陽病水飲食滯痞",
+       "alias": "汗後胃中不和，水氣停在脅下，心下痞硬，乾噫食臭，腹中雷鳴",
+       "bagang": [
+        "裡",
+        "寒",
+        "虛"
+       ],
+       "law": "和胃消痞，宣散水氣",
+       "formula": "shengjiangxiexin"
+      },
+      "xinji": {
+       "name": "太陽病心陰陽兩虛",
+       "alias": "氣血陰陽都不足，心失所養，脈結代，心動悸",
+       "bagang": [
+        "裡",
+        "寒",
+        "虛"
+       ],
+       "law": "益氣滋陰，通陽復脈",
+       "formula": "zhigancao"
+      },
+      "zaore": {
+       "name": "陽明燥熱初結",
+       "alias": "發汗不解，不惡寒但熱，燥熱初結在胃",
+       "bagang": [
+        "裡",
+        "熱",
+        "實"
+       ],
+       "law": "緩下熱結，和胃",
+       "formula": "tiaowei"
+      },
+      "huangdan": {
+       "name": "陽明濕熱發黃",
+       "alias": "瘀熱在裡，濕熱熏蒸，身黃如橘子色",
+       "bagang": [
+        "裡",
+        "熱",
+        "實"
+       ],
+       "law": "清熱利濕退黃",
+       "formula": "yinchenhao"
+      },
+      "jinshang": {
+       "name": "陽明熱盛津氣兩傷",
+       "alias": "大汗之後，熱盛傷津耗氣，大煩渴不解",
+       "bagang": [
+        "裡",
+        "熱",
+        "虛"
+       ],
+       "law": "清熱益氣生津",
+       "formula": "baihurenshen"
+      },
+      "piyue": {
+       "name": "陽明脾約",
+       "alias": "胃熱腸燥，津液偏滲，大便硬，小便數",
+       "bagang": [
+        "裡",
+        "熱",
+        "實"
+       ],
+       "law": "潤腸泄熱，行氣通便",
+       "formula": "maziren"
+      },
+      "shuire": {
+       "name": "陽明陰虛水熱互結",
+       "alias": "熱傷陰津，水與熱結，渴欲飲水，小便不利",
+       "bagang": [
+        "裡",
+        "熱",
+        "虛"
+       ],
+       "law": "滋陰清熱利水",
+       "formula": "zhuling"
+      },
+      "shaoyangbiao": {
+       "name": "少陽兼表",
+       "alias": "少陽未解，外證未去，支節煩疼，微嘔，心下支結",
+       "bagang": [
+        "半表半裡",
+        "熱",
+        "實"
+       ],
+       "law": "和解少陽，解肌發表",
+       "formula": "chaihuguizhi"
+      },
+      "shaoyangyin": {
+       "name": "少陽兼水飲",
+       "alias": "汗下之後少陽未解，水飲內結，胸脅滿微結，渴而不嘔，但頭汗出",
+       "bagang": [
+        "半表半裡",
+        "寒",
+        "虛"
+       ],
+       "law": "和解少陽，溫化水飲",
+       "formula": "chaigui"
+      },
+      "fuman": {
+       "name": "太陰腹滿時痛",
+       "alias": "誤下傷了脾，脾絡不和，腹滿時痛",
+       "bagang": [
+        "裡",
+        "寒",
+        "虛"
+       ],
+       "law": "溫脾和絡，緩急止痛",
+       "formula": "guizhishaoyao"
+      },
+      "hanshi": {
+       "name": "少陰陽虛寒濕",
+       "alias": "陽氣虛，寒濕凝在筋骨，身痛骨節痛，背惡寒，脈沉",
+       "bagang": [
+        "裡",
+        "寒",
+        "虛"
+       ],
+       "law": "溫經助陽，祛寒除濕",
+       "formula": "fuzitang"
+      },
+      "rehua": {
+       "name": "少陰熱化",
+       "alias": "腎水虧於下，心火亢於上，心中煩，不得臥",
+       "bagang": [
+        "裡",
+        "熱",
+        "虛"
+       ],
+       "law": "滋陰降火，交通心腎",
+       "formula": "huanglianejiao"
+      },
+      "huatuo": {
+       "name": "少陰虛寒滑脫",
+       "alias": "脾腎陽虛，下焦不固，下利不止，便膿血",
+       "bagang": [
+        "裡",
+        "寒",
+        "虛"
+       ],
+       "law": "溫中澀腸固脫",
+       "formula": "taohua"
+      },
+      "ganhan": {
+       "name": "厥陰肝寒上逆",
+       "alias": "肝胃虛寒，濁陰上逆，乾嘔，吐涎沫，頭痛",
+       "bagang": [
+        "裡",
+        "寒",
+        "虛"
+       ],
+       "law": "溫中補虛，降逆止嘔",
+       "formula": "wuzhuyu"
+      },
+      "reli": {
+       "name": "厥陰熱利",
+       "alias": "濕熱下迫大腸，熱利下重，渴欲飲水",
+       "bagang": [
+        "裡",
+        "熱",
+        "實"
+       ],
+       "law": "清熱解毒，涼血止痢",
+       "formula": "baitouweng"
       }
      },
      "OUTCOME": {
@@ -2503,6 +3361,551 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "other": {
         "r": "none",
         "t": "藥吃了幾帖，還是發熱怕冷、脈沉，整天只想睡。"
+       }
+      },
+      "shuiyin": {
+       "xiaoqinglong": {
+        "r": "cured",
+        "t": "兩帖下去，身上的寒熱退了，咳喘也平了，吐出來的清痰一天比一天少。",
+        "q": "傷寒表不解，心下有水氣，乾嘔，發熱而咳，或渴，或利，或噎，或小便不利，少腹滿，或喘者，小青龍湯主之。"
+       },
+       "mahuang": {
+        "r": "better",
+        "t": "汗發出來了，寒熱退了，咳喘卻沒停，清稀的痰照樣一口一口地吐。"
+       },
+       "daqinglong": {
+        "r": "worse",
+        "t": "汗流過多，人變更虛，而且石膏寒涼，心下的水氣更凝，咳得更兇，痰更清更多。"
+       },
+       "maxingshigan": {
+        "r": "worse",
+        "t": "石膏寒涼，心下的水氣更凝，咳得更兇，痰更清更多。"
+       },
+       "wuling": {
+        "r": "better",
+        "t": "小便多了一些，咳喘稍減，可是表寒沒解，還在發熱怕冷。"
+       },
+       "baihu": {
+        "r": "worse",
+        "t": "大寒的藥一下去，人冷得打顫，咳喘更重。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，還是發熱怕冷、咳喘吐清痰。"
+       }
+      },
+      "zhongfengchuan": {
+       "guizhihoupo": {
+        "r": "cured",
+        "t": "服藥後微微出了點汗，惡風退了，喘也平了。",
+        "q": "太陽病，下之微喘者，表未解故也，桂枝加厚朴杏子湯主之。"
+       },
+       "guizhi": {
+        "r": "better",
+        "t": "惡風、汗出好了，喘卻還在，一說話就接不上氣。"
+       },
+       "mahuang": {
+        "r": "worse",
+        "t": "本就汗出，又被麻黃一發，汗出不止，喘反而更急。"
+       },
+       "maxingshigan": {
+        "r": "worse",
+        "t": "他沒有肺熱，石膏寒涼，表邪更不得解，喘得更厲害，還怕起冷來。"
+       },
+       "chengqi": {
+        "r": "worse",
+        "t": "才被下過一次，又下一次，喘得更急，人也虛了。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，還是惡風汗出、微微地喘。"
+       }
+      },
+      "shuiqi": {
+       "linggui": {
+        "r": "cured",
+        "t": "幾帖下去，心下那股往上頂的氣平了，站起來也不再天旋地轉。",
+        "q": "傷寒，若吐若下後，心下逆滿，氣上衝胸，起則頭眩，脈沉緊，發汗則動經，身為振振搖者，茯苓桂枝白朮甘草湯主之。"
+       },
+       "zhenwu": {
+        "r": "better",
+        "t": "頭暈好了一些，心下還是逆滿，氣往上衝。這一方溫陽太重，他還沒虛到那一步。"
+       },
+       "wuling": {
+        "r": "better",
+        "t": "小便多了，頭暈稍減，心下的逆滿卻還在。"
+       },
+       "mahuang": {
+        "r": "worse",
+        "t": "又發了一次汗，身子搖晃得更厲害，站都站不穩。",
+        "q": "發汗則動經，身為振振搖者"
+       },
+       "lizhong": {
+        "r": "better",
+        "t": "胃口好了些，心下逆滿和頭眩卻沒退。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，還是心下逆滿、一站起來就暈。"
+       }
+      },
+      "xuxue": {
+       "taohe": {
+        "r": "cured",
+        "t": "服藥後解了幾回黑色的大便，少腹的急痛鬆開了，人也不再胡言亂語，認得出家人了。",
+        "q": "太陽病不解，熱結膀胱，其人如狂，血自下，下者愈。其外不解者，尚未可攻，當先解其外。外解已，但少腹急結者，乃可攻之。宜桃核承氣湯。"
+       },
+       "chengqi": {
+        "r": "better",
+        "t": "大便是瀉下來了，人安靜了一點，少腹卻還是硬、還是痛。結住的是血，不只是燥屎。"
+       },
+       "tiaowei": {
+        "r": "better",
+        "t": "瀉了一點，燥熱稍退，少腹急結卻沒鬆，人照樣煩亂。"
+       },
+       "mahuang": {
+        "r": "worse",
+        "t": "病已在下焦，再發汗，熱更盛，人更狂躁。"
+       },
+       "baihu": {
+        "r": "none",
+        "t": "清了些熱，少腹急結和如狂都沒動。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，少腹還是急痛，人還是煩亂如狂。"
+       }
+      },
+      "xiaojiexiong": {
+       "xiaoxianxiong": {
+        "r": "cured",
+        "t": "兩帖下去，心窩那一塊按著不痛了，吐出幾口黃黏的痰，胸口鬆開了。",
+        "q": "小結胸病，正在心下，按之則痛，脈浮滑者，小陷胸湯主之。"
+       },
+       "banxiaxiexin": {
+        "r": "better",
+        "t": "心下的痞悶鬆了些，可是一按還是痛，黃痰還在。"
+       },
+       "chengqi": {
+        "r": "worse",
+        "t": "大承氣湯攻得太猛，病在心下，不在腸胃。瀉了好幾回，心窩照樣痛，人卻虛了。"
+       },
+       "zhichi": {
+        "r": "none",
+        "t": "胸中的煩熱清了一點，心窩按著照樣痛。"
+       },
+       "lizhong": {
+        "r": "worse",
+        "t": "溫中的藥助了痰熱，心窩更痛，痰更黃。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，心窩一按還是痛。"
+       }
+      },
+      "shuiqipi": {
+       "shengjiangxiexin": {
+        "r": "cured",
+        "t": "幾帖下去，心下的痞硬消了，不再打那股帶著餿味的嗝，肚子也不再咕嚕咕嚕叫，下利止了。",
+        "q": "傷寒汗出，解之後，胃中不和，心下痞硬，乾噫食臭，脇下有水氣，腹中雷鳴，下利者，生薑瀉心湯主之。"
+       },
+       "banxiaxiexin": {
+        "r": "better",
+        "t": "心下的痞鬆了一些，可是那股食臭的嗝和腹中雷鳴還在。水氣沒有散。"
+       },
+       "lizhong": {
+        "r": "better",
+        "t": "下利少了，肚子暖了些，心下的痞硬和乾噫卻沒退。"
+       },
+       "chengqi": {
+        "r": "worse",
+        "t": "痞不是實，攻下之後拉得更兇，心下更硬。"
+       },
+       "wuling": {
+        "r": "better",
+        "t": "小便多了，肚子叫得少了，心下的痞硬還在。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，還是心下痞硬、打嗝帶食臭、肚子雷鳴。"
+       }
+      },
+      "xinji": {
+       "zhigancao": {
+        "r": "cured",
+        "t": "服了半個多月，心不再怦怦亂跳，脈也勻了，夜裡睡得安穩，臉上有了血色。",
+        "q": "傷寒，脈結代，心動悸，炙甘草湯主之。"
+       },
+       "guizhi": {
+        "r": "better",
+        "t": "心悸稍緩，脈還是時有停跳，人照樣虛弱。"
+       },
+       "sini": {
+        "r": "none",
+        "t": "手腳暖了些，心悸和脈結代都沒好，口反而更乾。"
+       },
+       "zhenwu": {
+        "r": "better",
+        "t": "人有了點力氣，心悸減了些，脈還是不勻。"
+       },
+       "mahuang": {
+        "r": "worse",
+        "t": "本就氣血不足，又被發了一次汗，心跳得像要蹦出來。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，心還是怦怦亂跳，脈時有停頓。"
+       }
+      },
+      "zaore": {
+       "tiaowei": {
+        "r": "cured",
+        "t": "小口小口地服下去，解了一回大便，身上那股蒸蒸的熱退了，心裡也不煩了。",
+        "q": "太陽病三日，發汗不解，蒸蒸發熱者，屬胃也，調胃承氣湯主之。"
+       },
+       "chengqi": {
+        "r": "better",
+        "t": "大便是下來了，熱也退了，可是瀉得太多，人虛了好幾天。燥熱才初結，用不到這麼重。"
+       },
+       "xiaochengqi": {
+        "r": "better",
+        "t": "大便通了，熱退了一些，心煩還在。"
+       },
+       "baihu": {
+        "r": "better",
+        "t": "身上的熱清了一些，大便還是不通，熱又慢慢蒸上來。"
+       },
+       "mahuang": {
+        "r": "worse",
+        "t": "本來就是發汗不解，再發一次汗，津液更乾，熱更盛。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，身上還是蒸蒸發熱，大便不通。"
+       }
+      },
+      "huangdan": {
+       "yinchenhao": {
+        "r": "cured",
+        "t": "服藥後小便一下子多了，顏色深紅像皂莢汁。過了一夜，肚子不脹了，身上的黃一天天退下去。",
+        "q": "傷寒七八日，身黃如橘子色，小便不利，腹微滿者，茵陳蒿湯主之。"
+       },
+       "zhichi": {
+        "r": "better",
+        "t": "心裡的煩熱減了些，身黃卻沒退，小便還是不利。"
+       },
+       "chengqi": {
+        "r": "worse",
+        "t": "攻下太猛，拉得人都虛了，身上的黃一點沒退。濕熱要從小便走。"
+       },
+       "wuling": {
+        "r": "better",
+        "t": "小便多了一點，可是熱沒清，黃退得很慢。"
+       },
+       "lizhong": {
+        "r": "worse",
+        "t": "溫中的藥助了濕熱，黃得更深，肚子更脹。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，身上還是黃，小便不利。"
+       }
+      },
+      "jinshang": {
+       "baihurenshen": {
+        "r": "cured",
+        "t": "兩帖下去，那股喝多少水都解不了的渴止住了，身上的熱也退了，人有了力氣。",
+        "q": "服桂枝湯，大汗出後，大煩渴不解，脈洪大者，白虎加人參湯主之。"
+       },
+       "baihu": {
+        "r": "better",
+        "t": "熱退了一些，可是渴還是止不住，背上微微發冷，人也虛。津氣都傷了，光清熱不夠。"
+       },
+       "guizhi": {
+        "r": "worse",
+        "t": "本就大汗傷津，再服辛溫的藥，渴得更厲害，熱更盛。"
+       },
+       "chengqi": {
+        "r": "worse",
+        "t": "腸裡沒有燥屎，攻下只是再傷津液，人更渴更虛。"
+       },
+       "wuling": {
+        "r": "none",
+        "t": "小便多了，渴卻更甚。這不是水停，是津傷。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，還是大煩大渴，喝多少水都不解。"
+       }
+      },
+      "piyue": {
+       "maziren": {
+        "r": "cured",
+        "t": "一天十丸，慢慢加到大便通了，又軟又順，小便也不再一趟一趟地跑。",
+        "q": "趺陽脈浮而濇，浮則胃氣強，濇則小便數，浮濇相搏，大便則硬，其脾為約，麻子仁丸主之。"
+       },
+       "chengqi": {
+        "r": "worse",
+        "t": "大承氣湯一下去瀉了好幾回，過兩天又硬回去了，人反而虛了。脾約要潤，不能猛攻。"
+       },
+       "xiaochengqi": {
+        "r": "better",
+        "t": "大便通了一回，過兩天又乾硬了。"
+       },
+       "tiaowei": {
+        "r": "better",
+        "t": "通了一次，又硬回去，小便照樣數。"
+       },
+       "guizhi": {
+        "r": "none",
+        "t": "藥吃了幾帖，大便照樣乾硬難解。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，大便還是乾硬，小便還是頻。"
+       }
+      },
+      "shuire": {
+       "zhuling": {
+        "r": "cured",
+        "t": "兩帖下去，小便順了，渴止了，身上的熱也退了，夜裡也睡得著了。",
+        "q": "若脈浮，發熱，渴欲飲水，小便不利者，豬苓湯主之。"
+       },
+       "wuling": {
+        "r": "better",
+        "t": "小便多了些，可是口更乾，心更煩。這一方偏溫，傷陰的人吃了不舒服。"
+       },
+       "baihu": {
+        "r": "better",
+        "t": "熱清了一些，小便還是不利，渴也沒全止。"
+       },
+       "zhenwu": {
+        "r": "worse",
+        "t": "溫陽的重藥助了熱，口乾得厲害，小便更澀。"
+       },
+       "mahuang": {
+        "r": "worse",
+        "t": "再發汗，陰津更傷，渴得更兇，小便更少。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，還是發熱口渴、小便不利。"
+       }
+      },
+      "shaoyangbiao": {
+       "chaihuguizhi": {
+        "r": "cured",
+        "t": "服藥後微微出了點汗，四肢關節不再煩疼，心下那點支撐著的悶也散了，不再想吐。",
+        "q": "傷寒六七日，發熱，微惡寒，支節煩疼，微嘔，心下支結，外證未去者，柴胡桂枝湯主之。"
+       },
+       "xiaochaihu": {
+        "r": "better",
+        "t": "嘔止了，心下鬆了，可是四肢關節還是煩疼，還有點怕冷。表沒解。"
+       },
+       "guizhi": {
+        "r": "better",
+        "t": "怕冷好了，關節疼也減了，可是心口下面還是撐著悶脹，也還是想吐。"
+       },
+       "mahuang": {
+        "r": "worse",
+        "t": "病已到少陽，峻汗一發，心煩嘔逆更甚。"
+       },
+       "dachaihu": {
+        "r": "worse",
+        "t": "裡沒有實結，攻下傷了正氣，表邪反而內陷。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，還是發熱微寒、關節煩疼、微微想吐。"
+       }
+      },
+      "shaoyangyin": {
+       "chaigui": {
+        "r": "cured",
+        "t": "第一帖服下，他說有點煩。再服一帖，頭上身上都出了汗，寒熱退了，胸脅鬆開，小便也順了。",
+        "q": "傷寒五六日，已發汗而復下之。胸脅滿微結，小便不利，渴而不嘔，但頭汗出，往來寒熱，心煩者，此為未解也。柴胡桂枝乾薑湯主之。"
+       },
+       "xiaochaihu": {
+        "r": "better",
+        "t": "寒熱減了些，胸脅還是滿悶，口渴，小便不利，只有頭上出汗。"
+       },
+       "wuling": {
+        "r": "better",
+        "t": "小便多了一點，寒熱卻沒退。"
+       },
+       "dachaihu": {
+        "r": "worse",
+        "t": "才被下過，又下一次，胸脅更滿，人更虛。"
+       },
+       "guizhi": {
+        "r": "none",
+        "t": "藥吃了幾帖，往來寒熱、胸脅滿照舊。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，還是往來寒熱、胸脅滿、只有頭上出汗。"
+       }
+      },
+      "fuman": {
+       "guizhishaoyao": {
+        "r": "cured",
+        "t": "幾帖下去，肚子不再一陣陣絞痛，脹也消了。",
+        "q": "本太陽病，醫反下之，因爾腹滿時痛者，屬太陰也，桂枝加芍藥湯主之。"
+       },
+       "guizhi": {
+        "r": "better",
+        "t": "藥味一樣，芍藥卻不夠重。肚子痛減了一點，脹痛還是一陣陣來。"
+       },
+       "lizhong": {
+        "r": "better",
+        "t": "肚子暖了一點，可是那種一陣陣的痛還在。"
+       },
+       "chengqi": {
+        "r": "worse",
+        "t": "本來就是被下壞的，再下一次，肚子更痛，拉得人都站不穩。"
+       },
+       "xiaochaihu": {
+        "r": "none",
+        "t": "藥吃了幾帖，肚子照樣時脹時痛。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，肚子還是脹滿，時時作痛。"
+       }
+      },
+      "hanshi": {
+       "fuzitang": {
+        "r": "cured",
+        "t": "服了幾帖，背上那塊冰涼暖起來了，身上和骨節的痛一天天退，手腳也暖了。",
+        "q": "少陰病，身體痛，手足寒，骨節痛，脈沉著，附子湯主之。"
+       },
+       "sini": {
+        "r": "better",
+        "t": "手腳暖了，可是骨節痛、背上冰涼還在。寒濕沒有除。"
+       },
+       "zhenwu": {
+        "r": "better",
+        "t": "人有了點力氣，身痛減了些，背惡寒還在。"
+       },
+       "mahuang": {
+        "r": "worse",
+        "t": "把它當成表寒來發汗，汗一出，陽氣更虛，背更冷，骨節更痛。"
+       },
+       "guizhi": {
+        "r": "none",
+        "t": "藥吃了幾帖，身痛和背上的冰冷都沒動。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，背還是冰涼，骨節還是痛。"
+       }
+      },
+      "rehua": {
+       "huanglianejiao": {
+        "r": "cured",
+        "t": "服了幾帖，心裡那股燒灼似的煩靜下來了，夜裡一躺下就睡著，一覺到天亮。",
+        "q": "少陰病，得之二三日以上，心中煩，不得臥，黃連阿膠湯主之。"
+       },
+       "zhichi": {
+        "r": "better",
+        "t": "心煩減了些，可是夜裡還是睡不著，口乾舌紅還在。陰虧了，只清熱不夠。"
+       },
+       "sini": {
+        "r": "worse",
+        "t": "把少陰當成寒證來溫，口更乾，心更煩，整夜睜著眼。"
+       },
+       "baihu": {
+        "r": "none",
+        "t": "清了些熱，可是陰沒補回來，還是心煩不得臥。"
+       },
+       "xiaochaihu": {
+        "r": "none",
+        "t": "藥吃了幾帖，還是心煩，躺下就睡不著。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，還是心中煩、不得臥。"
+       }
+      },
+      "huatuo": {
+       "taohua": {
+        "r": "cured",
+        "t": "一服下去，下利就少了一大半，便裡的膿血也沒了。剩下的藥，照囑咐沒再吃。",
+        "q": "少陰病，二三日至四五日，腹痛，小便不利，下利不止，便膿血者，桃花湯主之。"
+       },
+       "lizhong": {
+        "r": "better",
+        "t": "肚子暖了，腹痛輕了，可是下利還是止不住，滑得收不住。"
+       },
+       "sini": {
+        "r": "better",
+        "t": "手腳暖了，精神好些，下利卻還沒止。"
+       },
+       "gegenqinlian": {
+        "r": "worse",
+        "t": "這不是熱利。苦寒的藥一下去，拉得更兇，人冷得發抖。"
+       },
+       "chengqi": {
+        "r": "worse",
+        "t": "本就滑脫不禁，再攻下，人都快虛脫了。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，還是下利不止、便帶膿血。"
+       }
+      },
+      "ganhan": {
+       "wuzhuyu": {
+        "r": "cured",
+        "t": "幾帖下去，頭頂不再抽痛，也不再一口一口吐清口水，乾嘔止了。",
+        "q": "乾嘔，吐涎沫，頭痛者，吳茱萸湯主之。"
+       },
+       "lizhong": {
+        "r": "better",
+        "t": "胃暖了一點，乾嘔少了，可是頭頂還是抽痛，口水還是多。"
+       },
+       "danggui": {
+        "r": "better",
+        "t": "手腳暖了，乾嘔和頭痛卻沒好。"
+       },
+       "xiaochaihu": {
+        "r": "none",
+        "t": "藥吃了幾帖，還是乾嘔、吐清涎、頭痛。"
+       },
+       "baihu": {
+        "r": "worse",
+        "t": "大寒的藥下去，嘔得更厲害，頭更痛。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，還是乾嘔、吐涎沫、頭痛。"
+       }
+      },
+      "reli": {
+       "baitouweng": {
+        "r": "cured",
+        "t": "兩帖下去，肛門那股墜脹灼熱的感覺沒了，便裡的血也止了，不再一直想喝水。",
+        "q": "熱利下重者，白頭翁湯治之。"
+       },
+       "gegenqinlian": {
+        "r": "better",
+        "t": "下利少了些，熱也清了些，可是下重和便血還在。"
+       },
+       "huangqin": {
+        "r": "better",
+        "t": "腹痛減了，便還是帶血，肛門照樣墜脹。"
+       },
+       "lizhong": {
+        "r": "worse",
+        "t": "把熱利當成寒利來溫，拉得更急，血更多。"
+       },
+       "taohua": {
+        "r": "worse",
+        "t": "熱還沒清就收澀，熱毒關在裡面，肚子痛得更兇，下重更甚。"
+       },
+       "other": {
+        "r": "none",
+        "t": "藥吃了幾帖，還是熱利下重、便帶膿血。"
        }
       }
      },
@@ -3416,6 +4819,866 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        "angry": "老耿的兒子來說，爹越睡越沉，換了大夫。",
        "_review": "已審",
        "_note": "2026-11-20 Claude 起草（補病例第三批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+      },
+      {
+       "id": "wei",
+       "pattern": "shuiyin",
+       "name": "挑水老魏",
+       "type": "挑井水賣的挑夫　老實",
+       "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "face": "p-wei",
+       "trust": 50,
+       "lv": 2,
+       "keyQ": [
+        "listen",
+        "chill",
+        "thirst"
+       ],
+       "intro": "挑井水賣的老魏，每年入冬都咳。這回挑水時淋了雨，昨夜發起熱來，咳得整夜坐著，吐出來的痰像清水一樣。",
+       "a": {
+        "look": "面色晦暗，眼皮微腫，舌淡，苔白滑。",
+        "listen": "咳聲一聲接一聲，喉中有痰鳴，微微地喘。",
+        "chill": "很怕冷，身上發熱。",
+        "sweat": "沒有汗。",
+        "pain": "頭痛，身上痠痛。",
+        "chest": "心口下面悶悶的，像有水在晃，常常乾嘔。",
+        "thirst": "不渴。",
+        "diet": "吃不下，小便少。",
+        "sleep": "一躺下就咳，只能靠著坐。",
+        "pulse": "脈浮緊。",
+        "palp": "心口下面按著有一點水聲，不硬不痛。"
+       },
+       "fu": {
+        "chill_alt": "冷和熱是一起的。",
+        "chill_cover": "蓋了被子還是冷。",
+        "sweat_wind": "沒有汗，一吹風就咳得更厲害。",
+        "sweat_where": "哪裡都沒有汗。",
+        "pain_neck": "後頸有點緊，不算僵。",
+        "thirst_temp": "要喝也只喝熱的，喝一點就不想喝了。",
+        "diet_stool": "大便正常。",
+        "pulse_deep": "輕輕就摸到，繃得緊。"
+       },
+       "thanks": "老魏挑來兩擔最清的井水，倒進醫館的水缸，一文錢也不收。",
+       "angry": "街坊說，老魏咳得挑不動水了，只好讓兒子頂著。",
+       "_review": "已審",
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+      },
+      {
+       "id": "ma",
+       "pattern": "zhongfengchuan",
+       "name": "說書老馬",
+       "type": "茶館說書的先生　話多",
+       "img": "49fc1c80-551e-4cdd-9fb7-e6925a598c71.png",
+       "face": "p-ma",
+       "trust": 55,
+       "lv": 2,
+       "keyQ": [
+        "sweat",
+        "listen",
+        "pulse"
+       ],
+       "intro": "茶館說書的老馬素來有點喘。前幾天著涼，鄰居說吃點瀉藥把寒氣瀉掉，他照著吃了。寒氣沒瀉掉，喘倒更明顯了，說書說不到半段就得停下來喘口氣。",
+       "a": {
+        "look": "面色微白，舌淡紅，苔薄白。",
+        "listen": "說話時微微地喘，喘得不急。",
+        "chill": "怕風，有一點怕冷，微微發熱。",
+        "sweat": "一直出細汗。",
+        "pain": "頭有點痛。",
+        "chest": "胸口有點悶。",
+        "thirst": "不渴。",
+        "diet": "吃得少，前幾天吃了瀉藥拉過兩回，現在大便正常。",
+        "sleep": "睡得淺。",
+        "pulse": "脈浮緩。",
+        "palp": "肚子軟，不痛。"
+       },
+       "fu": {
+        "chill_alt": "冷熱是一起的。",
+        "chill_cover": "多穿一件好一點。",
+        "sweat_wind": "出了汗更怕風。",
+        "sweat_where": "額頭和背上。",
+        "pain_neck": "後頸不僵。",
+        "thirst_temp": "想喝溫的。",
+        "diet_stool": "大便正常了。",
+        "pulse_deep": "輕輕就摸到，軟軟的。"
+       },
+       "thanks": "老馬在茶館開講新的段子，說的是一位大夫一帖藥治好了說書人的喘。",
+       "angry": "茶館掌櫃說，老馬喘得說不了書，換了別的先生。",
+       "_review": "已審",
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+      },
+      {
+       "id": "lan",
+       "pattern": "shuiqi",
+       "name": "採茶阿蘭",
+       "type": "茶園的採茶姑娘　勤快",
+       "img": "49fc1c80-551e-4cdd-9fb7-e6925a598c71.png",
+       "face": "p-lan",
+       "trust": 50,
+       "lv": 3,
+       "keyQ": [
+        "chest",
+        "pain",
+        "pulse"
+       ],
+       "intro": "茶園的阿蘭前陣子吃壞了肚子，又吐又瀉，吃了幾帖藥才止住。這幾天她一站起來就天旋地轉，心口下面像有一股氣往上頂。",
+       "a": {
+        "look": "面色白，舌淡胖，苔白滑。",
+        "listen": "聲音輕。",
+        "chill": "不發熱，有點怕冷。",
+        "sweat": "沒什麼汗。",
+        "pain": "頭暈，一站起來就天旋地轉，身子會晃。",
+        "chest": "心口下面脹滿，有一股氣往胸口衝。",
+        "thirst": "不渴，嘴裡淡淡的。",
+        "diet": "吃不多，小便少。",
+        "sleep": "躺著還好，一起身就暈。",
+        "pulse": "脈沉緊。",
+        "palp": "心口下面按著脹，有點水聲。"
+       },
+       "fu": {
+        "chill_alt": "不冷不熱，只是有點怕冷。",
+        "chill_cover": "蓋被子舒服一點。",
+        "sweat_wind": "沒有汗，不太怕風。",
+        "sweat_where": "沒有汗。",
+        "pain_neck": "後頸不僵，是頭暈。",
+        "thirst_temp": "不想喝水，要喝也喝熱的。",
+        "diet_stool": "大便偏軟。",
+        "pulse_deep": "要按下去才摸得到，繃得緊。"
+       },
+       "thanks": "阿蘭送來一包今年的頭春茶，說是她自己採的第一簍。",
+       "angry": "茶園的人說，阿蘭暈得上不了茶山，回娘家養病去了。",
+       "_review": "已審",
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+      },
+      {
+       "id": "niu",
+       "pattern": "xuxue",
+       "name": "牛屠戶",
+       "type": "殺豬的屠戶　粗壯",
+       "img": "4e97f3aa-3216-4b4b-a68b-df7624c77c9c.png",
+       "face": "p-niu",
+       "trust": 45,
+       "lv": 4,
+       "keyQ": [
+        "palp",
+        "sleep",
+        "diet"
+       ],
+       "intro": "牛屠戶前半個月發熱，硬撐著沒看大夫。熱是退了一些，這幾天卻開始胡言亂語，一會兒罵人一會兒哭，兩手一直按著小肚子。他娘子拉著他來，說人像中了邪。",
+       "a": {
+        "look": "面色暗紅，舌暗紅，有瘀點，苔黃。",
+        "listen": "說話顛三倒四，聲音很大。",
+        "chill": "不怕冷，身上有點熱。",
+        "sweat": "偶爾出一點汗。",
+        "pain": "小肚子又脹又痛，痛得他直不起腰。",
+        "chest": "胸口還好。",
+        "thirst": "口乾，可是只想漱口不想吞。",
+        "diet": "大便黑黑的，幾天才一次。小便自己解得順。",
+        "sleep": "夜裡不睡，爬起來到處走，嘴裡念念有詞。",
+        "pulse": "脈沉澀，按著有力。",
+        "palp": "小肚子按下去又硬又急，他痛得把手撥開。"
+       },
+       "fu": {
+        "chill_alt": "不冷，只是熱。",
+        "chill_cover": "不蓋被。",
+        "sweat_wind": "不怕風。",
+        "sweat_where": "頭上出一點汗。",
+        "pain_neck": "後頸不僵。",
+        "thirst_temp": "想含涼水。",
+        "diet_stool": "大便黑，像漆。小便是順的。",
+        "pulse_deep": "按下去澀澀的，有力。"
+       },
+       "thanks": "牛屠戶清醒後，提來一刀上好的五花肉，紅著臉說那幾天的事他都記不得了。",
+       "angry": "牛娘子說，屠戶越來越瘋，只好請了廟裡的人來作法。",
+       "_review": "已審",
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+      },
+      {
+       "id": "luo",
+       "pattern": "xiaojiexiong",
+       "name": "貨郎小羅",
+       "type": "挑擔子走街的貨郎　機靈",
+       "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "face": "p-luo",
+       "trust": 50,
+       "lv": 3,
+       "keyQ": [
+        "palp",
+        "chest",
+        "pulse"
+       ],
+       "intro": "走街的貨郎小羅前幾天受了涼，吃了點瀉藥。這兩天心窩那裡悶著，一碰就痛，咳出來的痰又黃又黏。",
+       "a": {
+        "look": "面色微紅，舌紅，苔黃膩。",
+        "listen": "偶爾咳，痰黏在喉嚨裡。",
+        "chill": "不怎麼怕冷了，身上有點熱。",
+        "sweat": "有一點汗。",
+        "pain": "頭不痛，心窩那一塊悶痛。",
+        "chest": "心窩正中間悶著，不碰不太痛，一按就痛。",
+        "thirst": "口有點乾。",
+        "diet": "吃不下，大便還正常。",
+        "sleep": "心口悶，睡不好。",
+        "pulse": "脈浮滑。",
+        "palp": "心窩正中間按著硬，一按就痛，往旁邊就不痛了。"
+       },
+       "fu": {
+        "chill_alt": "不冷，有點熱。",
+        "chill_cover": "不想蓋太多。",
+        "sweat_wind": "不太怕風。",
+        "sweat_where": "額頭有一點。",
+        "pain_neck": "後頸不僵。",
+        "thirst_temp": "想喝涼的。",
+        "diet_stool": "大便正常。",
+        "pulse_deep": "輕按就摸到，滑滑的。"
+       },
+       "thanks": "小羅從貨擔裡挑了一把最好的牛角梳送我。",
+       "angry": "街上的人說，小羅心口痛得挑不動擔子，好幾天沒出來了。",
+       "_review": "已審",
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+      },
+      {
+       "id": "tan",
+       "pattern": "shuiqipi",
+       "name": "釀酒老譚",
+       "type": "酒坊的釀酒師傅　好面子",
+       "img": "4e97f3aa-3216-4b4b-a68b-df7624c77c9c.png",
+       "face": "p-tan",
+       "trust": 50,
+       "lv": 4,
+       "keyQ": [
+        "diet",
+        "palp",
+        "chest"
+       ],
+       "intro": "酒坊的老譚前陣子傷風，吃了發汗的藥，汗出了熱也退了。可是從那以後，他心口老是堵著，打出來的嗝帶著一股餿掉的飯味，肚子裡咕嚕咕嚕響，一天拉好幾回。",
+       "a": {
+        "look": "面色萎黃，舌淡紅，苔白膩，中間有點黃。",
+        "listen": "時不時打嗝，帶著酸餿的味道。",
+        "chill": "不冷不熱。",
+        "sweat": "沒什麼汗。",
+        "pain": "頭不痛。",
+        "chest": "心口下面堵著一塊，硬硬的。",
+        "thirst": "不太渴。",
+        "diet": "吃一點就脹，打嗝帶食臭，肚子咕嚕咕嚕叫，一天拉三四回稀便。",
+        "sleep": "肚子脹，睡不好。",
+        "pulse": "脈弦滑。",
+        "palp": "心口下面按著硬，不太痛。兩脅下有點脹。"
+       },
+       "fu": {
+        "chill_alt": "不冷不熱。",
+        "chill_cover": "還好。",
+        "sweat_wind": "不怕風。",
+        "sweat_where": "沒什麼汗。",
+        "pain_neck": "後頸不僵。",
+        "thirst_temp": "冷的熱的都不太想喝。",
+        "diet_stool": "稀便，肚子先叫再拉。",
+        "pulse_deep": "弦而滑。"
+       },
+       "thanks": "老譚送來一罈新釀的米酒，說這回的酒他嚐得出味道了。",
+       "angry": "酒坊的人說，老譚肚子一直響，連酒都嚐不準了。",
+       "_review": "已審",
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+      },
+      {
+       "id": "bai",
+       "pattern": "xinji",
+       "name": "紙紮白師傅",
+       "type": "紙紮鋪的老匠人　沉靜",
+       "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "face": "p-bai",
+       "trust": 55,
+       "lv": 5,
+       "keyQ": [
+        "pulse",
+        "chest",
+        "sleep"
+       ],
+       "intro": "紙紮鋪的白師傅六十多了，入秋傷了一回風寒，熱退以後，人卻一直沒緩過來。他說心口老是怦怦亂跳，跳著跳著又像停了一下。",
+       "a": {
+        "look": "面色蒼白沒有光澤，唇淡，舌淡紅少苔。",
+        "listen": "說話有氣無力。",
+        "chill": "不發熱，有點怕冷。",
+        "sweat": "動一動就出虛汗。",
+        "pain": "頭不痛，人很累。",
+        "chest": "心口怦怦亂跳，自己都聽得到，有時候像漏了一拍。",
+        "thirst": "口有點乾。",
+        "diet": "吃得少，大便偏乾。",
+        "sleep": "心跳得睡不著，夢多。",
+        "pulse": "脈結代，跳幾下停一下，停了又來。",
+        "palp": "心口下面跳得很明顯，肚子軟。"
+       },
+       "fu": {
+        "chill_alt": "不熱，有一點怕冷。",
+        "chill_cover": "多穿一件就好。",
+        "sweat_wind": "出了虛汗有點怕風。",
+        "sweat_where": "動一動身上就冒。",
+        "pain_neck": "後頸不僵。",
+        "thirst_temp": "想喝溫的。",
+        "diet_stool": "大便偏乾。",
+        "pulse_deep": "細細的，沒力，時有停頓。"
+       },
+       "thanks": "白師傅紮了一盞走馬燈送我，燈轉起來，上面畫的是一位大夫替人把脈。",
+       "angry": "紙紮鋪的徒弟說，師傅心慌得拿不穩竹篾，鋪子暫時關了。",
+       "_review": "已審",
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+      },
+      {
+       "id": "zhuang2",
+       "pattern": "zaore",
+       "name": "轎夫阿壯",
+       "type": "轎行的轎夫　直腸子",
+       "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "face": "p-azhuang",
+       "trust": 50,
+       "lv": 2,
+       "keyQ": [
+        "chill",
+        "diet",
+        "sweat"
+       ],
+       "intro": "轎行的阿壯著涼發熱，喝了發汗的藥，汗出得一身濕，熱卻沒退。他說身上像被蒸籠蒸著，一陣一陣地往外冒熱氣，三天沒解大便。",
+       "a": {
+        "look": "面色紅，舌紅，苔黃燥。",
+        "listen": "說話有力，有點煩躁。",
+        "chill": "一點都不怕冷了，只覺得熱，像在蒸籠裡。",
+        "sweat": "一陣一陣地出汗。",
+        "pain": "頭有點脹。",
+        "chest": "胸口有點煩。",
+        "thirst": "口乾，想喝冷的。",
+        "diet": "三天沒解大便，肚子有點脹，按著不太痛。小便黃。",
+        "sleep": "心煩，睡不安穩。",
+        "pulse": "脈滑數。",
+        "palp": "肚子微脹，按著不太硬，也不太痛。"
+       },
+       "fu": {
+        "chill_alt": "一直熱，不冷。",
+        "chill_cover": "不想蓋被。",
+        "sweat_wind": "出汗也不怕風。",
+        "sweat_where": "身上手腳都有。",
+        "pain_neck": "後頸不僵。",
+        "thirst_temp": "想喝冷的。",
+        "diet_stool": "三天沒解，肚子微脹。",
+        "pulse_deep": "滑而有力，跳得快。"
+       },
+       "thanks": "阿壯病好那天，硬要抬著轎子送我回家，說不收錢。",
+       "angry": "轎行的人說，阿壯熱得抬不動轎，被換下來了。",
+       "_review": "已審",
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+      },
+      {
+       "id": "jiang",
+       "pattern": "huangdan",
+       "name": "放排阿江",
+       "type": "撐竹排放木材的排工　爽快",
+       "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "face": "p-ajiang",
+       "trust": 50,
+       "lv": 3,
+       "keyQ": [
+        "look",
+        "diet",
+        "sweat"
+       ],
+       "intro": "放排的阿江在江上泡了大半個月，回來就發熱。這兩天家人發現他眼白發黃，身上也黃得像橘子皮，小便少得可憐。",
+       "a": {
+        "look": "身目都黃，黃得鮮亮，像橘子皮。舌紅，苔黃膩。",
+        "listen": "聲音如常。",
+        "chill": "發熱，不怕冷。",
+        "sweat": "只有頭上出汗，到脖子就沒了，身上沒有汗。",
+        "pain": "頭有點昏。",
+        "chest": "心裡有點煩。",
+        "thirst": "口渴，想喝水。",
+        "diet": "肚子微微脹，不想吃油膩的。小便很少，顏色像濃茶。大便偏乾。",
+        "sleep": "煩，睡不好。",
+        "pulse": "脈滑數。",
+        "palp": "肚子微脹，按著不太痛。"
+       },
+       "fu": {
+        "chill_alt": "一直熱。",
+        "chill_cover": "不想蓋。",
+        "sweat_wind": "不怕風。",
+        "sweat_where": "只有頭上，到脖子就停了。",
+        "pain_neck": "後頸不僵。",
+        "thirst_temp": "想喝涼的。",
+        "diet_stool": "大便偏乾，小便少而黃。",
+        "pulse_deep": "滑而有力。"
+       },
+       "thanks": "阿江從上游帶回一根上好的杉木，說給醫館做一條新的長凳。",
+       "angry": "排幫的人說，阿江黃得越來越深，排也放不了了。",
+       "_review": "已審",
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+      },
+      {
+       "id": "lu",
+       "pattern": "jinshang",
+       "name": "曬鹽老陸",
+       "type": "海邊鹽場的鹽工　能忍",
+       "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "face": "p-lu",
+       "trust": 50,
+       "lv": 3,
+       "keyQ": [
+        "thirst",
+        "sweat",
+        "pulse"
+       ],
+       "intro": "鹽場的老陸在太陽底下曬了一天鹽，回來發熱，喝了一碗桂枝湯，大汗淋漓。汗出完以後，他渴得一碗接一碗地喝水，怎麼喝都不解渴。",
+       "a": {
+        "look": "面色紅，舌紅，苔黃而乾。",
+        "listen": "聲音有點沙啞。",
+        "chill": "身上很熱，背上卻微微有點發冷。",
+        "sweat": "大汗出過，現在還在冒汗。",
+        "pain": "頭有點痛。",
+        "chest": "心裡煩。",
+        "thirst": "渴得厲害，一口氣喝好幾碗，還是乾。",
+        "diet": "不太想吃，小便黃。",
+        "sleep": "煩熱，睡不著。",
+        "pulse": "脈洪大，按下去有點空。",
+        "palp": "肚子軟，不痛。"
+       },
+       "fu": {
+        "chill_alt": "一直熱，只有背上一點冷。",
+        "chill_cover": "不想蓋，背上冷的時候蓋一下。",
+        "sweat_wind": "出汗不怕風。",
+        "sweat_where": "全身都是汗。",
+        "pain_neck": "後頸不僵。",
+        "thirst_temp": "想喝冷的，喝多少都不夠。",
+        "diet_stool": "大便正常，小便黃。",
+        "pulse_deep": "輕按很大，重按有點空。"
+       },
+       "thanks": "老陸挑來一擔新曬的白鹽，說是今年曬得最好的一批。",
+       "angry": "鹽場的人說，老陸渴得一直喝水，人卻瘦了一大圈。",
+       "_review": "已審",
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+      },
+      {
+       "id": "kong",
+       "pattern": "piyue",
+       "name": "孔師爺",
+       "type": "縣衙的老師爺　講究",
+       "img": "f21ec345-fe48-44bd-ba09-d2064ba919b1.png",
+       "face": "p-kong",
+       "trust": 45,
+       "lv": 4,
+       "keyQ": [
+        "diet",
+        "thirst",
+        "pulse"
+       ],
+       "intro": "縣衙的孔師爺一年到頭坐著寫公文。這半年大便越來越乾，五六天才一次，硬得像羊屎，小便倒是一趟一趟地跑。他說吃過幾回瀉藥，瀉完了又硬回去。",
+       "a": {
+        "look": "面色微紅，舌紅，苔微黃而乾。",
+        "listen": "聲音如常。",
+        "chill": "不冷不熱。",
+        "sweat": "沒什麼汗。",
+        "pain": "頭不痛，肚子有點脹。",
+        "chest": "胸口不悶。",
+        "thirst": "口有點乾。",
+        "diet": "胃口還好，吃得下。大便五六天一次，乾硬一粒一粒的。小便次數多，量多。",
+        "sleep": "還算睡得著。",
+        "pulse": "脈浮而澀。",
+        "palp": "肚子微脹，按著不痛。"
+       },
+       "fu": {
+        "chill_alt": "不冷不熱。",
+        "chill_cover": "還好。",
+        "sweat_wind": "不怕風。",
+        "sweat_where": "沒什麼汗。",
+        "pain_neck": "後頸不僵。",
+        "thirst_temp": "喝溫的。",
+        "diet_stool": "乾硬一粒一粒的，小便頻。",
+        "pulse_deep": "輕按就摸到，有點澀。"
+       },
+       "thanks": "孔師爺寫了一幅字送我，寫的是「醫者意也」。",
+       "angry": "縣衙的人說，孔師爺又去買了瀉藥，瀉得連公堂都上不了。",
+       "_review": "已審",
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+      },
+      {
+       "id": "liu6",
+       "pattern": "shuire",
+       "name": "跑堂小六",
+       "type": "茶館的跑堂　嘴甜",
+       "img": "49fc1c80-551e-4cdd-9fb7-e6925a598c71.png",
+       "face": "p-xiaoliu",
+       "trust": 55,
+       "lv": 3,
+       "keyQ": [
+        "thirst",
+        "diet",
+        "sleep"
+       ],
+       "intro": "茶館跑堂的小六發熱了幾天，一直想喝水，喝了又尿不出來，小肚子脹得難受，夜裡心煩得睡不著。",
+       "a": {
+        "look": "面色微紅，舌紅，苔少。",
+        "listen": "聲音有點沙。",
+        "chill": "發熱，不怕冷。",
+        "sweat": "有一點汗，不多。",
+        "pain": "頭不痛，小肚子脹。",
+        "chest": "心裡煩。",
+        "thirst": "口渴，一直想喝水。",
+        "diet": "吃不多。小便很少，解起來又澀又熱。大便正常。",
+        "sleep": "心煩，整夜翻來覆去。",
+        "pulse": "脈浮細數。",
+        "palp": "小肚子按著有點脹，不硬。"
+       },
+       "fu": {
+        "chill_alt": "一直有點熱。",
+        "chill_cover": "不想蓋太多。",
+        "sweat_wind": "不太怕風。",
+        "sweat_where": "額頭有一點。",
+        "pain_neck": "後頸不僵。",
+        "thirst_temp": "想喝涼的，喝了還是渴。",
+        "diet_stool": "大便正常，小便少而澀。",
+        "pulse_deep": "細細的，跳得快。"
+       },
+       "thanks": "小六每回我去茶館，都替我留靠窗的位子，茶也泡得特別濃。",
+       "angry": "茶館掌櫃說，小六尿不出來，熱也不退，只好回家躺著。",
+       "_review": "已審",
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+      },
+      {
+       "id": "biao2",
+       "pattern": "shaoyangbiao",
+       "name": "武生阿彪",
+       "type": "戲班的武生　好勝",
+       "img": "4e97f3aa-3216-4b4b-a68b-df7624c77c9c.png",
+       "face": "p-abiao",
+       "trust": 50,
+       "lv": 3,
+       "keyQ": [
+        "pain",
+        "chill",
+        "chest"
+       ],
+       "intro": "戲班的武生阿彪著涼六七天了。他說還有點發熱怕冷，四肢的關節又痠又煩疼，翻不了跟斗，心口下面也撐著，時不時想吐。",
+       "a": {
+        "look": "面色微黃，舌淡紅，苔薄白微黃。",
+        "listen": "聲音如常，偶爾乾嘔。",
+        "chill": "發熱，微微怕冷。",
+        "sweat": "有一點汗。",
+        "pain": "四肢關節痠疼，煩得不知道怎麼擺。",
+        "chest": "心口下面撐著，有點悶。",
+        "thirst": "口有點苦。",
+        "diet": "不太想吃，微微想吐。二便正常。",
+        "sleep": "睡得不安穩。",
+        "pulse": "脈浮弦。",
+        "palp": "心口下面按著有點撐，不痛。"
+       },
+       "fu": {
+        "chill_alt": "有時候冷一下，熱多冷少。",
+        "chill_cover": "冷的時候蓋一下就好。",
+        "sweat_wind": "有一點怕風。",
+        "sweat_where": "額頭和背上一點點。",
+        "pain_neck": "後頸有點緊。",
+        "thirst_temp": "嘴苦，想喝溫的。",
+        "diet_stool": "大便正常。",
+        "pulse_deep": "輕按浮，有點弦。"
+       },
+       "thanks": "阿彪病好後，在戲台上連翻了十八個跟斗，下台時朝我拱了拱手。",
+       "angry": "戲班的人說，阿彪關節痛得上不了台，班主氣得直跺腳。",
+       "_review": "已審",
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+      },
+      {
+       "id": "ji",
+       "pattern": "shaoyangyin",
+       "name": "行商季大哥",
+       "type": "跑單幫的行商　精明",
+       "img": "4e97f3aa-3216-4b4b-a68b-df7624c77c9c.png",
+       "face": "p-ji",
+       "trust": 45,
+       "lv": 4,
+       "keyQ": [
+        "sweat",
+        "thirst",
+        "chest"
+       ],
+       "intro": "跑單幫的季大哥病了五六天，路上的大夫給他發過汗，又下過一回。現在他一陣冷一陣熱，胸脅脹滿，只有頭上出汗，口渴卻不想吐。",
+       "a": {
+        "look": "面色微黃，舌淡紅，苔薄白。",
+        "listen": "聲音有點低。",
+        "chill": "一陣冷一陣熱。",
+        "sweat": "只有頭上出汗，身上沒有。",
+        "pain": "頭有點暈。",
+        "chest": "胸口和兩脅脹滿，像有東西微微結住。",
+        "thirst": "口渴，可是不想吐。",
+        "diet": "吃得少。小便不利，量少。大便偏稀。",
+        "sleep": "心煩，睡不好。",
+        "pulse": "脈弦細。",
+        "palp": "兩脅下按著有點脹，不硬。"
+       },
+       "fu": {
+        "chill_alt": "冷一陣，熱一陣。",
+        "chill_cover": "冷的時候蓋被，熱了又掀開。",
+        "sweat_wind": "不太怕風。",
+        "sweat_where": "只有頭上，到脖子就沒了。",
+        "pain_neck": "後頸不僵。",
+        "thirst_temp": "想喝溫的。",
+        "diet_stool": "大便偏稀，小便少。",
+        "pulse_deep": "弦而細。"
+       },
+       "thanks": "季大哥走貨回來，帶了一包南方的好茶葉給我。",
+       "angry": "商隊的人說，季大哥寒熱不退，貨也押不了，困在客棧裡。",
+       "_review": "已審",
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+      },
+      {
+       "id": "yan",
+       "pattern": "fuman",
+       "name": "磨坊老閻",
+       "type": "磨坊的磨工　節省",
+       "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "face": "p-yan",
+       "trust": 50,
+       "lv": 3,
+       "keyQ": [
+        "palp",
+        "pain",
+        "diet"
+       ],
+       "intro": "磨坊的老閻前些日子著涼，自己抓了瀉藥吃，說是把寒氣瀉出去。熱是退了，從那以後肚子卻一直脹，一陣一陣地痛，痛起來就按著肚子蹲在磨盤邊。",
+       "a": {
+        "look": "面色淡黃，舌淡，苔薄白。",
+        "listen": "聲音低。",
+        "chill": "不發熱，有點怕冷。",
+        "sweat": "沒什麼汗。",
+        "pain": "肚子一陣一陣地痛，按著揉一揉會好一點。",
+        "chest": "胸口不悶。",
+        "thirst": "不渴。",
+        "diet": "吃得少，肚子脹。大便還算正常，偶爾偏稀。",
+        "sleep": "肚子痛時睡不著。",
+        "pulse": "脈弦。",
+        "palp": "肚子脹滿，按著不硬，揉一揉痛就鬆一點。"
+       },
+       "fu": {
+        "chill_alt": "不熱，有點怕冷。",
+        "chill_cover": "肚子蓋著暖一點就好些。",
+        "sweat_wind": "不怕風。",
+        "sweat_where": "沒什麼汗。",
+        "pain_neck": "後頸不僵。",
+        "thirst_temp": "想喝熱的。",
+        "diet_stool": "大便正常，偶爾稀。",
+        "pulse_deep": "有點弦，不太有力。"
+       },
+       "thanks": "老閻磨了一袋最細的麵粉送來，說可以給醫館的人做饅頭。",
+       "angry": "磨坊的人說，老閻肚子痛得推不動磨，請了半個月的假。",
+       "_review": "已審",
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+      },
+      {
+       "id": "huo",
+       "pattern": "hanshi",
+       "name": "冰窖老霍",
+       "type": "冰窖的窖工　沉默",
+       "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "face": "p-huo",
+       "trust": 50,
+       "lv": 4,
+       "keyQ": [
+        "chill",
+        "pain",
+        "pulse"
+       ],
+       "intro": "冰窖的老霍在窖裡搬了二十年的冰。今年入冬以後，他背上像貼了一塊冰，渾身骨節都痛，手腳冰冷。",
+       "a": {
+        "look": "面色白，舌淡，苔白滑。",
+        "listen": "聲音低。",
+        "chill": "很怕冷，背上尤其冷，像貼著一塊冰。不發熱。",
+        "sweat": "沒有汗。",
+        "pain": "渾身痛，骨節更痛，陰天更厲害。",
+        "chest": "胸口不悶。",
+        "thirst": "不渴，嘴裡淡淡的。",
+        "diet": "吃得少，二便正常。",
+        "sleep": "骨節痛，睡不好。",
+        "pulse": "脈沉，按到底才摸到。",
+        "palp": "肚子軟，不痛。"
+       },
+       "fu": {
+        "chill_alt": "一直冷，不發熱。",
+        "chill_cover": "蓋多少被子背還是冷。",
+        "sweat_wind": "沒有汗，很怕風。",
+        "sweat_where": "沒有汗。",
+        "pain_neck": "後頸也冷，不算僵。",
+        "thirst_temp": "只想喝熱的。",
+        "diet_stool": "大便正常。",
+        "pulse_deep": "輕按摸不到，按到底才有，沒什麼力。"
+       },
+       "thanks": "夏天最熱的那幾日，老霍偷偷送來一塊冰，說給大夫消暑。",
+       "angry": "冰窖的人說，老霍骨頭痛得搬不了冰，回鄉下去了。",
+       "_review": "已審",
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+      },
+      {
+       "id": "lin",
+       "pattern": "rehua",
+       "name": "林秀才",
+       "type": "屢試不第的秀才　憂思",
+       "img": "49fc1c80-551e-4cdd-9fb7-e6925a598c71.png",
+       "face": "p-lin",
+       "trust": 50,
+       "lv": 4,
+       "keyQ": [
+        "sleep",
+        "look",
+        "pulse"
+       ],
+       "intro": "林秀才又落榜了。前些日子他傷了一回風寒，熱退以後，人卻整夜睡不著，心裡像有一把火在燒，一躺下就煩得坐起來。",
+       "a": {
+        "look": "面色微紅，兩顴發紅，舌紅絳，苔少。",
+        "listen": "說話有點急。",
+        "chill": "不怕冷，手心腳心發熱。",
+        "sweat": "夜裡睡著會出一點汗。",
+        "pain": "頭有點暈。",
+        "chest": "心裡煩得厲害，像火在燒。",
+        "thirst": "口乾，喉嚨乾。",
+        "diet": "吃得少，大便偏乾，小便黃。",
+        "sleep": "整夜睡不著，一躺下就煩。",
+        "pulse": "脈細數。",
+        "palp": "肚子軟，不痛。"
+       },
+       "fu": {
+        "chill_alt": "不冷，手心腳心熱。",
+        "chill_cover": "不想蓋被，腳要伸出來。",
+        "sweat_wind": "不怕風。",
+        "sweat_where": "睡著時胸口和背上一點點。",
+        "pain_neck": "後頸不僵。",
+        "thirst_temp": "想喝涼的，喝了還是乾。",
+        "diet_stool": "大便偏乾，小便黃。",
+        "pulse_deep": "細細的，跳得快。"
+       },
+       "thanks": "林秀才寫了一篇賦送我，說這是他落榜以來第一回寫得下去的文章。",
+       "angry": "林家的人說，秀才整夜不睡，人都熬瘦了，換了大夫。",
+       "_review": "已審",
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+      },
+      {
+       "id": "yi",
+       "pattern": "huatuo",
+       "name": "香燭鋪易嫂",
+       "type": "香燭鋪的老闆娘　隱忍",
+       "img": "49fc1c80-551e-4cdd-9fb7-e6925a598c71.png",
+       "face": "p-yisao",
+       "trust": 50,
+       "lv": 5,
+       "keyQ": [
+        "diet",
+        "pain",
+        "pulse"
+       ],
+       "intro": "香燭鋪的易嫂下利拉了好些天，拉到後來便裡帶著膿血。她怕羞，一直忍著不說，今天是被她婆婆硬拉來的。",
+       "a": {
+        "look": "面色蒼白，舌淡，苔白。",
+        "listen": "聲音很低。",
+        "chill": "怕冷，手腳冰涼，不發熱。",
+        "sweat": "沒有汗。",
+        "pain": "肚子隱隱地痛，喜歡用手按著、用熱水袋捂著。",
+        "chest": "胸口不悶。",
+        "thirst": "不渴。",
+        "diet": "一天拉好幾回，收不住，便裡帶著暗紅的膿血，沒什麼臭味。小便少。",
+        "sleep": "一直起來跑茅廁，睡不了。",
+        "pulse": "脈沉細無力。",
+        "palp": "肚子軟，按著舒服一點。"
+       },
+       "fu": {
+        "chill_alt": "一直冷，不熱。",
+        "chill_cover": "蓋被子、捂著肚子舒服一點。",
+        "sweat_wind": "有點怕風。",
+        "sweat_where": "沒有汗。",
+        "pain_neck": "後頸不僵。",
+        "thirst_temp": "只想喝熱的。",
+        "diet_stool": "稀而收不住，帶暗紅膿血，不太臭，肛門不灼熱。",
+        "pulse_deep": "沉而細，沒力。"
+       },
+       "thanks": "易嫂送來一對親手做的紅燭，說醫館夜裡看診用得著。",
+       "angry": "易家婆婆說，媳婦拉得起不了床，人瘦得只剩一把骨頭。",
+       "_review": "已審",
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+      },
+      {
+       "id": "hui",
+       "pattern": "ganhan",
+       "name": "洗衣阿蕙",
+       "type": "河邊替人洗衣的婦人　能吃苦",
+       "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "face": "p-hui",
+       "trust": 50,
+       "lv": 4,
+       "keyQ": [
+        "pain",
+        "diet",
+        "listen"
+       ],
+       "intro": "替人洗衣的阿蕙，入冬了還天天蹲在河邊洗衣。這陣子她頭頂抽著痛，一直乾嘔，嘴裡老是冒清口水，吐了又冒。",
+       "a": {
+        "look": "面色青白，舌淡，苔白滑。",
+        "listen": "時不時乾嘔，吐出清稀的口水。",
+        "chill": "怕冷，手腳冰涼，不發熱。",
+        "sweat": "沒有汗。",
+        "pain": "頭頂正中間抽著痛，冷天更厲害。",
+        "chest": "心口下面悶悶的，有點冷。",
+        "thirst": "不渴，嘴裡一直冒清口水。",
+        "diet": "吃了想吐，二便還正常。",
+        "sleep": "頭痛，睡不好。",
+        "pulse": "脈沉弦細。",
+        "palp": "心口下面按著有點冷，不硬。"
+       },
+       "fu": {
+        "chill_alt": "一直冷，不熱。",
+        "chill_cover": "蓋著暖一點舒服。",
+        "sweat_wind": "有點怕風。",
+        "sweat_where": "沒有汗。",
+        "pain_neck": "後頸不僵，痛在頭頂。",
+        "thirst_temp": "只想喝熱的，喝冷水就想吐。",
+        "diet_stool": "大便正常。",
+        "pulse_deep": "沉而弦，細細的。"
+       },
+       "thanks": "阿蕙把醫館的布巾、診巾全收去洗了一遍，洗得又白又香。",
+       "angry": "河邊的人說，阿蕙頭痛得蹲不下去，衣服都退回給人家了。",
+       "_review": "已審",
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+      },
+      {
+       "id": "cai2",
+       "pattern": "reli",
+       "name": "賣瓜阿財",
+       "type": "路邊賣西瓜的小販　急躁",
+       "img": "3247410f-91ee-4a52-b562-2f239da71268.png",
+       "face": "p-acai",
+       "trust": 50,
+       "lv": 4,
+       "keyQ": [
+        "diet",
+        "thirst",
+        "pulse"
+       ],
+       "intro": "賣西瓜的阿財大熱天守著瓜攤，吃了一塊放壞的瓜，當晚就拉肚子。拉了兩天，肛門墜脹灼熱，一直想拉又拉不出多少，便裡帶著血。",
+       "a": {
+        "look": "面色紅，舌紅，苔黃膩。",
+        "listen": "聲音有力，有點煩躁。",
+        "chill": "發熱，不怕冷。",
+        "sweat": "有一點汗。",
+        "pain": "肚子絞痛，痛了就想拉。",
+        "chest": "胸口有點煩。",
+        "thirst": "口渴，一直想喝水。",
+        "diet": "一天拉十幾回，每回不多，帶膿血，又臭又黏。肛門墜脹灼熱，拉完還想拉。小便黃。",
+        "sleep": "一直跑茅廁，睡不了。",
+        "pulse": "脈弦數。",
+        "palp": "肚子按著痛，不硬。"
+       },
+       "fu": {
+        "chill_alt": "一直熱。",
+        "chill_cover": "不想蓋。",
+        "sweat_wind": "不怕風。",
+        "sweat_where": "額頭和身上有一點。",
+        "pain_neck": "後頸不僵。",
+        "thirst_temp": "想喝涼的。",
+        "diet_stool": "量少次多，帶膿血，臭，肛門灼熱墜脹。",
+        "pulse_deep": "弦而快，有力。"
+       },
+       "thanks": "阿財挑了一個最大的西瓜抱來，說這個保證是好的。",
+       "angry": "街上的人說，阿財拉得瓜攤都擺不了，人也瘦了。",
+       "_review": "已審",
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
       }
      ]
     };
@@ -5445,7 +7708,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const JF = {"classes":[{"name":"桂枝湯類","head":"桂枝湯","list":[{"n":"桂枝湯","h":["桂枝","芍藥","甘草","生薑","大棗"]},{"n":"桂枝加附子湯","h":["桂枝","芍藥","甘草","生薑","大棗","附子"]},{"n":"桂枝加桂湯","h":["桂枝","芍藥","甘草","生薑","大棗"]},{"n":"桂枝去芍藥湯","h":["桂枝","甘草","生薑","大棗"]},{"n":"桂枝去芍藥加附子湯","h":["桂枝","甘草","生薑","大棗","附子"]},{"n":"桂枝加厚朴杏子湯","h":["桂枝","芍藥","甘草","生薑","大棗","厚朴","杏仁"]},{"n":"小建中湯","h":["桂枝","芍藥","甘草","生薑","大棗","膠飴"]},{"n":"桂枝加芍藥生薑人參新加湯","h":["桂枝","芍藥","甘草","生薑","大棗","人參"]},{"n":"桂枝甘草湯","h":["桂枝","甘草"]},{"n":"茯苓桂枝甘草大棗湯","h":["茯苓","桂枝","甘草","大棗"]},{"n":"桂枝麻黃各半湯","h":["桂枝","芍藥","生薑","甘草","麻黃","大棗","杏仁"]},{"n":"桂枝二麻黃一湯","h":["桂枝","芍藥","甘草","杏仁","麻黃","生薑","大棗"]},{"n":"桂枝二越婢一湯","h":["桂枝","芍藥","甘草","麻黃","大棗","生薑","石膏"]},{"n":"桂枝去芍藥加茯苓白朮湯","h":["桂枝","甘草","生薑","大棗","茯苓","白朮"]},{"n":"桂枝去芍藥加蜀漆龍骨牡蠣救逆湯","h":["桂枝","甘草","生薑","大棗","蜀漆","牡蠣","龍骨"]},{"n":"桂枝甘草龍骨牡蠣湯","h":["桂枝","甘草","牡蠣","龍骨"]},{"n":"桂枝加葛根湯","h":["桂枝","芍藥","甘草","生薑","大棗","葛根"]},{"n":"桂枝加芍藥湯","h":["桂枝","芍藥","甘草","生薑","大棗"]},{"n":"桂枝加大黃湯","h":["桂枝","芍藥","甘草","生薑","大棗","大黃"]}]},{"name":"麻黃湯類","head":"麻黃湯","list":[{"n":"麻黃湯","h":["麻黃","桂枝","甘草","杏仁"]},{"n":"麻黃杏仁甘草石膏湯","h":["麻黃","杏仁","甘草","石膏"]},{"n":"大青龍湯","h":["麻黃","桂枝","甘草","杏仁","生薑","大棗","石膏"]},{"n":"小青龍湯","h":["麻黃","芍藥","細辛","乾薑","甘草","桂枝","五味子","半夏"]},{"n":"麻黃附子細辛湯","h":["麻黃","細辛","附子"]},{"n":"麻黃附子甘草湯","h":["麻黃","甘草","附子"]}]},{"name":"葛根湯類","head":"葛根湯","list":[{"n":"葛根湯","h":["葛根","麻黃","芍藥","生薑","甘草","桂枝","大棗"]},{"n":"葛根黃芩黃連湯","h":["葛根","甘草","黃芩","黃連"]},{"n":"葛根加半夏湯","h":["葛根","麻黃","芍藥","生薑","甘草","桂枝","大棗","半夏"]}]},{"name":"柴胡湯類","head":"小柴胡湯","list":[{"n":"小柴胡湯","h":["柴胡","黃芩","人參","甘草","生薑","半夏","大棗"]},{"n":"大柴胡湯","h":["柴胡","半夏","黃芩","芍藥","生薑","枳實","大棗"]},{"n":"柴胡桂枝湯","h":["柴胡","黃芩","人參","桂枝","芍藥","生薑","半夏","甘草","大棗"]},{"n":"柴胡加龍骨牡蠣湯","h":["柴胡","龍骨","生薑","人參","茯苓","鉛丹","黃芩","牡蠣","桂枝","半夏","大棗","大黃"]},{"n":"柴胡桂枝乾薑湯","h":["柴胡","桂枝","黃芩","乾薑","牡蠣","甘草","栝蔞根"]},{"n":"柴胡加芒硝湯","h":["柴胡","黃芩","甘草","人參","生薑","半夏","大棗","芒硝"]}]},{"name":"梔子湯類","head":"梔子豉湯","list":[{"n":"梔子豉湯","h":["梔子","香豉"]},{"n":"梔子甘草豉湯","h":["梔子","香豉","甘草"]},{"n":"梔子生薑豉湯","h":["梔子","香豉","生薑"]},{"n":"梔子乾薑湯","h":["梔子","乾薑"]},{"n":"梔子厚朴枳實湯","h":["梔子","厚朴","枳實"]},{"n":"梔子柏皮湯","h":["梔子","甘草","黃柏"]},{"n":"枳實梔子豉湯","h":["枳實","梔子","香豉"]}]},{"name":"承氣湯類","head":"大承氣湯","list":[{"n":"大承氣湯","h":["大黃","厚朴","枳實","芒硝"]},{"n":"小承氣湯","h":["大黃","枳實","厚朴"]},{"n":"調胃承氣湯","h":["大黃","甘草","芒硝"]},{"n":"桃核承氣湯","h":["桃仁","大黃","甘草","桂枝","芒硝"]},{"n":"抵當湯","h":["水蛭","虻蟲","大黃","桃仁"]},{"n":"抵當丸","h":["水蛭","虻蟲","大黃","桃仁"]},{"n":"十棗湯","h":["芫花","甘遂","大戟","大棗"]},{"n":"大陷胸湯","h":["大黃","芒硝","甘遂"]},{"n":"大陷胸丸","h":["大黃","葶藶子","芒硝","杏仁"]},{"n":"小陷胸湯","h":["黃連","半夏","栝蔞實"]},{"n":"白散","h":["桔梗","貝母","巴豆"]},{"n":"麻子仁丸","h":["麻子仁","芍藥","枳實","大黃","厚朴","杏仁"]}]},{"name":"瀉心湯類","head":"生薑瀉心湯","list":[{"n":"生薑瀉心湯","h":["生薑","甘草","人參","黃芩","半夏","黃連","乾薑","大棗"]},{"n":"甘草瀉心湯","h":["甘草","黃芩","乾薑","半夏","黃連","大棗"]},{"n":"半夏瀉心湯","h":["半夏","黃芩","乾薑","甘草","人參","黃連","大棗"]},{"n":"大黃黃連瀉心湯","h":["大黃","黃連"]},{"n":"附子瀉心湯","h":["大黃","黃連","黃芩","附子"]},{"n":"黃連湯","h":["黃連","甘草","乾薑","桂枝","人參","半夏","大棗"]},{"n":"黃芩湯","h":["黃芩","甘草","芍藥","大棗"]},{"n":"黃芩加半夏生薑湯","h":["黃芩","甘草","芍藥","半夏","生薑","大棗"]},{"n":"乾薑黃連黃芩人參湯","h":["乾薑","黃連","黃芩","人參"]},{"n":"旋覆代赭湯","h":["旋覆花","人參","生薑","甘草","半夏","代赭石","大棗"]},{"n":"厚朴生薑甘草半夏人參湯","h":["厚朴","生薑","半夏","甘草","人參"]}]},{"name":"白虎湯類","head":"白虎湯","list":[{"n":"白虎湯","h":["知母","石膏","甘草","粳米"]},{"n":"白虎加人參湯","h":["知母","石膏","甘草","粳米","人參"]},{"n":"竹葉石膏湯","h":["竹葉","石膏","半夏","人參","麥門冬","甘草","粳米"]}]},{"name":"五苓散類","head":"五苓散","list":[{"n":"五苓散","h":["豬苓","澤瀉","白朮","茯苓","桂枝"]},{"n":"豬苓湯","h":["豬苓","茯苓","澤瀉","滑石","阿膠"]},{"n":"文蛤散","h":["文蛤"]},{"n":"茯苓甘草湯","h":["茯苓","桂枝","甘草","生薑"]}]},{"name":"四逆湯類","head":"四逆湯","list":[{"n":"四逆湯","h":["甘草","乾薑","附子"]},{"n":"四逆加人參湯","h":["甘草","乾薑","附子","人參"]},{"n":"通脈四逆湯","h":["甘草","乾薑","附子"]},{"n":"通脈四逆加豬膽汁湯","h":["甘草","乾薑","附子","豬膽汁"]},{"n":"乾薑附子湯","h":["乾薑","附子"]},{"n":"白通湯","h":["乾薑","附子","蔥白"]},{"n":"白通加豬膽汁湯","h":["乾薑","附子","蔥白","人尿","豬膽汁"]},{"n":"茯苓四逆湯","h":["茯苓","人參","附子","甘草","乾薑"]},{"n":"四逆散","h":["甘草","枳實","柴胡","芍藥"]},{"n":"當歸四逆湯","h":["當歸","桂枝","芍藥","細辛","甘草","通草","大棗"]},{"n":"當歸四逆加吳茱萸生薑湯","h":["當歸","甘草","通草","芍藥","桂枝","細辛","大棗","吳茱萸","生薑"]}]},{"name":"理中湯類","head":"理中丸","list":[{"n":"理中丸","h":["人參","甘草","白朮","乾薑"]},{"n":"真武湯","h":["茯苓","芍藥","生薑","白朮","附子"]},{"n":"附子湯","h":["附子","茯苓","人參","白朮","芍藥"]},{"n":"甘草附子湯","h":["甘草","白朮","桂枝","附子"]},{"n":"桂枝附子湯","h":["桂枝","附子","甘草","生薑","大棗"]},{"n":"桂枝附子去桂加白朮湯","h":["白朮","甘草","附子","生薑","大棗"]},{"n":"茯苓桂枝白朮甘草湯","h":["茯苓","桂枝","白朮","甘草"]},{"n":"芍藥甘草附子湯","h":["芍藥","甘草","附子"]},{"n":"桂枝人參湯","h":["桂枝","甘草","白朮","人參","乾薑"]}]},{"name":"雜法方類","head":"赤石脂禹餘糧湯","list":[{"n":"赤石脂禹餘糧湯","h":["赤石脂","禹餘糧"]},{"n":"炙甘草湯","h":["甘草","生薑","人參","生地黃","桂枝","麥門冬","阿膠","麻仁","大棗"]},{"n":"甘草乾薑湯","h":["甘草","乾薑"]},{"n":"芍藥甘草湯","h":["芍藥","甘草"]},{"n":"茵陳蒿湯","h":["茵陳蒿","梔子","大黃"]},{"n":"麻黃連軺赤小豆湯","h":["麻黃","連軺","赤小豆","生梓白皮","杏仁","甘草","生薑","大棗"]},{"n":"麻黃升麻湯","h":["麻黃","升麻","當歸","知母","黃芩","葳蕤","白朮","石膏","乾薑","芍藥","天冬","桂枝","茯苓","甘草"]},{"n":"瓜蒂散","h":["瓜蒂","赤小豆"]},{"n":"吳茱萸湯","h":["吳茱萸","人參","生薑","大棗"]},{"n":"黃連阿膠湯","h":["黃連","黃芩","芍藥","阿膠","雞子黃"]},{"n":"桃花湯","h":["赤石脂","乾薑","粳米"]},{"n":"半夏散及湯","h":["半夏","桂枝","甘草"]},{"n":"豬膚湯","h":["豬膚"]},{"n":"甘草湯","h":["甘草"]},{"n":"桔梗湯","h":["桔梗","甘草"]},{"n":"苦酒湯","h":["半夏","雞子"]},{"n":"烏梅丸","h":["烏梅","細辛","乾薑","當歸","黃連","附子","蜀椒","桂枝","人參","黃柏"]},{"n":"白頭翁湯","h":["白頭翁","黃連","黃柏","秦皮"]},{"n":"牡蠣澤瀉散","h":["牡蠣","澤瀉","蜀漆","栝蔞根","葶藶子","商陸根","海藻"]},{"n":"蜜煎導方","h":["食蜜"]},{"n":"豬膽汁方","h":["大豬膽"]},{"n":"燒褌散","h":["褌襠灰"]}]}],"jg":[{"name":"痙濕暍病篇","list":[{"n":"栝蔞桂枝湯","h":["栝蔞根","桂枝","芍藥","甘草","生薑","大棗"]},{"n":"麻黃加朮湯","h":["麻黃","桂枝","甘草","杏仁","白朮"]},{"n":"麻黃杏仁薏苡甘草湯","h":["麻黃","甘草","薏苡仁","杏仁"]},{"n":"防己黃耆湯","h":["防己","甘草","白朮","黃耆"]},{"n":"一物瓜蒂湯","h":["瓜蒂"]}]},{"name":"百合病狐惑陰陽毒病篇","list":[{"n":"百合知母湯","h":["百合","知母"]},{"n":"滑石代赭湯","h":["百合","滑石","代赭石"]},{"n":"百合雞子湯","h":["百合","雞子黃"]},{"n":"百合地黃湯","h":["百合","生地黃汁"]},{"n":"百合洗","h":["百合"]},{"n":"栝蔞牡蠣散","h":["栝蔞根","牡蠣"]},{"n":"百合滑石散","h":["百合","滑石"]},{"n":"苦參湯","h":["苦參","水一斗","薰","日三次"]},{"n":"雄黃薰","h":["雄黃"]},{"n":"赤豆當歸散","h":["赤小豆","當歸"]},{"n":"升麻鱉甲湯","h":["升麻","當歸","蜀椒","甘草","雄黃","鱉甲"]}]},{"name":"瘧病篇","list":[{"n":"鱉甲煎丸","h":["鱉甲","烏扇","黃芩","柴胡","鼠婦","乾薑","大黃","芍藥","桂枝","葶藶","石葦","厚朴","牡丹","瞿麥","紫葳","半夏","人參","䗪蟲","阿膠","蜂窩","赤硝","蜣螂","桃仁"]},{"n":"白虎加桂枝湯","h":["知母","甘草","石膏","粳米","桂枝"]},{"n":"蜀漆散","h":["蜀漆","雲母","龍骨"]},{"n":"牡蠣湯","h":["牡蠣","麻黃","甘草","蜀漆"]},{"n":"柴胡去半夏加栝蔞湯","h":["柴胡","人參","黃芩","甘草","栝蔞根","生薑","大棗"]},{"n":"柴胡桂薑湯","h":["柴胡","桂枝","乾薑","栝蔞根","黃芩","牡蠣","甘草"]}]},{"name":"中風歷節病篇","list":[{"n":"侯氏黑散","h":["菊花","白朮","細辛","茯苓","牡蠣","桔梗","防風","人參","礬石","黃芩","當歸","乾薑","芎藭","桂枝"]},{"n":"風引湯","h":["大黃","乾薑","龍骨","桂枝","甘草","牡蠣","寒水石","滑石","赤石脂","白石脂","紫石英","石膏"]},{"n":"防己地黃湯","h":["防己","桂枝","防風","甘草"]},{"n":"頭風摩散","h":["大附子","鹽"]},{"n":"桂枝芍藥知母湯","h":["桂枝","芍藥","甘草","麻黃","生薑","白朮","知母","防風","附子"]},{"n":"烏頭湯","h":["麻黃","芍藥","黃耆","甘草","川烏"]},{"n":"礬石湯","h":["礬石"]},{"n":"續命湯","h":["麻黃","桂枝","當歸","人參","石膏","乾薑","甘草","芎藭","杏仁"]},{"n":"三黃湯","h":["麻黃","獨活","細辛","黃耆","黃芩"]},{"n":"朮附湯","h":["白朮","甘草","附子"]},{"n":"崔氏八味丸","h":["乾地黃","山茱萸","薯蕷","澤瀉","茯苓","牡丹皮","桂枝","附子"]},{"n":"越婢加朮湯","h":["麻黃","石膏","生薑","甘草","白朮","大棗"]}]},{"name":"血痹虛勞病篇","list":[{"n":"黃耆桂枝五物湯","h":["黃耆","芍藥","桂枝","生薑","大棗"]},{"n":"桂枝加龍骨牡蠣湯","h":["桂枝","芍藥","生薑","甘草","大棗","龍骨","牡蠣"]},{"n":"天雄散","h":["天雄","白朮","桂枝","龍骨"]},{"n":"腎氣丸","h":["乾地黃","山藥","山茱萸","澤瀉","牡丹皮","茯苓","桂枝","附子"]},{"n":"薯蕷丸","h":["薯蕷","當歸","桂枝","麴","乾地黃","豆黃卷","甘草","人參","芎藭","芍藥","白朮","麥門冬","杏仁","柴胡","桔梗","茯苓","阿膠","乾薑","白斂","防風","大棗"]},{"n":"酸棗仁湯","h":["酸棗仁","甘草","知母","茯苓","芎藭"]},{"n":"大黃䗪蟲丸","h":["大黃","黃芩","甘草","桃仁","杏仁","芍藥","乾地黃","乾漆","虻蟲","水蛭","蠐螬","䗪蟲"]},{"n":"獺肝散","h":["獺肝"]}]},{"name":"肺痿肺癰咳嗽上氣病篇","list":[{"n":"射干麻黃湯","h":["射干","麻黃","生薑","細辛","紫菀","款冬花","五味子","大棗","半夏"]},{"n":"皂莢丸","h":["皂莢"]},{"n":"厚朴麻黃湯","h":["厚朴","麻黃","石膏","杏仁","半夏","乾薑","細辛","五味子","小麥"]},{"n":"澤漆湯","h":["半夏","紫參","澤漆","生薑","白前","甘草","黃芩","人參","桂枝"]},{"n":"麥門冬湯","h":["麥門冬","半夏","人參","甘草","粳米","大棗"]},{"n":"葶藶大棗瀉肺湯","h":["葶藶","大棗"]},{"n":"越婢加半夏湯","h":["麻黃","石膏","生薑","大棗","甘草","半夏"]},{"n":"小青龍加石膏湯","h":["麻黃","芍藥","桂枝","細辛","甘草","乾薑","五味子","半夏","石膏"]},{"n":"生薑甘草湯","h":["生薑","人參","甘草","大棗"]},{"n":"桂枝去芍藥加皂莢湯","h":["桂枝","生薑","甘草","大棗","皂莢"]},{"n":"桔梗白散","h":["桔梗","貝母","巴豆"]},{"n":"葦莖湯","h":["葦莖","薏苡仁","桃仁","瓜瓣"]}]},{"name":"奔豚氣病篇","list":[{"n":"奔豚湯","h":["甘草","芎藭","當歸","半夏","黃芩","生葛","芍藥","生薑","甘李根白皮"]}]},{"name":"胸痹心痛短氣病篇","list":[{"n":"栝蔞薤白白酒湯","h":["栝蔞實","薤白","白酒"]},{"n":"栝蔞薤白半夏湯","h":["栝蔞實","薤白","半夏","白酒"]},{"n":"枳實薤白桂枝湯","h":["枳實","厚朴","薤白","桂枝","栝蔞"]},{"n":"茯苓杏仁甘草湯","h":["茯苓","杏仁","甘草"]},{"n":"薏苡附子散","h":["薏苡仁","大附子"]},{"n":"桂枝生薑枳實湯","h":["桂枝","生薑","枳實"]},{"n":"烏頭赤石脂丸","h":["蜀椒","烏頭","附子","乾薑","赤石脂"]},{"n":"九痛丸","h":["附子","生狼牙","巴豆","人參","乾薑","吳茱萸"]}]},{"name":"腹滿寒疝宿食病篇","list":[{"n":"厚朴七物湯","h":["厚朴","甘草","大黃","大棗","枳實","桂枝","生薑"]},{"n":"附子粳米湯","h":["附子","半夏","甘草","大棗","粳米"]},{"n":"厚朴三物湯","h":["厚朴","大黃","枳實"]},{"n":"大建中湯","h":["蜀椒","乾薑","人參"]},{"n":"大黃附子湯","h":["大黃","附子","細辛"]},{"n":"赤丸","h":["茯苓","烏頭","半夏","細辛"]},{"n":"烏頭煎","h":["烏頭"]},{"n":"當歸生薑羊肉湯","h":["當歸","生薑","羊肉"]},{"n":"烏頭桂枝湯","h":["烏頭"]},{"n":"走馬湯","h":["杏仁","巴豆"]}]},{"name":"五臟風寒積聚病篇","list":[{"n":"旋覆花湯","h":["旋覆花","蔥","新絳"]},{"n":"甘草乾薑苓朮湯","h":["甘草","白朮","乾薑","茯苓"]}]},{"name":"痰飲咳嗽病篇","list":[{"n":"甘遂半夏湯","h":["甘遂","半夏","芍藥","甘草"]},{"n":"木防己湯","h":["木防己","石膏","桂枝","人參"]},{"n":"澤瀉湯","h":["澤瀉","白朮"]},{"n":"厚朴大黃湯","h":["厚朴","大黃","枳實"]},{"n":"小半夏湯","h":["半夏","生薑"]},{"n":"己椒藶黃丸","h":["防己","椒目","葶藶","大黃"]},{"n":"小半夏加茯苓湯","h":["半夏","生薑","茯苓"]},{"n":"茯苓飲","h":["茯苓","人參","白朮","枳實","橘皮","生薑"]},{"n":"桂苓五味甘草湯","h":["茯苓","桂枝","甘草","五味子"]},{"n":"苓甘五味薑辛湯","h":["茯苓","甘草","乾薑","細辛","五味子"]},{"n":"桂苓五味甘草去桂加薑辛夏湯","h":["茯苓","甘草","細辛","乾薑","五味子","半夏"]},{"n":"苓甘五味加薑辛半夏杏仁湯","h":["茯苓","甘草","五味","乾薑","細辛","半夏","杏仁"]},{"n":"苓甘五味加薑辛半杏大黃湯","h":["茯苓","甘草","五味","乾薑","細辛","半夏","杏仁","大黃"]}]},{"name":"消渴小便利淋病篇","list":[{"n":"栝蔞瞿麥丸","h":["栝蔞根","茯苓","薯蕷","附子","瞿麥"]},{"n":"蒲灰散","h":["蒲灰","滑石"]}]},{"name":"水氣病篇","list":[{"n":"越婢湯","h":["麻黃","石膏","生薑","甘草","大棗"]},{"n":"防己茯苓湯","h":["防己","黃耆","桂枝","茯苓","甘草"]},{"n":"麻黃附子湯","h":["麻黃","甘草","附子"]},{"n":"黃耆芍藥桂枝苦酒湯","h":["黃耆","芍藥","桂枝"]},{"n":"桂枝加黃耆湯","h":["桂枝","芍藥","生薑","大棗","甘草","黃耆"]},{"n":"桂枝去芍藥加麻黃細辛附子湯","h":["桂枝","生薑","甘草","大棗","麻黃","細辛","附子"]},{"n":"枳朮湯","h":["枳實","白朮"]}]},{"name":"黃疸病篇","list":[{"n":"硝石礬石散","h":["硝石","礬石"]},{"n":"梔子大黃湯","h":["梔子","大黃","枳實","豉"]},{"n":"豬膏髮煎","h":["豬膏","亂髮"]},{"n":"茵陳五苓散","h":["茵陳蒿","五苓散"]},{"n":"大黃硝石湯","h":["大黃","黃柏","硝石","梔子"]},{"n":"瓜蒂湯","h":["瓜蒂"]},{"n":"麻黃醇酒湯","h":["麻黃"]}]},{"name":"驚悸吐衄下血胸滿瘀血病篇","list":[{"n":"半夏麻黃丸","h":["半夏","麻黃"]},{"n":"柏葉湯","h":["柏葉","乾薑","艾"]},{"n":"黃土湯","h":["甘草","乾地黃","白朮","附子","阿膠","黃芩","灶中黃土"]},{"n":"瀉心湯","h":["大黃","黃連","黃芩"]}]},{"name":"嘔吐噦下利病篇","list":[{"n":"豬苓散","h":["豬苓","茯苓","白朮"]},{"n":"大半夏湯","h":["半夏","人參","白蜜"]},{"n":"大黃甘草湯","h":["大黃","甘草"]},{"n":"茯苓澤瀉湯","h":["茯苓","澤瀉","甘草","桂枝","白朮","生薑"]},{"n":"文蛤湯","h":["文蛤","麻黃","甘草","生薑","石膏","杏仁","大棗"]},{"n":"半夏乾薑散","h":["半夏","乾薑"]},{"n":"生薑半夏湯","h":["半夏","生薑汁"]},{"n":"橘皮湯","h":["橘皮","生薑"]},{"n":"橘皮竹茹湯","h":["橘皮","竹茹","大棗","人參","生薑","甘草"]},{"n":"紫參湯","h":["紫參","甘草"]},{"n":"訶黎勒散","h":["訶黎勒"]},{"n":"黃芩湯（金匱）","h":["黃芩","人參","桂枝","大棗","半夏","乾薑"]}]},{"name":"瘡癰腸癰浸淫病篇","list":[{"n":"薏苡附子敗醬散","h":["薏苡仁","附子","敗醬"]},{"n":"大黃牡丹湯","h":["大黃","牡丹","桃仁","瓜子","芒硝"]},{"n":"王不留行散","h":["王不留行","蒴藋細葉","桑東南根白皮","甘草","川椒","乾薑","厚朴","芍藥","黃芩"]},{"n":"排膿散","h":["枳實","芍藥","桔梗"]},{"n":"排膿湯","h":["甘草","桔梗","生薑","大棗"]}]},{"name":"趺蹶手指臂腫轉筋陰狐疝蚘蟲病篇","list":[{"n":"藜蘆甘草湯","h":[]},{"n":"雞矢白散","h":["雞矢白"]},{"n":"蜘蛛散","h":["蜘蛛","桂枝"]},{"n":"甘草粉蜜湯","h":["甘草","粉","蜜"]}]},{"name":"婦人妊娠病篇","list":[{"n":"桂枝茯苓丸","h":["桂枝","茯苓","牡丹","芍藥","桃仁"]},{"n":"當歸芍藥散","h":["當歸","芍藥","茯苓","白朮","澤瀉","芎藭"]},{"n":"乾薑人參半夏丸","h":["乾薑","人參","半夏"]},{"n":"當歸貝母苦參丸","h":["當歸","貝母","苦參"]},{"n":"葵子茯苓散","h":["葵子","茯苓"]},{"n":"當歸散","h":["當歸","黃芩","芍藥","芎藭","白朮"]},{"n":"白朮散","h":["白朮","芎藭","蜀椒","牡蠣"]}]},{"name":"婦人產後病篇","list":[{"n":"枳實芍藥散","h":["枳實","芍藥"]},{"n":"下瘀血湯","h":["大黃","桃仁","䗪蟲"]},{"n":"竹葉湯","h":["竹葉","葛根","防風","桔梗","桂枝","人參","甘草","附子","大棗","生薑"]},{"n":"竹皮大丸","h":["生竹茹","石膏","桂枝","甘草","白薇"]},{"n":"白頭翁加甘草阿膠湯","h":["白頭翁","甘草","阿膠","秦皮","黃連","柏皮"]},{"n":"三物黃芩湯","h":["黃芩","苦參","乾地黃"]},{"n":"內補當歸建中湯","h":["當歸","桂枝","芍藥","生薑","甘草","大棗"]}]},{"name":"婦人雜病篇","list":[{"n":"半夏厚朴湯","h":["半夏","厚朴","茯苓","生薑","乾蘇葉"]},{"n":"甘麥大棗湯","h":["甘草","小麥","大棗"]},{"n":"溫經湯","h":["吳茱萸","當歸","芎藭","芍藥","人參","桂枝","阿膠","生薑","牡丹皮","甘草","半夏","麥門冬"]},{"n":"土瓜根散","h":["土瓜根","芍藥","桂枝","䗪蟲"]},{"n":"大黃甘遂湯","h":["大黃","甘遂","阿膠"]},{"n":"礬石丸","h":["礬石","杏仁"]},{"n":"紅藍花酒","h":["紅藍花"]},{"n":"蛇床子散","h":["蛇床子仁"]},{"n":"狼牙湯","h":["狼牙"]},{"n":"膏髮煎","h":["豬膏","亂髮"]},{"n":"小兒疳蟲蝕齒","h":["雄黃","葶藶"]}]}]};
     /* JINGFANG>> */
     /* <<FANGHOU 這一段由 tools/build-fanghou.js 依宋本方後注產生，請勿手改 */
-    const FH = {"mahuang":{"name":"麻黃湯","no":35,"fu":"右四味，以水九升，先煮麻黃，減二升，去上沫，內諸藥，煮取二升半，去滓，溫服八合。覆取微似汗，不須啜粥。餘如桂枝法將息。","jj":[]},"guizhi":{"name":"桂枝湯","no":12,"fu":"右五味，㕮咀三味，以水七升，微火煮取三升，去滓，適寒溫，服一升。服已須臾，歠熱稀粥一升餘，以助藥力。溫覆令一時許，遍身漐漐微似有汗者益佳，不可令如水流漓，病必不除。若一服汗出病差，停後服，不必盡劑。若不汗，更服依前法。又不汗，後服小促其間，半日許令三服盡。若病重者，一日一夜服，周時觀之，服一劑盡，病證猶在者，更作服，若不汗出，乃服至二、三劑。禁生冷、黏滑、肉麵、五辛、酒酪、臭惡等物。","jj":[]},"baihu":{"name":"白虎湯","no":176,"fu":"右四味，以水一斗，煮米熟，湯成，去滓，溫服一升，日三服。","jj":[]},"chengqi":{"name":"大承氣湯","no":208,"fu":"右四味，以水一斗，先煮二物，取五升，去滓，內大黃，更煮取二升，去滓，內芒硝，更上微火一兩沸，分溫再服。得下，餘勿服。","jj":[]},"lizhong":{"name":"理中丸","no":386,"fu":"右四味，搗篩，蜜和為丸，如雞子黃許大。以沸湯數合和一丸，研碎，溫服之，日三四、夜二服。腹中未熱，益至三四丸，然不及湯。湯法：以四物依兩數切，用水八升，煮取三升，去滓，溫服一升，日三服。若臍上築者，腎氣動也，去朮，加桂四兩；吐多者，去朮，加生薑三兩，下多者，還用朮；悸者，加茯苓二兩；渴欲得水者，加朮，足前成四兩半；腹中痛者，加人參，足前成四兩半；寒者，加乾薑，足前成四兩半；腹滿者，去朮，加附子一枚。服湯後，如食頃，飲熱粥一升許，微自溫，勿發揭衣被。","jj":["若臍上築者，腎氣動也，去朮，加桂四兩；","吐多者，去朮，加生薑三兩，下多者，還用朮；","悸者，加茯苓二兩；","渴欲得水者，加朮，足前成四兩半；","腹中痛者，加人參，足前成四兩半；","寒者，加乾薑，足前成四兩半；","腹滿者，去朮，加附子一枚。"]},"gegen":{"name":"葛根湯","no":31,"fu":"右七味，以水一斗，先煮麻黃、葛根，減二升，去白沫，內諸藥，煮取三升，去滓，溫服一升。覆取微似汗。餘如桂枝法將息及禁忌，諸湯皆仿此。","jj":[]},"xiaochaihu":{"name":"小柴胡湯","no":96,"fu":"右七味，以水一斗二升，煮取六升，去滓，再煎取三升，溫服一升，日三服。若胸中煩而不嘔者，去半夏、人參，加栝蔞實一枚。若渴，去半夏，加人參合前成四兩半、栝蔞根四兩。若腹中痛者，去黃芩，加芍藥三兩。若脇下痞鞕，去大棗，加牡蠣四兩。若心下悸、小便不利者，去黃芩，加茯苓四兩。若不渴、外有微熱者，去人參，加桂枝三兩，溫服微汗愈。若欬者，去人參、大棗、生薑，加五味子半升、乾薑二兩。","jj":["若胸中煩而不嘔者，去半夏、人參，加栝蔞實一枚。","若渴，去半夏，加人參合前成四兩半、栝蔞根四兩。","若腹中痛者，去黃芩，加芍藥三兩。","若脇下痞鞕，去大棗，加牡蠣四兩。","若心下悸、小便不利者，去黃芩，加茯苓四兩。","若不渴、外有微熱者，去人參，加桂枝三兩，溫服微汗愈。","若欬者，去人參、大棗、生薑，加五味子半升、乾薑二兩。"]},"zhichi":{"name":"梔子豉湯","no":76,"fu":"右二味，以水四升，先煮梔子得二升半，內豉，煮取一升半，去滓，分為二服，溫進一服。得吐者，止後服。","jj":[]},"banxiaxiexin":{"name":"半夏瀉心湯","no":149,"fu":"右七味，以水一斗，煮取六升，去滓，再煎取三升，溫服一升，日三服。","jj":[]},"wuling":{"name":"五苓散","no":71,"fu":"右五味，搗為散，以白飲和服方寸匕，日三服。多飲暖水，汗出愈。如法將息。","jj":[]},"sini":{"name":"四逆湯","no":29,"fu":"右三味，以水三升，煮取一升二合，去滓，分溫再服。強人可大附子一枚、乾薑三兩。","jj":[]},"danggui":{"name":"當歸四逆湯","no":351,"fu":"右七味，以水八升。煮取三升，去滓，溫服一升，日三服。","jj":[]},"guizhigegen":{"name":"桂枝加葛根湯","no":14,"fu":"右七味，以水一斗，先煮麻黃、葛根，減二升，去上沫，內諸藥，煮取三升，去滓。溫服一升。覆取微似汗，不須啜粥，餘如桂枝法將息及禁忌。","jj":[]},"maxingshigan":{"name":"麻黃杏仁甘草石膏湯","no":63,"fu":"右四味，以水七升，煮麻黃，減二升，去上沫，內諸藥，煮取二升，去滓，溫服一升。","jj":[]},"gegenqinlian":{"name":"葛根黃芩黃連湯","no":34,"fu":"右四味，以水八升，先煮葛根，減二升，內諸藥，煮取二升，去滓，分溫再服。","jj":[]},"dachaihu":{"name":"大柴胡湯","no":103,"fu":"右七味，以水一斗二升，煮取六升，去滓，再煎，溫服一升，日三服。一方加大黃二兩，若不加，恐不為大柴胡湯。","jj":[]},"huangqin":{"name":"黃芩湯","no":172,"fu":"右四味，以水一斗，煮取三升，去滓，溫服一升，日再、夜一服。","jj":[]},"zhenwu":{"name":"真武湯","no":82,"fu":"右五味，以水八升，煮取三升，去滓，溫服七合，日三服。","jj":[]},"daqinglong":{"name":"大青龍湯","no":38,"fu":"右七味，以水九升，先煮麻黃，減二升，去上沫，內諸藥，煮取三升，去滓，溫服一升，取微似汗。汗出多者，溫粉撲之。一服汗者，停後服。若復服，汗多亡陽，遂虛，惡風、煩躁、不得眠也。","jj":[]},"guizhifuzi":{"name":"桂枝加附子湯","no":20,"fu":"右六味，以水七升，煮取三升，去滓，溫服一升。本云（《玉函經》作「本方」。）：桂枝湯，今加附子。將息如前法。","jj":[]},"xiaochengqi":{"name":"小承氣湯","no":208,"fu":"右三味，以水四升，煮取一升二合，去滓，分溫二服。初服當更衣，不爾者盡飲之，若更衣者，勿服之。","jj":[]},"sinisan":{"name":"四逆散","no":318,"fu":"右四味，各十分，搗篩，白飲和，服方寸匕，日三服。欬者，加五味子、乾薑各五分，並主下利；悸者，加桂枝五分；小便不利者，加茯苓五分；腹中痛者，加附子一枚，炮令坼；泄利下重者，先以水五升，煮薤白三升，煮取三升，去滓，以散三方寸匕，內湯中，煮取一升半，分溫再服。","jj":["欬者，加五味子、乾薑各五分，並主下利；","悸者，加桂枝五分；","小便不利者，加茯苓五分；","腹中痛者，加附子一枚，炮令坼；","泄利下重者，先以水五升，煮薤白三升，煮取三升，去滓，以散三方寸匕，內湯中，煮取一升半，分溫再服。"]},"mafuxin":{"name":"麻黃細辛附子湯","no":301,"fu":"右三味，以水一斗，先煮麻黃，減二升，去上沫，內諸藥，煮取三升，去滓，溫服一升，日三服。","jj":[]}};
+    const FH = {"mahuang":{"name":"麻黃湯","no":35,"fu":"右四味，以水九升，先煮麻黃，減二升，去上沫，內諸藥，煮取二升半，去滓，溫服八合。覆取微似汗，不須啜粥。餘如桂枝法將息。","jj":[]},"guizhi":{"name":"桂枝湯","no":12,"fu":"右五味，㕮咀三味，以水七升，微火煮取三升，去滓，適寒溫，服一升。服已須臾，歠熱稀粥一升餘，以助藥力。溫覆令一時許，遍身漐漐微似有汗者益佳，不可令如水流漓，病必不除。若一服汗出病差，停後服，不必盡劑。若不汗，更服依前法。又不汗，後服小促其間，半日許令三服盡。若病重者，一日一夜服，周時觀之，服一劑盡，病證猶在者，更作服，若不汗出，乃服至二、三劑。禁生冷、黏滑、肉麵、五辛、酒酪、臭惡等物。","jj":[]},"baihu":{"name":"白虎湯","no":176,"fu":"右四味，以水一斗，煮米熟，湯成，去滓，溫服一升，日三服。","jj":[]},"chengqi":{"name":"大承氣湯","no":208,"fu":"右四味，以水一斗，先煮二物，取五升，去滓，內大黃，更煮取二升，去滓，內芒硝，更上微火一兩沸，分溫再服。得下，餘勿服。","jj":[]},"lizhong":{"name":"理中丸","no":386,"fu":"右四味，搗篩，蜜和為丸，如雞子黃許大。以沸湯數合和一丸，研碎，溫服之，日三四、夜二服。腹中未熱，益至三四丸，然不及湯。湯法：以四物依兩數切，用水八升，煮取三升，去滓，溫服一升，日三服。若臍上築者，腎氣動也，去朮，加桂四兩；吐多者，去朮，加生薑三兩，下多者，還用朮；悸者，加茯苓二兩；渴欲得水者，加朮，足前成四兩半；腹中痛者，加人參，足前成四兩半；寒者，加乾薑，足前成四兩半；腹滿者，去朮，加附子一枚。服湯後，如食頃，飲熱粥一升許，微自溫，勿發揭衣被。","jj":["若臍上築者，腎氣動也，去朮，加桂四兩；","吐多者，去朮，加生薑三兩，下多者，還用朮；","悸者，加茯苓二兩；","渴欲得水者，加朮，足前成四兩半；","腹中痛者，加人參，足前成四兩半；","寒者，加乾薑，足前成四兩半；","腹滿者，去朮，加附子一枚。"]},"gegen":{"name":"葛根湯","no":31,"fu":"右七味，以水一斗，先煮麻黃、葛根，減二升，去白沫，內諸藥，煮取三升，去滓，溫服一升。覆取微似汗。餘如桂枝法將息及禁忌，諸湯皆仿此。","jj":[]},"xiaochaihu":{"name":"小柴胡湯","no":96,"fu":"右七味，以水一斗二升，煮取六升，去滓，再煎取三升，溫服一升，日三服。若胸中煩而不嘔者，去半夏、人參，加栝蔞實一枚。若渴，去半夏，加人參合前成四兩半、栝蔞根四兩。若腹中痛者，去黃芩，加芍藥三兩。若脇下痞鞕，去大棗，加牡蠣四兩。若心下悸、小便不利者，去黃芩，加茯苓四兩。若不渴、外有微熱者，去人參，加桂枝三兩，溫服微汗愈。若欬者，去人參、大棗、生薑，加五味子半升、乾薑二兩。","jj":["若胸中煩而不嘔者，去半夏、人參，加栝蔞實一枚。","若渴，去半夏，加人參合前成四兩半、栝蔞根四兩。","若腹中痛者，去黃芩，加芍藥三兩。","若脇下痞鞕，去大棗，加牡蠣四兩。","若心下悸、小便不利者，去黃芩，加茯苓四兩。","若不渴、外有微熱者，去人參，加桂枝三兩，溫服微汗愈。","若欬者，去人參、大棗、生薑，加五味子半升、乾薑二兩。"]},"zhichi":{"name":"梔子豉湯","no":76,"fu":"右二味，以水四升，先煮梔子得二升半，內豉，煮取一升半，去滓，分為二服，溫進一服。得吐者，止後服。","jj":[]},"banxiaxiexin":{"name":"半夏瀉心湯","no":149,"fu":"右七味，以水一斗，煮取六升，去滓，再煎取三升，溫服一升，日三服。","jj":[]},"wuling":{"name":"五苓散","no":71,"fu":"右五味，搗為散，以白飲和服方寸匕，日三服。多飲暖水，汗出愈。如法將息。","jj":[]},"sini":{"name":"四逆湯","no":29,"fu":"右三味，以水三升，煮取一升二合，去滓，分溫再服。強人可大附子一枚、乾薑三兩。","jj":[]},"danggui":{"name":"當歸四逆湯","no":351,"fu":"右七味，以水八升。煮取三升，去滓，溫服一升，日三服。","jj":[]},"guizhigegen":{"name":"桂枝加葛根湯","no":14,"fu":"右七味，以水一斗，先煮麻黃、葛根，減二升，去上沫，內諸藥，煮取三升，去滓。溫服一升。覆取微似汗，不須啜粥，餘如桂枝法將息及禁忌。","jj":[]},"maxingshigan":{"name":"麻黃杏仁甘草石膏湯","no":63,"fu":"右四味，以水七升，煮麻黃，減二升，去上沫，內諸藥，煮取二升，去滓，溫服一升。","jj":[]},"gegenqinlian":{"name":"葛根黃芩黃連湯","no":34,"fu":"右四味，以水八升，先煮葛根，減二升，內諸藥，煮取二升，去滓，分溫再服。","jj":[]},"dachaihu":{"name":"大柴胡湯","no":103,"fu":"右七味，以水一斗二升，煮取六升，去滓，再煎，溫服一升，日三服。一方加大黃二兩，若不加，恐不為大柴胡湯。","jj":[]},"huangqin":{"name":"黃芩湯","no":172,"fu":"右四味，以水一斗，煮取三升，去滓，溫服一升，日再、夜一服。","jj":[]},"zhenwu":{"name":"真武湯","no":82,"fu":"右五味，以水八升，煮取三升，去滓，溫服七合，日三服。","jj":[]},"daqinglong":{"name":"大青龍湯","no":38,"fu":"右七味，以水九升，先煮麻黃，減二升，去上沫，內諸藥，煮取三升，去滓，溫服一升，取微似汗。汗出多者，溫粉撲之。一服汗者，停後服。若復服，汗多亡陽，遂虛，惡風、煩躁、不得眠也。","jj":[]},"guizhifuzi":{"name":"桂枝加附子湯","no":20,"fu":"右六味，以水七升，煮取三升，去滓，溫服一升。本云（《玉函經》作「本方」。）：桂枝湯，今加附子。將息如前法。","jj":[]},"xiaochengqi":{"name":"小承氣湯","no":208,"fu":"右三味，以水四升，煮取一升二合，去滓，分溫二服。初服當更衣，不爾者盡飲之，若更衣者，勿服之。","jj":[]},"sinisan":{"name":"四逆散","no":318,"fu":"右四味，各十分，搗篩，白飲和，服方寸匕，日三服。欬者，加五味子、乾薑各五分，並主下利；悸者，加桂枝五分；小便不利者，加茯苓五分；腹中痛者，加附子一枚，炮令坼；泄利下重者，先以水五升，煮薤白三升，煮取三升，去滓，以散三方寸匕，內湯中，煮取一升半，分溫再服。","jj":["欬者，加五味子、乾薑各五分，並主下利；","悸者，加桂枝五分；","小便不利者，加茯苓五分；","腹中痛者，加附子一枚，炮令坼；","泄利下重者，先以水五升，煮薤白三升，煮取三升，去滓，以散三方寸匕，內湯中，煮取一升半，分溫再服。"]},"mafuxin":{"name":"麻黃細辛附子湯","no":301,"fu":"右三味，以水一斗，先煮麻黃，減二升，去上沫，內諸藥，煮取三升，去滓，溫服一升，日三服。","jj":[]},"xiaoqinglong":{"name":"小青龍湯","no":40,"fu":"右八味，以水一斗，先煮麻黃，減二升，去上沫，內諸藥，煮取三升，去滓，溫服一升。若渴，去半夏，加栝樓根三兩。若微利，去麻黃，加蕘花，如一雞子，熬令赤色。若噎者，去麻黃，加附子一枚，炮。若小便不利，少腹滿者，去麻黃，加茯苓四兩。若喘，去麻黃，加杏仁半升，去皮尖。且蕘花不治利，麻黃主喘，今此語反之，疑非仲景意。","jj":["若渴，去半夏，加栝樓根三兩。","若微利，去麻黃，加蕘花，如一雞子，熬令赤色。","若噎者，去麻黃，加附子一枚，炮。","若小便不利，少腹滿者，去麻黃，加茯苓四兩。","若喘，去麻黃，加杏仁半升，去皮尖。"]},"guizhihoupo":{"name":"桂枝加厚朴杏子湯","no":43,"fu":"右七味，以水七升，微火煮取三升，去滓。溫服一升，覆取微似汗。","jj":[]},"linggui":{"name":"茯苓桂枝白朮甘草湯","no":67,"fu":"右四味，以水六升，煮取三升，去滓，分溫三服。","jj":[]},"taohe":{"name":"桃核承氣湯","no":106,"fu":"右五味，以水七升，煮取二升半，去滓，內芒硝，更上火微沸，下火，先食溫服五合，日三服，當微利。","jj":[]},"xiaoxianxiong":{"name":"小陷胸湯","no":138,"fu":"右三味，以水六升，先煮栝蔞，取三升，去滓，內諸藥，煮取二升，去滓，分溫三服。","jj":[]},"shengjiangxiexin":{"name":"生薑瀉心湯","no":157,"fu":"右八味，以水一斗，煮取六升，去滓，再煎取三升，溫服一升，日三服。","jj":[]},"zhigancao":{"name":"炙甘草湯","no":177,"fu":"右九味，以清酒七升，水八升，先煮八味，取三升，去滓，內膠烊消盡，溫服一升，日三服。一名復脈湯。","jj":[]},"tiaowei":{"name":"調胃承氣湯","no":29,"fu":"右三味，以水三升，煮取一升，去滓，內芒硝，更上火微煮令沸，少少溫服之。","jj":[]},"yinchenhao":{"name":"茵陳蒿湯","no":236,"fu":"右三味，以水一斗二升，先煮茵陳，減六升，內二味，煮取三升，去滓，分三服。小便當利，尿如皂莢汁狀，色正赤，一宿腹減，黃從小便去也。","jj":[]},"baihurenshen":{"name":"白虎加人參湯","no":26,"fu":"右五味，以水一斗，煮米熟，湯成，去滓，溫服一升，日三服。","jj":[]},"maziren":{"name":"麻子仁丸","no":247,"fu":"右六味，蜜和丸，如梧桐子大，飲服十丸，日三服，漸加，以知為度。","jj":[]},"zhuling":{"name":"豬苓湯","no":223,"fu":"右五味，以水四升，先煮四味，取二升，去滓，內阿膠烊消，溫服七合，日三服。","jj":[]},"chaihuguizhi":{"name":"柴胡桂枝湯","no":146,"fu":"右九味，以水七升，煮取三升，去滓，溫服一升。本云：人參湯，作如桂枝法，加半夏、柴胡、黃芩；復如柴胡法，今用人參，作半劑。","jj":[]},"chaigui":{"name":"柴胡桂枝乾薑湯","no":147,"fu":"右七味，以水一斗二升，煮取六升，去滓，再煎取三升，溫服一升，日三服。初服微煩，復服，汗出便愈。","jj":[]},"guizhishaoyao":{"name":"桂枝加芍藥湯","no":279,"fu":"右五味，以水七升，煮取三升，去滓，溫分三服。本云：桂枝湯，今加芍藥。","jj":[]},"fuzitang":{"name":"附子湯","no":304,"fu":"右五味，以水八升，煮取三升，去滓，溫服一升，日三服。","jj":[]},"huanglianejiao":{"name":"黃連阿膠湯","no":303,"fu":"右五味，以水六升，先煮三物，取二升，去滓，內膠烊盡，小冷，內雞子黃，攪令相得，溫服七合，日三服。","jj":[]},"taohua":{"name":"桃花湯","no":306,"fu":"右三味，以水七升，煮米令熟，去滓，溫服七合，內赤石脂末方寸匕，日三服。若一服愈，餘勿服。","jj":[]},"wuzhuyu":{"name":"吳茱萸湯","no":243,"fu":"右四味，以水七升，煮取二升，去滓，溫服七合，日三服。","jj":[]},"baitouweng":{"name":"白頭翁湯","no":371,"fu":"右四味，以水七升，煮取二升，去滓，溫服一升。不愈，更服一升。","jj":[]}};
     /* FANGHOU>> */
     const WHEELS = EY.WHEELS;
     function eyeSVG(e, sel) {
@@ -5508,7 +7771,11 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const chenWas = () => { const p = chenOf(); return !p ? '' : (p.status === 'lost' ? 'lost' : (p.outcome === '轉介' ? 'ref' : (GOOD4.includes(p.outcome) ? 'good' : 'bad'))); };
     const CHAPTERS = [
         { name: '習醫', quota: 3, heart: '怕開錯',
-          lines: [{ who: SHM, text: '今日起，你自己坐診。我在後頭聽著。' }, { who: SHM, text: '病人不會只來一次。方子開出去，要等他回來，你才知道對不對。這段日子，你還得看別的病人。' }],
+          lines: () => isAmateur()
+              ? [{ text: '我是師父醫館裡的藥童。平日抓藥、煎藥、掃地，偶爾在診桌旁磨墨。' },
+                 { who: SHM, text: '今日起，你坐到我旁邊。病人說什麼，你先記下來，再想想他是什麼病、該吃什麼藥。我在後頭看著。' },
+                 { who: SHM, text: '病人不會只來一次。藥開出去，要等他回來，你才知道對不對。' }]
+              : [{ who: SHM, text: '今日起，你自己坐診。我在後頭聽著。' }, { who: SHM, text: '病人不會只來一次。方子開出去，要等他回來，你才知道對不對。這段日子，你還得看別的病人。' }],
           end: [{ text: '師父翻了翻我的病歷簿，沒有說好，也沒有說不好。' }, { who: SHM, text: '都記下來了，就好。' },
                 { who: SHM, text: '《易》有一卦叫既濟，水在火上，飯才煮得熟。醫者的身和心也是這樣，哪一頭偏了，都看不好病人。' },
                 { text: '那時候，我只記住了前半句。' }] },
@@ -5567,10 +7834,12 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const CASE_ORD = { chen: 1, c1: 2, wen: 3 };
     const lvOf = (c) => c.lv || CASE_LV[c.id] || 1;
     function planChapter(k) {
+        const seen = (loadMeta().cases) || {};
         /* 長期病人（c.life）只在自己那一章上門，而且排第一位；錯過那一章就不來了，免得後面的病程超出五章 */
         const pool = SH.CASES.concat(EY.CASES).filter(c => !P[c.id] && lvOf(c) <= k + 1 && !(c.life && lvOf(c) !== k + 1))
-            .map(c => ({ id: c.id, lv: lvOf(c), o: c.life ? 0 : (c.ord || CASE_ORD[c.id] || 10 + Math.random() * 80) }))
-            .sort((a, b) => (b.lv - a.lv) || (a.o - b.o));          // 合乎這一章程度的優先，同程度隨機
+            .map(c => ({ id: c.id, lv: lvOf(c), s: c.life || !seen[c.id] ? 0 : 1, o: c.life ? 0 : (c.ord || CASE_ORD[c.id] || 10 + Math.random() * 80) }))
+            /* 病人輪替（2026-11-22）：札記裡還沒看過的病人優先，玩第二、三輪會遇到新面孔；其次是合乎這一章程度的，同程度隨機 */
+            .sort((a, b) => (a.s - b.s) || (b.lv - a.lv) || (a.o - b.o));
         const picks = pool.slice(0, quotaOf(k)).map(x => x.id);
         const n1 = Math.ceil(picks.length / 2);
         return { 1: picks.slice(0, n1), 2: picks.slice(n1) };
@@ -5587,15 +7856,16 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     let V = null;               // 目前在診間的病人
     /* 難度（2026-11-17 佑彥定三級）：入門 easy（一天約三位，約三四十分鐘）、進階 mid（一天約五位，約一個半小時，類方加減）、專業 hard（一天約五位，方子一味一味自己配）。
        isEasy() 是只給入門的提點；!isHard() 是入門與進階都有的資訊（藥材功效、類方組成、察目的臟腑） */
-    const isEasy = () => S.diff === 'easy';
+    const isEasy = () => S.diff === 'easy' || S.diff === 'amateur';          // 業餘也有入門的全部提點
+    const isAmateur = () => S.diff === 'amateur';                             // 業餘（2026-11-22 佑彥）：主角是藥童，三選一、標關鍵、名詞解釋、不會出事
     const isHard = () => S.diff === 'hard';
-    const DIFF_NAME = { easy: '入門', mid: '進階', hard: '專業' };
+    const DIFF_NAME = { amateur: '業餘', easy: '入門', mid: '進階', hard: '專業' };
     const diffName = (d) => DIFF_NAME[d || S.diff] || '入門';
     const QUOTA_MORE = [4, 5, 5, 5, 5];          // 進階、專業每章的新病人數（入門用 CHAPTERS 的 quota）。病例庫不夠時，有幾位就排幾位
     /* 病例不夠時，把剩下的病例平均留給後面幾章，免得晚年章沒人上門；病例補足後就是 QUOTA_MORE */
     function quotaOf(k) {
         const left = SH.CASES.concat(EY.CASES).filter(c => !P[c.id]).length;
-        const q = isEasy() ? CHAPTERS[k].quota : Math.min(QUOTA_MORE[k], Math.max(CHAPTERS[k].quota, Math.ceil(left / (CHAPTERS.length - k))));
+        const q = isAmateur() ? 2 : isEasy() ? CHAPTERS[k].quota : Math.min(QUOTA_MORE[k], Math.max(CHAPTERS[k].quota, Math.ceil(left / (CHAPTERS.length - k))));
         /* 自己開業之後，聲望低就少人上門：聲望低於 0 少一位，低於 −10 少兩位，至少還有一位（佑彥 2026-11-18） */
         return k >= 2 ? Math.max(1, q - (S.fame < -10 ? 2 : (S.fame < 0 ? 1 : 0))) : q;
     }
@@ -5641,7 +7911,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         return { big: d.title || '訃聞', sub: p.c.name, lines: ls };
     }
     function maxAsk() {
-        const base = V.kind === 'sh' ? { easy: 5, mid: 4 }[S.diff] || 3 : (isEasy() ? 4 : 3);
+        const base = V.kind === 'sh' ? { amateur: 6, easy: 5, mid: 4 }[S.diff] || 3 : (isEasy() ? 4 : 3);
         return Math.max(1, base + S.study + (S.skill >= 10 ? 1 : 0) - (V.lowSpirit ? 1 : 0));
     }
     /* 醫術：每結一案就長一點，到門檻會讓看診省力。聲望：治好加、治壞減，影響新病人的信任 */
@@ -5811,6 +8081,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     function nextLine() {
         if (!queue.length) { $('#dlg-more').classList.add('hidden'); return; }
         const l = queue.shift();
+        if (l.bg) setBg(l.bg);                       // 劇情的某一句可以換場景（開場用，2026-11-22）
         const who = l.who || '';
         const face = $('#dlg-face');
         face.style.backgroundImage = ''; face.innerHTML = '';
@@ -5872,6 +8143,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     function tips(...texts) {
         texts = texts.filter(Boolean);
         if (!(isEasy() || (S.diff === 'mid' && S.ch === 0)) || !texts.length) return [];        // 進階只有習醫章有師父提點
+        if (isAmateur() && S.ch >= 1) return texts.map((t, i) => narr((i ? '' : '我想起師父說過：') + t));     // 業餘：每一章都有提點
         const eye = V && V.kind === 'eye';
         if (S.ch === 0) return texts.map(Mt);
         if (S.ch === 1) return eye ? texts.map(Mt) : texts.map((t, i) => narr((i ? '' : '我想起師父說過：') + t));
@@ -5898,7 +8170,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         $('#me-face').innerHTML = heroImg();
         face.classList.toggle('hidden', !V);
         const over = S.ch >= CHAPTERS.length;      // 五章走完，進入結局
-        $('#me-name').textContent = `我（${['弟子', '醫者', '醫者', '師者', '老醫者'][S.ch] || '著書人'}）`;
+        $('#me-name').textContent = `我（${[isAmateur() ? '藥童' : '弟子', '醫者', '醫者', '師者', '老醫者'][S.ch] || '著書人'}）`;
         $('#me-diff').innerHTML = over ? '終章' : `<span class="wide">${diffName()}　${chOf().name}　第 ${S.chDay} 日</span><span class="narrow">${chOf().name} ${S.chDay} 日</span>`;
         /* 精力、心神與四個數值有兩處顯示：平常在右上的狀態牌，看診時在右下的狀態窗 */
         $$('.g-sp').forEach(e => { e.style.width = S.spirit + '%'; }); $$('.v-sp').forEach(e => { e.innerHTML = `${S.spirit}<small>/100</small>`; });
@@ -6012,6 +8284,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             const q = TUT_Q.find(k => !V.asked.includes(k));
             return q ? { sel: `#panel [data-q="${q}"]`, tip: TUT_Q_TIP[q] } : { sel: '#next', tip: '問得多不如問得準。三樣都有了，點「先問到這裡」。每問一項都耗心神，右下角看得到。' };
         }
+        if (/^定證/.test(t) && isAmateur()) return V.pattern === V.c.pattern ? { sel: '#next', tip: '點「就是這一種」。' } : { sel: `#panel [data-p="${V.c.pattern}"]`, tip: '怕風、一直出細汗、脈浮緩，是太陽中風。點這一種。' };
+        if (/^處方/.test(t) && isAmateur()) return V.am && V.am.pickF === P0.formula ? { sel: '#next', tip: '點「就開這一帖」。' } : { sel: `#panel [data-af="${P0.formula}"]`, tip: `太陽中風，用${SH.FORMULAS[P0.formula].name}。點它。` };
         if (/^定證/.test(t)) {
             const j = jingOf(V.c.pattern);
             if (V.jing !== j) return { sel: `#panel [data-jing="${j}"]`, tip: `病在肌表，惡風、脈浮，是${j}病。先定病位，點「${j}」。` };
@@ -6257,6 +8531,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         if (S.flags.duSupply && herbQ() > (S.flags.hq || 0)) { const q = herbQ(); S.flags.hq = q; return story('藥材', `杜掌櫃送來${HQ[q]}等藥材`, DU_UP(q), dayStart); }
         const ln = lifeNewsNext();          // 長期病人的消息：缺席、訃聞
         if (ln) return story(ln.big, ln.sub, ln.lines, dayStart);
+        if ((S.flags.thanksQ || []).length) return thanksScene(S.flags.thanksQ.shift());
         if (S.flags.redeemNext) return redeem();                               // 公堂之後，第一位治好的病人
         if ((S.flags.mal || 0) >= MAL_COURT && !S.flags.court) return court();  // 誤治四筆：病家告官
         if ((S.flags.malQ || []).length) return dispute(S.flags.malQ.shift()); // 病家上門理論
@@ -6287,7 +8562,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         if (S.energy < 30 || S.spirit < 30) teachSoon('tired');
         panel(`<h3>${chOf().name}　第 ${S.chDay} 個門診日 <span>候診 <span class="px">${S.queue.length}</span> 位</span></h3>
             ${echoes.map(e => `<div class="note small" style="margin:0 0 8px"><b class="hint">回音</b>　${e.t}</div>`).join('')}
-            ${S.queue.length ? `<ul class="plist">${li}</ul>` : '<div class="dim">今天沒有病人上門。</div>'}${news}${warn}
+            ${S.queue.length ? `<div class="bench" style="background-image:url('${ART}bg-s-bench.webp')">${S.queue.map((p, i) => `<button class="bp" data-bq="${i}" style="background-image:url('${faceOf(p)}')" title="${p.c.name}　${p.c.type}"><span>${p.c.name}<i>${p.status === 'waiting' ? (p.chainIdx === 0 && p.stage ? '老病人' : '回診') : ''}</i></span></button>`).join('')}</div>
+            <div class="small dim">點長凳上的人，就請他先進來；直接按「開始看診」照排隊的順序。</div>` : '<div class="dim">今天沒有病人上門。</div>'}${news}${warn}
             <div class="small dim" style="margin-top:8px">新病人耗精力 10，還要從頭問診，耗心神較多。回診每位耗精力 3、心神 ${S.app.on ? '1（小滿幫忙記錄）' : '2'}。</div>
             <div class="foot"><button class="btn go px" id="next">${S.queue.length ? '開始看診' : '過這一天'}</button></div>`);
         const lines = echoes.filter(e => !e.seen).map(e => narr(e.t));
@@ -6296,6 +8572,18 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         if (S.spirit < 20 && isEasy()) lines.push(S.ch === 0 ? { who: SHM, text: '你臉色不好。醫者自己心神不寧，是看不清病人的。' } : narr('我想起師父說過：醫者自己心神不寧，是看不清病人的。'));
         speak(lines);
         $('#next').onclick = nextPatient;
+        $$('#panel [data-bq]').forEach(b => b.onclick = () => { const q = S.queue.splice(+b.dataset.bq, 1)[0]; S.queue.unshift(q); nextPatient(); });
+    }
+    function thanksScene(pid) {
+        const p = P[pid];
+        if (!p) return dayStart();
+        V = null; hud();
+        panel(`<h3>道謝　${p.c.name} <span>${p.c.type}</span></h3>
+            <div class="thank-face" style="background-image:url('${faceUrl(p.c, 'w')}')"></div>
+            <div class="see">${p.c.thanks}</div><div style="clear:both"></div>
+            <div class="foot"><button class="btn go px" id="next">收下心意</button></div>`);
+        speak(narr(p.c.thanks));
+        $('#next').onclick = () => { addSpirit(3); hud(); dayStart(); };
     }
     function nextPatient() {
         if (!S.queue.length) {
@@ -6352,8 +8640,10 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         /* 誤治（2026-11-18）：自己開業後，藥不對證（無效）或治到惡化（急症耽誤到失明也算）各記一筆。
            惡化的病家隔天上門理論；累積四筆會被告官。告官之後第一位治好的病人，是重新站起來的時候 */
         const worse = outcome === '惡化' || (outcome === '失明' && !V.c.life);
-        if (S.ch >= 1 && (worse || outcome === '無效')) S.flags.mal = (S.flags.mal || 0) + 1;
-        if (S.ch >= 1 && worse) (S.flags.malQ = S.flags.malQ || []).push(V.id);
+        if (S.ch >= 1 && !isAmateur() && (worse || outcome === '無效')) S.flags.mal = (S.flags.mal || 0) + 1;     // 業餘不記誤治，不會醫糾、上公堂、成庸醫
+        if (S.ch >= 1 && !isAmateur() && worse) (S.flags.malQ = S.flags.malQ || []).push(V.id);
+        /* 道謝（2026-11-22）：外感病人治好了，隔天早上帶著謝禮回來，換上病好版立繪 */
+        if (V.kind === 'sh' && GOOD3.includes(outcome) && V.c.thanks) (S.flags.thanksQ = S.flags.thanksQ || []).push(V.id);
         if (GOOD3.includes(outcome) && S.flags.court && !S.flags.redeemed) S.flags.redeemNext = V.id;
         hud();
     }
@@ -6466,7 +8756,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const DIL_IMG = { transfer: 'cd9b590b-31a5-493b-ab36-8bfde23ec1ef.png', queue: '7f36b791-c12b-4694-939d-451a0d4f359a.png', debate: '3421f183-8919-466f-af5d-eb791d39621b.png',
                       terminal: '791ad5b6-bb1b-4050-b3c6-37fe87df9a29.png', wealth: '6a306648-e3e6-4d86-9e39-a137525c7e03.png', midnight: 'daaf1090-5895-42a3-9d3e-dc10276cd3ae.png', apprentice: '3421f183-8919-466f-af5d-eb791d39621b.png' };
     /* 2026-11-17 新畫的三張：原本借用別的困境的圖 */
-    const DIL_ART = { apprentice: 'bg-d-apprentice.webp', renown: 'bg-d-renown.webp', aging: 'bg-d-aging.webp' };
+    const DIL_ART = { apprentice: 'bg-d-apprentice.webp', renown: 'bg-d-renown.webp', aging: 'bg-d-aging.webp',
+                      transfer: 'bg-d-transfer.webp', midnight: 'bg-d-midnight.webp', wealth: 'bg-d-wealth.webp', debate: 'bg-d-debate.webp', queue: 'bg-d-queue.webp', terminal: 'bg-d-terminal.webp' };
     const DILEMMAS = {
         transfer: {
             title: '焦慮的轉嫁',
@@ -7233,10 +9524,43 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             const fus = fuOf(id).map(f => V.fu.includes(f.id)
                 ? `<li class="fu"><b>追問</b>${f.q}<br><span>${(V.c.fu || {})[f.id] || ''}</span></li>`
                 : (asking ? `<li class="fu"><button class="btn" data-fu="${f.id}">追問：${f.q}</button></li>` : '')).join('');
-            return `<li><b>${q.g}</b>${V.c.a[id]}</li>${fus}`;
+            const key = isAmateur() && (V.c.keyQ || []).includes(id);
+            return `<li><b>${q.g}</b>${key ? '<span class="keytag">關鍵</span>' : ''}${gloss(V.c.a[id], id === 'pulse' || id === 'look')}</li>${fus}`;
         }).join('');
         return li ? `<ul class="ans${cls ? ' ' + cls : ''}">${li}</ul>` : '';
     };
+    /* 名詞解釋（業餘，2026-11-22 Claude 起草，待佑彥審）：脈象、舌象與常見的病位用語，點一下跳出一行白話 */
+    const GLOSS = {
+        浮: '脈浮：手指輕輕一搭就摸得到，多半病還在體表。', 沉: '脈沉：要用力按到底才摸得到，多半病在裡面。', 緊: '脈緊：像按在繃緊的繩子上，多主寒、主痛。',
+        緩: '脈緩：跳得從容、偏軟，常見於汗出、營衛不和。', 數: '脈數：跳得快，一呼一吸超過五下，多主熱。', 弦: '脈弦：像按在琴弦上，直而有力，多和肝膽、疼痛、水飲有關。',
+        滑: '脈滑：像珠子在盤裡滾，流利圓滑，多主痰、食積或熱。', 細: '脈細：細得像一條線，多主血虛、陰虛。', 澀: '脈澀：跳得不順，像刀輕刮竹子，多主血少或瘀阻。',
+        洪大: '脈洪大：又大又有力，來勢洶湧，多主熱盛。', 結代: '脈結代：跳一跳會停一下，多是心的氣血不足。',
+        舌淡: '舌淡：舌色偏淡白，多是氣血不足或有寒。', 舌紅: '舌紅：舌色偏紅，多主熱。', 苔白: '苔白：舌面一層白苔，多主寒或病還在表。', 苔黃: '苔黃：舌面一層黃苔，多主熱。',
+        膩: '苔膩：舌苔像一層油膩的膜，多是濕或痰。', 齒痕: '齒痕：舌邊有牙齒壓出的痕，多是脾虛、水濕。', 瘀點: '瘀點：舌上紫暗的小點，多有瘀血。', 少苔: '少苔：舌面幾乎沒有苔，多是陰虛。'
+    };
+    const GLOSS_PULSE = ['洪大', '結代', '浮', '沉', '緊', '緩', '數', '弦', '滑', '細', '澀'];
+    const GLOSS_LOOK = ['舌淡', '舌紅', '苔白', '苔黃', '膩', '齒痕', '瘀點', '少苔'];
+    function gloss(text, on) {
+        if (!isAmateur() || !on || !text) return text || '';
+        const hits = [];
+        GLOSS_PULSE.concat(GLOSS_LOOK).forEach(t => { const i = text.indexOf(t); if (i >= 0 && !hits.some(h => i < h.i + h.t.length && h.i < i + t.length)) hits.push({ i, t }); });
+        hits.sort((a, b) => b.i - a.i).forEach(h => { text = text.slice(0, h.i) + `<span class="gl" data-gl="${h.t}">${h.t}</span>` + text.slice(h.i + h.t.length); });
+        return text;
+    }
+    document.addEventListener('click', (e) => {
+        const g = e.target.closest && e.target.closest('.gl');
+        let pop = document.getElementById('gl-pop');
+        if (pop) pop.remove();
+        if (!g) return;
+        pop = document.createElement('div'); pop.id = 'gl-pop';
+        const t = GLOSS[g.dataset.gl] || '';
+        pop.innerHTML = t.replace(/^([^：]+)：/, '<b>$1</b>：');
+        document.body.appendChild(pop);
+        const r = g.getBoundingClientRect();
+        pop.style.left = Math.max(6, Math.min(innerWidth - pop.offsetWidth - 6, r.left)) + 'px';
+        pop.style.top = (r.bottom + 6 + pop.offsetHeight > innerHeight ? r.top - pop.offsetHeight - 6 : r.bottom + 6) + 'px';
+        e.stopPropagation();
+    }, true);
     function shStart() {
         hub([narr(V.c.intro)].concat(tips(V.c.tip || '外感初起，先問寒熱，再問有汗無汗，最後憑脈。問得多不如問得準。')));
     }
@@ -7245,7 +9569,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const groups = ['望', '聞', '問', '切'].map(g => {
             const btns = SH.QUESTIONS.filter(q => q.g === g).map(q => {
                 const done = V.asked.includes(q.id);
-                return `<button class="btn${done ? ' on' : ''}" data-q="${q.id}" ${done || left <= 0 ? 'disabled' : ''}>${q.q}</button>`;
+                return `<button class="btn${done ? ' on' : ''}" data-q="${q.id}" ${done || left <= 0 ? 'disabled' : ''}>${isAmateur() && (V.c.keyQ || []).includes(q.id) ? '<span class="keytag">關鍵</span>' : ''}${q.q}</button>`;      // 業餘：關鍵的幾問先標出來
             }).join('');
             return `<div class="askg"><b>${g}</b><div class="grid">${btns}</div></div>`;
         }).join('');
@@ -7279,20 +9603,68 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     const FNAME_FIX = { 理中湯: '理中丸' };                           // 遊戲裡理中作湯，《類方》作理中丸
     const jfFind = (name) => { name = FNAME_FIX[name] || name; for (const c of JF.classes) { const f = c.list.find(x => x.n === name); if (f) return { cls: c, f }; } return null; };
     const fkeyOf = (name) => Object.keys(SH.FORMULAS).find(k => SH.FORMULAS[k].name === name || FNAME_FIX[SH.FORMULAS[k].name] === name);
-    const pickMode = () => S.ch >= 1 && !(V && V.tutor) && !isHard();        // 專業難度一律一味一味自己配（佑彥 2026-11-17）
+    const pickMode = () => S.ch >= 1 && !(V && V.tutor) && !isHard() && !isAmateur();        // 專業難度一律一味一味自己配（佑彥 2026-11-17）
     /* 習醫章親手組的十一個方根（佑彥 2026-11-15 決定：十二類各類的類首）。其他成方（例如厥陰的當歸四逆湯）只在類方選方裡出現 */
     const ROOT_KEYS = ['guizhi', 'mahuang', 'gegen', 'xiaochaihu', 'zhichi', 'chengqi', 'banxiaxiexin', 'baihu', 'wuling', 'sini', 'lizhong'];
+    /* 業餘：從正解與另外兩個證裡選（同一經的優先，選項一次定好不再變） */
+    function amOpts(key, right, pool) {
+        V.am = V.am || {};
+        if (!V.am[key]) { const others = pool.filter(k => k !== right).sort(() => Math.random() - 0.5).slice(0, 2); V.am[key] = [right].concat(others).sort(() => Math.random() - 0.5); }
+        return V.am[key];
+    }
+    function shPatternAm() {
+        const right = V.c.pattern, j = jingOf(right);
+        const same = Object.keys(SH.PATTERNS).filter(k => k !== right && jingOf(k) === j), rest = Object.keys(SH.PATTERNS).filter(k => k !== right && jingOf(k) !== j);
+        const opts = amOpts('sh-p', right, same.length >= 2 ? same : same.concat(rest));
+        const curP = V.pattern && SH.PATTERNS[V.pattern];
+        panel(`<h3>定證 <span>他像哪一種病？點一下看說明</span></h3>${shAnswers('small')}
+            <div class="grid am-pick" style="margin-top:8px">${opts.map(k => `<button class="btn${V.pattern === k ? ' on' : ''}" data-p="${k}"><b>${SH.PATTERNS[k].alias}</b></button>`).join('')}</div>
+            <div class="stick">${eyInfo(curP && curP.alias, curP && `這叫「${curP.name}」。治法：${curP.law}`)}
+            <div class="foot"><button class="btn" id="back">回診間</button><button class="btn go px" id="next" ${V.pattern ? '' : 'disabled'}>就是這一種</button></div></div>`);
+        $$('#panel [data-p]').forEach(b => b.onclick = () => { V.pattern = b.dataset.p; V.jing = jingOf(V.pattern); shPatternAm(); });
+        $('#back').onclick = () => hub();
+        $('#next').onclick = () => {
+            if (!paid()) { addSpirit(-patCost()); hud(); V.paidPattern = V.pattern; newRx(); }
+            hub(tips('病認清了，才選藥。點「處方」。'));
+        };
+    }
+    /* 業餘：處方是三首成方選一首，附一句白話功效；選了就照成方抓藥 */
+    function shPickAm() {
+        const right = SH.PATTERNS[V.c.pattern].formula;
+        const opts = amOpts('sh-f', right, Object.keys(SH.FORMULAS));
+        const cur = V.am.pickF;
+        panel(`<h3>處方 <span>我認的病：${SH.PATTERNS[V.pattern].name}</span></h3>
+            <div class="grid am-pick">${opts.map(k => `<button class="btn${cur === k ? ' on' : ''}" data-af="${k}"><b>${SH.FORMULAS[k].name}</b></button>`).join('')}</div>
+            <div class="stick">${eyInfo(cur && SH.FORMULAS[cur].name, cur && SH.FORMULAS[cur].note)}
+            <div class="foot"><button class="btn" id="back">回診間</button><button class="btn go px" id="next" ${cur ? '' : 'disabled'}>就開這一帖</button></div></div>`);
+        $$('#panel [data-af]').forEach(b => b.onclick = () => { V.am.pickF = b.dataset.af; shPickAm(); });
+        $('#back').onclick = () => hub();
+        $('#next').onclick = () => { rx = clone(SH.FORMULAS[V.am.pickF].slots); shSubmit(); };
+    }
     function shPattern() {
+        if (isAmateur()) return shPatternAm();
         const jing = V.jing || (V.pattern ? jingOf(V.pattern) : '');
         const open = (j) => Object.keys(SH.PATTERNS).some(k => jingOf(k) === j);
         const rowJ = JING.map(j => `<button class="btn${jing === j ? ' on' : ''}" data-jing="${j}" ${open(j) ? '' : 'disabled'}><b>${j}</b>${open(j) ? '' : '<span class="sub">尚未開放</span>'}</button>`).join('');
-        const btns = Object.keys(SH.PATTERNS).filter(k => jingOf(k) === jing).map(k => { const p = SH.PATTERNS[k], hit = jfFind(SH.FORMULAS[p.formula].name);
-            return `<button class="btn${V.pattern === k ? ' on' : ''}" data-p="${k}"><b>${p.name}</b>　${p.alias}${isEasy() ? `<span class="sub">治法：${p.law}${hit ? '　方屬' + hit.cls.name : ''}</span>` : ''}</button>`; }).join('');
+        const inJ = Object.keys(SH.PATTERNS).filter(k => jingOf(k) === jing);
+        const btn = (k) => { const p = SH.PATTERNS[k], hit = jfFind(SH.FORMULAS[p.formula].name);
+            return `<button class="btn${V.pattern === k ? ' on' : ''}" data-p="${k}"><b>${p.name}</b></button>`; };
+        /* 2026-11-22 佑彥：外感也和眼病一樣，按鈕只寫名稱，點了在下面出現說明，按確定才算數 */
+        const curP = V.pattern && SH.PATTERNS[V.pattern], curHit = curP && jfFind(SH.FORMULAS[curP.formula].name);
+        const curSub = curP ? curP.alias + (isEasy() ? `<br>治法：${curP.law}${curHit ? '　方屬' + curHit.cls.name : ''}` : '') : '';
+        /* 一經裡的證超過八個（2026-11-22 起太陽有十五個），依主方所屬的方類分組，比較好找 */
+        let btns;
+        if (inJ.length > 8) {
+            const grp = {};
+            inJ.forEach(k => { const hit = jfFind(SH.FORMULAS[SH.PATTERNS[k].formula].name); const g = hit ? hit.cls.name : '其他'; (grp[g] = grp[g] || []).push(k); });
+            btns = Object.keys(grp).map(g => `<div class="pgrp small hint" style="grid-column:1/-1;flex:0 0 100%;margin-top:6px;border-bottom:1px solid rgba(212,175,55,.3)">${g}</div>${grp[g].map(btn).join('')}`).join('');
+        } else btns = inJ.map(btn).join('');
         panel(`<h3>定證 <span>先定六經病位，再定方證</span></h3>
             <div class="askg"><b>病位</b><div class="grid">${rowJ}</div></div>
             ${jing ? `<div class="askg"><b>方證</b><div class="grid">${btns}</div></div>` : '<div class="small dim">先定病在哪一經，再看這一經裡是哪一個方證。</div>'}
             <div class="small dim" style="margin-top:8px">定證耗心神 ${patCost()}。之後回頭改證，要再耗一次。</div>
-            <div class="foot"><button class="btn" id="back">回診間</button><button class="btn go px" id="next" ${V.pattern ? '' : 'disabled'}>就定此證</button></div>`);
+            <div class="stick">${eyInfo(curP && curP.name, curSub)}
+            <div class="foot"><button class="btn" id="back">回診間</button><button class="btn go px" id="next" ${V.pattern ? '' : 'disabled'}>就定此證</button></div></div>`);
         $$('#panel [data-jing]').forEach(b => b.onclick = () => { V.jing = b.dataset.jing; if (V.pattern && jingOf(V.pattern) !== V.jing) V.pattern = null; shPattern(); });
         $$('#panel [data-p]').forEach(b => b.onclick = () => { V.pattern = b.dataset.p; shPattern(); });
         $('#back').onclick = () => hub();
@@ -7316,26 +9688,34 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             : (pickBook === 'jg' && bookLv('jg') >= 2 ? '<div class="small hint">《金匱要略》二重：眼前這一位是外感，方要回《傷寒》十二類找。</div>' : '');
         const tabs = fams.map(c => `<button class="btn${c.name === pickFam ? ' on' : ''}" data-fam="${c.name}">${c.name}</button>`).join('');
         const head = fam && fam.head ? fam.list.find(x => x.n === fam.head) : null;
-        const cards = fam && !head ? fam.list.map(f => `<button class="btn${pickF === f.n ? ' on' : ''}" data-pickf="${f.n}"><b>${f.n}</b><span class="sub">${f.h.join('、')}${tongNote(f.h)}</span></button>`).join('')
-            : fam ? fam.list.map(f => {
-            const add = f.h.filter(h => !head.h.includes(h)), minus = head.h.filter(h => !f.h.includes(h));
-            const diff = f.n === fam.head ? '類首' : [add.length ? '加' + add.join('、') : '', minus.length ? '去' + minus.join('、') : ''].filter(Boolean).join('，') || '藥味相同，分量不同';
-            return `<button class="btn${pickF === f.n ? ' on' : ''}" data-pickf="${f.n}"><b>${f.n}</b><span class="sub">${f.n === fam.head ? '' : `比${fam.head}：`}${diff}${!isHard() ? `<br>${f.h.join('、')}` : ''}${tongNote(f.h)}</span></button>`;
-        }).join('') : '';
+        const cards = fam ? fam.list.map(f => `<button class="btn${pickF === f.n ? ' on' : ''}" data-pickf="${f.n}"><b>${f.n}</b></button>`).join('') : '';
+        /* 說明放到下面：點了哪一首，才看得到它和類首差在哪幾味、組成（2026-11-22，和眼病一致） */
+        let pInfo = '';
+        if (pickF) {
+            const pf = [].concat(JF.classes, JF.jg).find(c => c.list.some(x => x.n === pickF));
+            const f = pf.list.find(x => x.n === pickF), hd = pf.head ? pf.list.find(x => x.n === pf.head) : null;
+            if (!hd) pInfo = `${pf.name}　${f.h.join('、')}${tongNote(f.h)}`;
+            else {
+                const add = f.h.filter(h => !hd.h.includes(h)), minus = hd.h.filter(h => !f.h.includes(h));
+                const diff = f.n === pf.head ? pf.name + '的類首' : `比${pf.head}：` + ([add.length ? '加' + add.join('、') : '', minus.length ? '去' + minus.join('、') : ''].filter(Boolean).join('，') || '藥味相同，分量不同');
+                pInfo = `${diff}${!isHard() ? `<br>${f.h.join('、')}` : ''}${tongNote(f.h)}`;
+            }
+        }
         panel(`<h3>${V.round === 1 ? '處方' : '複診處方'} <span>我定的證：${p0.name}</span></h3>
             <div class="askg"><b>方書</b><div class="grid">${books}</div></div>${bookTip}
             <div class="askg"><b>${pickBook === 'jg' ? '病篇' : '類方'}</b><div class="grid">${tabs}</div></div>
             ${fam ? `<div class="askg"><b>${fam.name}</b><div class="grid">${cards}</div></div>` : '<div class="small dim">先選這個證屬於哪一類方。</div>'}
-            <div class="foot">${V.round === 1 ? '<button class="btn" id="back">回診間</button>' : ''}<button class="btn go px" id="next" ${pickF ? '' : 'disabled'}>交付藥方</button></div>`);
+            <div class="stick">${eyInfo(pickF, pInfo)}
+            <div class="foot">${V.round === 1 ? '<button class="btn" id="back">回診間</button>' : ''}<button class="btn go px" id="next" ${pickF ? '' : 'disabled'}>交付藥方</button></div></div>`);
         $$('#panel [data-book]').forEach(b => b.onclick = () => { if (pickBook !== b.dataset.book) { pickBook = b.dataset.book; pickFam = ''; } shPick(); });
         $$('#panel [data-fam]').forEach(b => b.onclick = () => { pickFam = b.dataset.fam; shPick(); });
         $$('#panel [data-pickf]').forEach(b => b.onclick = () => { pickF = b.dataset.pickf; shPick(); });
         if ($('#back')) $('#back').onclick = () => hub();
         $('#next').onclick = shSubmit;
     }
-    function shRx() { return pickMode() ? shPick() : shCompose(); }
-    let rx = null, curSlot = 'jun';
-    function newRx() { rx = { jun: [], chen: [], zuo: [], shi: [] }; curSlot = 'jun'; }
+    function shRx() { return isAmateur() ? shPickAm() : (pickMode() ? shPick() : shCompose()); }
+    let rx = null, curSlot = 'jun', rxInfo = '';
+    function newRx() { rx = { jun: [], chen: [], zuo: [], shi: [] }; curSlot = 'jun'; rxInfo = ''; }
     const rxHerbs = (r) => [].concat(r.jun, r.chen, r.zuo, r.shi);
     function rxText(r) {
         const parts = Object.keys(SH.SLOT_NAMES).filter(k => r[k].length).map(k => `${SH.SLOT_NAMES[k]}：${r[k].map(h => SH.HERBS[h].name).join('、')}`);
@@ -7348,16 +9728,21 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             <div class="t">${N[k]}藥${MX[k] > 1 ? `　至多${CN[MX[k]]}味` : ''}</div>
             <div class="h">${rx[k].map(h => SH.HERBS[h].name).join('、') || '<span class="dim">點此，再選藥</span>'}</div></div>`).join('');
         const herbs = Object.keys(SH.HERBS).filter(k => !EYE_ONLY.has(k)).map(k => { const h = SH.HERBS[k];
-            return `<button class="herb${used.includes(k) ? ' used' : ''}" data-h="${k}"><span class="n">${h.name}</span><span class="q ${qClass(h.q)}">${h.q}</span>
-                <span class="d">${h.flavor}　歸${h.meridian}${!isHard() ? `<br>${h.use}` : ''}</span></button>`; }).join('');
+            return `<button class="herb${used.includes(k) ? ' used' : ''}${rxInfo === 'h:' + k ? ' on' : ''}" data-h="${k}"><span class="n">${h.name}</span><span class="q ${qClass(h.q)}">${h.q}</span></button>`; }).join('');
         const formulas = isEasy() ? `<div class="grp"><b>成方</b><span class="small hint">點一下直接套用，之後仍可增減</span><div class="grid" style="margin-top:4px">${
-            ROOT_KEYS.filter(k => SH.FORMULAS[k]).map(k => `<button class="btn" data-f="${k}"><b>${SH.FORMULAS[k].name}</b><span class="sub">${SH.FORMULAS[k].note}</span></button>`).join('')}</div></div>` : '';
+            ROOT_KEYS.filter(k => SH.FORMULAS[k]).map(k => `<button class="btn${rxInfo === 'f:' + k ? ' on' : ''}" data-f="${k}"><b>${SH.FORMULAS[k].name}</b></button>`).join('')}</div></div>` : '';
+        /* 藥性、功效放到下面：點了哪一味（或哪一首成方），下面就說明它（2026-11-22） */
+        const [ik, iv] = rxInfo.split(':'), ih = ik === 'h' && SH.HERBS[iv], iF = ik === 'f' && SH.FORMULAS[iv];
+        const rInfo = ih ? eyInfo(ih.name, `${ih.q}　${ih.flavor}　歸${ih.meridian}${!isHard() ? `<br>${ih.use}` : ''}`)
+            : iF ? eyInfo(iF.name, iF.note) : eyInfo('', '');
         panel(`<h3>${V.round === 1 ? '處方' : '複診處方'} <span>我定的證：${SH.PATTERNS[V.pattern].name}</span></h3>
             ${formulas}<div class="slots">${slots}</div><div class="herbs">${herbs}</div>
-            <div class="foot"><button class="btn" id="clear">清空</button>${V.round === 1 ? '<button class="btn" id="back">回診間</button>' : ''}<button class="btn go px" id="next" ${rx.jun.length ? '' : 'disabled'}>交付藥方</button></div>`);
+            <div class="stick">${rInfo}
+            <div class="foot"><button class="btn" id="clear">清空</button>${V.round === 1 ? '<button class="btn" id="back">回診間</button>' : ''}<button class="btn go px" id="next" ${rx.jun.length ? '' : 'disabled'}>交付藥方</button></div></div>`);
         $$('#panel [data-slot]').forEach(el => el.onclick = () => { curSlot = el.dataset.slot; shRx(); });
         $$('#panel [data-h]').forEach(el => el.onclick = () => {
             const h = el.dataset.h;
+            rxInfo = 'h:' + h;
             const inSlot = Object.keys(rx).find(k => rx[k].includes(h));
             if (inSlot) rx[inSlot] = rx[inSlot].filter(x => x !== h);
             else {
@@ -7368,7 +9753,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             }
             shRx();
         });
-        $$('#panel [data-f]').forEach(el => el.onclick = () => { rx = clone(SH.FORMULAS[el.dataset.f].slots); shRx(); });
+        $$('#panel [data-f]').forEach(el => el.onclick = () => { rxInfo = 'f:' + el.dataset.f; rx = clone(SH.FORMULAS[el.dataset.f].slots); shRx(); });
         $('#clear').onclick = () => { newRx(); shRx(); };
         if ($('#back')) $('#back').onclick = () => hub();
         $('#next').onclick = shSubmit;
@@ -7377,7 +9762,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const all = rxHerbs(r);
         const has = (h) => all.includes(h);
         /* 先找組成完全相同的方根（十一方）：君藥也對才算配伍完整 */
-        const same = Object.keys(SH.FORMULAS).find(k => { const f = [].concat(...Object.values(SH.FORMULAS[k].slots)); return f.length === all.length && f.every(has); });
+        /* 組成相同的方不只一首時（例如桂枝湯與桂枝加芍藥湯，差在芍藥的份量），看君藥放的是誰（2026-11-22） */
+        const sames = Object.keys(SH.FORMULAS).filter(k => { const f = [].concat(...Object.values(SH.FORMULAS[k].slots)); return f.length === all.length && f.every(has); });
+        const same = sames.find(k => r.jun[0] === SH.FORMULAS[k].slots.jun[0]) || sames[0];
         if (same) return { cls: same, full: r.jun[0] === SH.FORMULAS[same].slots.jun[0], why: r.jun[0] === SH.FORMULAS[same].slots.jun[0] ? '' : '藥對了，君藥卻擺錯了位置' };
         const cold = has('shigao') || has('zhimu') || has('dahuang') || has('mangxiao');
         const warm = has('mahuang') || has('guizhi') || has('ganjiang');
@@ -7478,7 +9865,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const draw = () => {
             panel(`<h3>醫囑 <span>藥包好了，怎麼交代病人？</span></h3>
                 <div class="grid">${opts.map(k => `<button class="btn${pick === k ? ' on' : ''}" data-ding="${k}">${DING[k].say}</button>`).join('')}</div>
-                <div class="foot"><button class="btn" id="back">回診間</button><button class="btn go px" id="ding-go" ${pick ? '' : 'disabled'}>就這樣交代</button></div>`);
+                <div class="stick">${eyInfo(pick ? '這樣交代病人' : '', pick ? DING[pick].say : '')}
+                <div class="foot"><button class="btn" id="back">回診間</button><button class="btn go px" id="ding-go" ${pick ? '' : 'disabled'}>就這樣交代</button></div></div>`);
             $$('#panel [data-ding]').forEach(b => b.onclick = () => { pick = b.dataset.ding; draw(); });
             $('#back').onclick = () => hub();
             $('#ding-go').onclick = () => {
@@ -7531,7 +9919,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const lines = [{ who: 'patient', text: res.r === 'cured' ? '大夫，我好了。' : (res.r === 'better' ? '大夫，好些了，可是還沒全好。' : (res.r === 'none' ? '大夫，藥吃完了，還是老樣子。' : '大夫，吃了藥反而更難受了。')) }];
         if (res.r === 'cured' || V.round >= 2) {
             panel(`<h3>${V.round >= 2 ? '再次回診' : '回診'}　${V.c.name}</h3>${body}<div class="foot"><button class="btn go px" id="next">寫下醫案</button></div>`);
-            if (res.r === 'cured') lines.push(narr(V.c.thanks)); else if (res.r !== 'better') lines.push(narr(V.c.angry));
+            if (res.r !== 'cured' && res.r !== 'better') lines.push(narr(V.c.angry));       // 謝禮改在隔天早上演（thanksScene）
             if (V.tutor) lines.push({ who: SHM, text: '看見沒有。方子開出去，要等他回來，你才知道對不對。' });
             $('#next').onclick = shRecord;
         } else {
@@ -7600,7 +9988,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     /* =====================================================================
        眼病（黃庭鏡）：察目、問診、辨證、治法
        ===================================================================== */
-    const eyAnswers = (cls) => { const li = V.asked.map(id => { const q = EY.QUESTIONS.find(x => x.id === id); return `<li><b>${q.q}</b>${V.c.a[id]}</li>`; }).join(''); return li ? `<ul class="ans${cls ? ' ' + cls : ''}">${li}</ul>` : ''; };
+    const eyAnswers = (cls) => { const li = V.asked.map(id => { const q = EY.QUESTIONS.find(x => x.id === id); const key = isAmateur() && (V.c.keyQ || []).includes(id); return `<li><b>${q.q}</b>${key ? '<span class="keytag">關鍵</span>' : ''}${gloss(V.c.a[id], id === 'tongue')}</li>`; }).join(''); return li ? `<ul class="ans${cls ? ' ' + cls : ''}">${li}</ul>` : ''; };
     /* 書中師要先「讀書結識」才能看那一科的病（佑彥 2026-11-15 定）：
        第一次遇到這一科的病人，用《傷寒》《金匱》治不了，只能請他改日再來；當晚門診後選「研讀」那部書，結識書中師，病人回來時才能看。
        之後要加其他醫家，在 LEARN 加一筆，並在那一科的開場呼叫 needBook()。 */
@@ -7669,7 +10057,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const left = maxAsk() - V.asked.length;
         const btns = EY.QUESTIONS.map(q => {
             const done = V.asked.includes(q.id);
-            return `<button class="btn${done ? ' on' : ''}" data-q="${q.id}" ${done || left <= 0 ? 'disabled' : ''}>${q.q}</button>`;
+            return `<button class="btn${done ? ' on' : ''}" data-q="${q.id}" ${done || left <= 0 ? 'disabled' : ''}>${isAmateur() && (V.c.keyQ || []).includes(q.id) ? '<span class="keytag">關鍵</span>' : ''}${q.q}</button>`;      // 業餘：關鍵的幾問先標出來
         }).join('');
         panel(`<h3>問診 <span>還可以問 <span class="px">${left}</span> 項，每問一項耗心神 ${askCost()}</span></h3>
             <div class="see small" style="margin-bottom:8px">${V.c.intro}</div>
@@ -7688,7 +10076,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     /* 眼病的辨證與處置（佑彥 2026-11-18）：按鈕只寫名稱，點了才在下面出現說明，按確定才算數。說明照舊只有入門看得到 */
     const eyInfo = (name, sub) => `<div class="desc d-info">${name ? `<b class="name">${name}</b>${sub ? `<br>${sub}` : ''}` : '<span class="dim">點一下，看清楚了再按確定。</span>'}</div>`;
     function eyPattern() {
-        const btns = Object.keys(EY.PATTERNS).map(k => { const p = EY.PATTERNS[k];
+        const keysP = isAmateur() ? amOpts('ey-p', V.c.pattern, Object.keys(EY.PATTERNS)) : Object.keys(EY.PATTERNS);
+        const btns = keysP.map(k => { const p = EY.PATTERNS[k];
             return `<button class="btn${V.pattern === k ? ' on' : ''}" data-p="${k}"><b>${p.name}</b></button>`; }).join('');
         const cur = V.pattern && EY.PATTERNS[V.pattern];
         panel(`<h3>辨證 <span>察目所見加上問診所得</span></h3>${eyAnswers('small')}
@@ -7704,7 +10093,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         };
     }
     function eyPlan() {
-        const keys = Object.keys(EY.PLANS).filter(k => !(k === 'refer' && V.noRefer));
+        let keys = Object.keys(EY.PLANS).filter(k => !(k === 'refer' && V.noRefer));
+        if (isAmateur()) { const r = V.c.right; const pool = keys.filter(k => k !== r && k !== 'refer'); const base = amOpts('ey-plan', r, pool); keys = base.concat(keys.includes('refer') && r !== 'refer' ? ['refer'] : []); }
         const btns = keys.map(k => { const p = EY.PLANS[k];
             return `<button class="btn${V.plan === k ? ' on' : ''}" data-plan="${k}"><b>${p.name}</b></button>`; }).join('');
         const cur = V.plan && EY.PLANS[V.plan];
@@ -7888,11 +10278,14 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     }
 
     /* ================= 開場 ================= */
-    $$('#opt-diff .btn').forEach(b => b.onclick = () => { S.diff = b.dataset.diff; $$('#opt-diff .btn').forEach(x => x.classList.toggle('on', x === b)); });
+    /* 選項的說明：按鈕上只寫名稱，選中的那一個的說明放在下面（2026-11-22） */
+    const optInfo = (id) => { const on = $(`#${id} .btn.on small`); $(`#${id}-info`).innerHTML = on ? on.innerHTML : ''; };
+    $$('#opt-diff .btn').forEach(b => b.onclick = () => { S.diff = b.dataset.diff; $$('#opt-diff .btn').forEach(x => x.classList.toggle('on', x === b)); optInfo('opt-diff'); });
     $$('#opt-hero .btn').forEach(b => {
         b.querySelector('.hface').style.backgroundImage = `url('${heroFace(b.dataset.hero, 0)}')`;
-        b.onclick = () => { S.hero = b.dataset.hero; $$('#opt-hero .btn').forEach(x => x.classList.toggle('on', x === b)); };
+        b.onclick = () => { S.hero = b.dataset.hero; $$('#opt-hero .btn').forEach(x => x.classList.toggle('on', x === b)); optInfo('opt-hero'); };
     });
+    $('#petals').innerHTML = Array.from({ length: 16 }, () => `<i style="left:${Math.round(Math.random() * 110)}%;animation-duration:${(9 + Math.random() * 9).toFixed(1)}s;animation-delay:-${(Math.random() * 18).toFixed(1)}s;transform:scale(${(0.6 + Math.random() * 0.7).toFixed(2)})"></i>`).join('');
     function showTitle() {
         clearInterval(typing); typing = null; queue = []; after = null; setBg();
         clearTimeout(veilTimer);
@@ -7917,15 +10310,30 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     /* 開場：拜師。之後接第一章 */
     function opening() {
         /* 框架：燈下讀書的人。整段學醫的一生是「以書為師」，所以不同朝代的醫家可以出現在同一個人的一生裡；結局再接回這盞燈 */
+        /* 2026-11-22 佑彥：開場故事更精彩，依故事配上場景（每一段第一句帶 bg 換圖）。序的原句已用宋本核對 */
+        const am = isAmateur();
         story('杏林問診', '', [
-            { text: '夜深了。燈下攤著一部《傷寒論》，我已經讀到第三遍。' },
-            { text: '字還是那些字。只是這一夜，書頁之間好像有人抬起頭來。' },
-            { text: '我闔上眼。再睜開的時候，手裡沒有書，背上是昏沉的母親。' },
-            { text: '那一年疫病過境，村裡的大夫也倒下了。我背著母親走了三十里路，敲開了一位大夫的門。' },
-            { text: '母親的病好了。我沒有走。' },
-            { who: SHM, text: '想學醫？先學會坐著，看我怎麼看病人。' },
-            { text: '我坐著看了三年。' }
-        ], wantPrologue() ? prologue : startChapter);
+            { bg: 'bg-o-lamp.webp', text: '夜深了。燈下攤著一部《傷寒論》，我已經讀到第三遍。' },
+            { text: '翻回卷首的序，仲景寫著：「余宗族素多，向餘二百。建安紀年以來，猶未十稔，其死亡者，三分有二，傷寒十居其七。」' },
+            { text: '兩百多口人，不到十年，走了三分之二。寫下這一句的人，是怎麼撐過那些年的？' },
+            { text: '燈芯爆了一個小火花。書頁之間，好像有人抬起頭來。' },
+            { bg: 'bg-o-plague.webp', text: '我闔上眼。再睜開的時候，眼前是一座靜得出奇的村子。' },
+            { text: '家家掩著門，門上掛著艾草，巷口燒著不知什麼的煙。' },
+            { text: '屋裡，母親已經燒了三天，叫她也不太應了。村裡唯一的大夫，前天也倒下了。' },
+            { bg: 'bg-o-road.webp', text: '有人說，三十里外的縣城，還有一位大夫肯看病。' },
+            { text: '我背起母親就走。天黑了，路上只有我的腳步聲，和她貼在我耳邊淺淺的呼吸。' },
+            { text: '走到後來，我只數著步子。一百步，再一百步。' },
+            { bg: 'bg-o-door.webp', text: '半夜，我敲開了醫館的門。開門的是一位白髮老人，披著外衣，手裡端著一盞燈。' },
+            { text: '他沒問我從哪裡來，只看了母親一眼，就側身讓開了門。' },
+            { who: SHM, text: '放到榻上。去灶下燒一壺熱水。' },
+            { bg: 'bg-o-bedside.webp', text: '那一夜，他守在榻邊，診了三次脈，改了兩次方。' },
+            { text: '天快亮的時候，母親出了一身微汗，睜開眼睛，喊了我的小名。' },
+            { text: '我跪在榻尾，這才發現自己一直在發抖。' },
+            { bg: 'bg-o-stay.webp', text: '半個月後，母親能自己走路了。我送她回村，又一個人走回這扇門前。' },
+            { text: '我說，我想留下來。' },
+            am ? { who: SHM, text: '想留下，先學會認藥。藥櫃一百多個抽屜，一格一格記熟了再說。' } : { who: SHM, text: '想學醫？先學會坐著，看我怎麼看病人。' },
+            { text: am ? '我在藥櫃前認了三年的藥。' : '我坐著看了三年。' }
+        ], wantPrologue() ? prologue : startChapter, 'bg-o-lamp.webp');
     }
     /* 序章跟診：入門難度、教學開著、沒跟過診（玩過一輪的人只有在系統選單按「重新教一次」後才再跟一次） */
     function wantPrologue() {
@@ -7937,8 +10345,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
        這一診記入病歷簿；第一章就不會再抽到文遠。玩過一輪之後不再出現，文遠回到第一章當一般病人。 */
     function prologue() {
         story('序　跟診', '', [
-            { text: '第三年的冬天，郡府的書吏文遠來看病。' },
-            { text: '師父頭一回把脈枕推到我面前。' },
+            { text: isAmateur() ? '我在醫館抓了三年的藥。那年冬天，郡府的書吏文遠來看病。' : '第三年的冬天，郡府的書吏文遠來看病。' },
+            { text: isAmateur() ? '師父把我叫到診桌旁，把脈枕推到我面前。' : '師父頭一回把脈枕推到我面前。' },
             { who: SHM, text: '今天這一位，你來。我在旁邊。' }
         ], () => {
             markTaught('prologue');
@@ -7954,8 +10362,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     $('#t-go-new').onclick = () => {
         $('#t-main').classList.add('hidden'); $('#t-new').classList.remove('hidden');
         const on = tutOn(); $$('#opt-tut .btn').forEach(x => x.classList.toggle('on', (x.dataset.tut === 'on') === on));
+        ['opt-tut', 'opt-diff', 'opt-hero'].forEach(optInfo);
     };
-    $$('#opt-tut .btn').forEach(b => b.onclick = () => { $$('#opt-tut .btn').forEach(x => x.classList.toggle('on', x === b)); });
+    $$('#opt-tut .btn').forEach(b => b.onclick = () => { $$('#opt-tut .btn').forEach(x => x.classList.toggle('on', x === b)); optInfo('opt-tut'); });
     $('#t-back').onclick = () => { $('#t-new').classList.add('hidden'); $('#t-main').classList.remove('hidden'); };
     $('#t-notes-btn').onclick = () => { $('#t-notes-body').innerHTML = notesHTML(); $('#t-main').classList.add('hidden'); $('#t-notes').classList.remove('hidden'); };
     $('#t-notes-back').onclick = () => { $('#t-notes').classList.add('hidden'); $('#t-main').classList.remove('hidden'); };
@@ -8043,6 +10452,8 @@ window.__bot = (function () {
         if (V && V.kind === 'sh') {
             const p = pol.good ? V.c.pattern : other(C().SH.PATTERNS, V.c.pattern);
             if (/四診蒐集/.test(t)) return ask(pol);
+            if (/^定證/.test(t) && !$('#panel [data-jing]')) { click($(`#panel [data-p="${p}"]`) || $('#panel [data-p]')); click($('#next')); return 'pattern'; }
+            if ($('#panel [data-af]')) { const f = C().SH.PATTERNS[p].formula; click($(`#panel [data-af="${f}"]`) || $('#panel [data-af]')); click($('#next')); return 'pick'; }
             if (/^定證/.test(t)) { click($(`#panel [data-jing="${C().SH.PATTERNS[p].name.slice(0, 2)}"]`)); click($(`#panel [data-p="${p}"]`)); click($('#next')); return 'pattern'; }
             if ($('#jj-go')) { click($('#jj-go')); return 'jiajian'; }
             if ($('#panel [data-ding]') && $('#ding-go') && $('#ding-go').disabled) { const b = (pol.good && $(`#panel [data-ding="${V.dingKey}"]`)) || $('#panel [data-ding]'); click(b); return 'ding'; }
@@ -8063,7 +10474,7 @@ window.__bot = (function () {
         if (V && V.kind === 'eye') {
             if (/^察目/.test(t)) { click($(`#panel .zone[data-w="${pol.good ? V.c.wheel : other(C().EY.WHEELS, V.c.wheel)}"]`)); click($('#next')); return 'eye'; }
             if (/^問診/.test(t)) return ask(pol);
-            if (/^辨證/.test(t)) { click($(`#panel [data-p="${pol.good ? V.c.pattern : other(C().EY.PATTERNS, V.c.pattern)}"]`)); click($('#next')); return 'epattern'; }
+            if (/^辨證/.test(t)) { click($(`#panel [data-p="${pol.good ? V.c.pattern : other(C().EY.PATTERNS, V.c.pattern)}"]`) || $('#panel [data-p]')); click($('#next')); return 'epattern'; }
             if ($('#panel [data-plan]')) { const k = pol.good ? V.c.right : (pol.plan || other(C().EY.PLANS, V.c.right, 'refer')); click($(`#panel [data-plan="${k}"]`) || $('#panel [data-plan]')); click($('#next')); return 'plan'; }
             if ($('#panel [data-o]')) { const o = C().stageChain(V)[V.chainIdx].opts; let i = pol.good ? o.findIndex(x => x.right) : o.findIndex(x => !x.right && !x.neutral); if (i < 0) i = 0; click($(`#panel [data-o="${i}"]`)); return 'chain'; }
         }
