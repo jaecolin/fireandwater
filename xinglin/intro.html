@@ -15,6 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&text=杏林問診水火既濟&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700&text=醫道&display=swap" rel="stylesheet">
 <style>
 :root { --gold: #c9a465; --gold-hi: #f2d79a; }
 html, body { margin: 0; height: 100%; background: #000; color: #e8dcc0; overflow: hidden; }
@@ -74,9 +75,9 @@ body { font-family: 'Noto Serif TC', serif; }
 #title .big { writing-mode: vertical-rl; font-family: 'Yuji Syuku', serif; font-size: clamp(54px, 13vmin, 112px); color: #111; letter-spacing: 0.05em; line-height: 1; text-shadow: 0 0 18px rgba(255,255,255,0.55); }
 #title .big span { display: inline-block; clip-path: inset(0 0 100% 0); }
 #title .small { writing-mode: vertical-rl; font-size: clamp(14px, 3vmin, 20px); color: #2a2a2a; letter-spacing: 0.6em; margin-top: 0.6em; opacity: 0; text-shadow: 0 0 8px rgba(255,255,255,0.7); }
-/* 印文由右而左、由上而下：水火在右行，既濟在左行 */
-#title .seal { width: clamp(40px, 7.5vmin, 60px); aspect-ratio: 1; background: #a82b1e; color: #f7e9d6; border-radius: 5px; display: grid; grid-template-rows: 1fr 1fr; grid-auto-flow: column; direction: rtl; place-items: center;
-               font-family: 'Yuji Syuku', serif; font-size: clamp(14px, 2.7vmin, 21px); line-height: 1; padding: 5px; box-sizing: border-box; box-shadow: 0 0 0 2px #a82b1e inset, 0 0 0 4px #f2e3c8 inset;
+/* 印：和遊戲標題畫面同一枚「醫道」直式小印（2026-11-22 佑彥要求兩邊一致） */
+#title .seal { writing-mode: vertical-rl; background: #a8281e; color: #f6e7c8; border-radius: 3px; padding: 0.35em 0.2em; font-family: 'Noto Serif TC', 'PMingLiU', serif; font-weight: 700;
+               font-size: clamp(13px, 2.5vmin, 19px); letter-spacing: 0.12em; line-height: 1.1;
                opacity: 0; transform: scale(1.8) rotate(-8deg); }
 #title .seal i { font-style: normal; }
 #land.titled .big span { animation: brush 0.9s ease-out forwards; }
@@ -84,7 +85,7 @@ body { font-family: 'Noto Serif TC', serif; }
 #land.titled .small { animation: fadeup 1.2s ease-out 3s forwards; }
 #land.titled .seal { animation: stamp 0.35s cubic-bezier(.3,1.6,.5,1) 3.9s forwards; }
 @keyframes brush { to { clip-path: inset(0 0 0 0); } }
-@keyframes stamp { to { opacity: 0.92; transform: scale(1) rotate(-4deg); } }
+@keyframes stamp { to { opacity: 1; transform: scale(1) rotate(0deg); } }
 #enter { position: absolute; left: 0; right: 0; bottom: 9%; text-align: center; letter-spacing: 0.5em; color: #fff; text-shadow: 0 0 6px #000, 0 0 2px #000; opacity: 0; }
 #land.ready #enter { opacity: 1; animation: blink 1.8s ease-in-out infinite; }
 
@@ -123,7 +124,7 @@ body { font-family: 'Noto Serif TC', serif; }
         <div id="title">
             <div class="col">
                 <div class="big"><span>杏</span><span>林</span><span>問</span><span>診</span></div>
-                <div class="seal"><i>水</i><i>火</i><i>既</i><i>濟</i></div>
+                <div class="seal">醫道</div>
             </div>
             <div class="small">水火既濟</div>
         </div>
