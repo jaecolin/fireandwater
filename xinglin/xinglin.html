@@ -122,6 +122,24 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 /* 業餘難度（2026-11-22）：關鍵症狀的標籤、名詞解釋、三選一 */
 .keytag { display: inline-block; margin-right: 6px; padding: 0 6px; border-radius: 8px; background: #b8862e; color: #1a1205; font-size: 0.78em; font-weight: 700; vertical-align: 1px; }
 .gl { border-bottom: 1px dashed var(--gold-hi); cursor: help; }
+/* 業餘：八綱小標籤（點一下跳白話）、醫案的線索連連看（2026-11-23） */
+.gl.bg { display: inline-block; margin: 0 4px 2px 0; padding: 0 8px; border: 1px solid var(--gold); border-radius: 9px; font-size: 0.88em; line-height: 1.6; color: var(--gold-hi); background: rgba(232, 197, 106, 0.1); }
+.chain { margin: 8px 0 0; padding: 7px 11px; border-left: 3px solid var(--gold); background: rgba(255, 255, 255, 0.04); }
+.chain .ans { margin: 4px 0 0; }
+.chain .to { margin-top: 5px; color: var(--hint); }
+.chain .to b.name { color: var(--name); }
+.safe { margin-top: 8px; padding: 6px 11px; border-left: 3px solid #e0a26f; background: rgba(230, 160, 110, 0.08); color: #f0d6c0; }
+/* 電腦版：畫面等比例放大（fitStage）；懷舊螢幕：外面畫一台米色的舊螢幕（#bezel，佑彥 2026-11-23：不要掃描線） */
+#bezel { display: none; }
+body.crt { background: radial-gradient(ellipse at 50% 42%, #3b3428, #15120d 72%); }
+body.crt #bezel { display: block; position: fixed; z-index: 0; pointer-events: none; border-radius: 26px;
+    background: linear-gradient(#e7dfc9, #cbc1a5); box-shadow: 0 22px 50px rgba(0, 0, 0, 0.65), inset 0 2px 0 #f7f1e2, inset 0 -4px 0 #a39878, inset 3px 0 0 #efe8d4, inset -3px 0 0 #b3a888; }
+#bezel .bz-brand { position: absolute; left: 36px; bottom: 19px; font: 700 15px 'Noto Serif TC', serif; letter-spacing: 0.35em; color: #6d6450; text-shadow: 0 1px 0 #f4eedd; }
+#bezel .bz-vent { position: absolute; right: 74px; bottom: 22px; width: 120px; height: 14px; border-radius: 3px; opacity: 0.7; background: repeating-linear-gradient(90deg, #a2977c 0 3px, transparent 3px 8px); }
+#bezel .bz-led { position: absolute; right: 40px; bottom: 24px; width: 10px; height: 10px; border-radius: 50%; background: #5dff7a; box-shadow: 0 0 7px #5dff7a; }
+body.crt .stage { z-index: 1; border-radius: 16px; box-shadow: 0 0 0 5px #23211c, 0 0 0 7px #8f866d; }
+body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90; border-radius: 16px; pointer-events: none; box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.35); }
+@media (max-width: 760px) { .desk-only { display: none !important; } }
 #gl-pop { position: fixed; z-index: 60; max-width: 18em; padding: 7px 10px; font-size: 0.88em; line-height: 1.55; background: rgba(6, 10, 34, 0.96); border: 1px solid var(--gold); border-radius: 4px; color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); }
 #gl-pop b { color: var(--name); }
 .am-pick .btn { text-align: left; }
@@ -200,7 +218,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     background: radial-gradient(ellipse 72% 62% at 50% 40%, rgba(34, 22, 10, 0.28), rgba(6, 4, 3, 0.9) 80%);
 }
 /* 2026-11-22 標題畫面：杏花慢慢飄落；新遊戲的選項改成按鈕只寫名稱，選了在下面出現說明 */
-.petals { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.petals { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }     /* 2026-11-23 改成只在遊戲畫面裡飄，懷舊螢幕時不會飄出外框 */
 .petals i { position: absolute; top: -4%; width: 10px; height: 8px; background: #f6dcdc; border-radius: 70% 0 70% 0; opacity: 0.8; box-shadow: 0 0 4px rgba(255, 220, 220, 0.5); animation: petal linear infinite; }
 @keyframes petal { 0% { transform: translate(0, 0) rotate(0); } 100% { transform: translate(-14vw, 112vh) rotate(600deg); } }
 @media (prefers-reduced-motion: reduce) { .petals { display: none; } }
@@ -444,12 +462,12 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 .btn.go:disabled { filter: grayscale(1) brightness(0.62); color: var(--dim); background: linear-gradient(180deg, var(--gold-hi), #b8892e 50%, var(--gold-dark)); }
 
 /* 小按鈕：病歷簿、聲音、跳過、合上 */
-.bookbtn, .skip, .snd, #book-x, #t-intro, #t-clear-btn {
+.bookbtn, .skip, .snd, #book-x, #t-intro, #t-clear-btn, #t-crt, #t-full {
     padding: 3px 11px; border: 1px solid var(--gold); background: linear-gradient(180deg, rgba(47, 64, 154, 0.9), rgba(10, 16, 54, 0.92));
     box-shadow: 0 0 0 1px var(--gold-dark); color: var(--name);
 }
-.bookbtn::before, .skip::before, .snd::before, #book-x::before, #t-intro::before, #t-clear-btn::before { display: none; }
-.bookbtn:hover, .skip:hover, .snd:hover, #book-x:hover, #t-intro:hover, #t-clear-btn:hover { background: linear-gradient(180deg, rgba(70, 90, 190, 0.95), rgba(20, 30, 90, 0.95)); }
+.bookbtn::before, .skip::before, .snd::before, #book-x::before, #t-intro::before, #t-clear-btn::before, #t-crt::before, #t-full::before { display: none; }
+.bookbtn:hover, .skip:hover, .snd:hover, #book-x:hover, #t-intro:hover, #t-clear-btn:hover, #t-crt:hover, #t-full:hover { background: linear-gradient(180deg, rgba(70, 90, 190, 0.95), rgba(20, 30, 90, 0.95)); }
 
 /* 八綱：每一綱是一對八角鈕 */
 .axis { gap: 14px; margin: 10px 0; justify-content: center; }
@@ -708,6 +726,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 </style>
 </head>
 <body>
+<div id="bezel" aria-hidden="true"><span class="bz-brand">杏林 486</span><span class="bz-vent"></span><span class="bz-led"></span></div>
 <div class="stage" id="stage">
     <div class="ui hidden" id="ui">
         <div class="top">
@@ -780,6 +799,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             </div>
             <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
                 <button class="btn snd" style="font-size:0.86em;padding:3px 12px">聲音：開</button>
+                <button class="btn desk-only" id="t-crt" style="font-size:0.86em;padding:3px 12px">懷舊螢幕：關</button>
+                <button class="btn desk-only hidden" id="t-full" style="font-size:0.86em;padding:3px 12px">全螢幕</button>
                 <button class="btn" id="t-intro" style="font-size:0.86em;padding:3px 12px">重看片頭</button>
                 <button class="btn" id="t-clear-btn" style="font-size:0.86em;padding:3px 12px">清除紀錄</button>
             </div>
@@ -8241,6 +8262,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         $('#cs-face').innerHTML = heroImg();
         $('#sc-cmds').innerHTML = ''; $('#sc-steps').innerHTML = '';
     }
+    let ZK = 1;         // 電腦版畫面放大的倍數（fitStage 設定）
     /* 數值變動時，在病人或狀態窗上飄一行字（只在看診畫面） */
     function floatText(text, cls, sel) {
         const t = $(sel);
@@ -8249,8 +8271,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const el = document.createElement('div');
         el.className = 'float px ' + cls;
         el.textContent = text;
-        el.style.left = (r.left - s.left + r.width * (0.2 + Math.random() * 0.4)) + 'px';
-        el.style.top = (r.top - s.top + 4 - $$('.float').length * 22) + 'px';   // 同時跳出好幾個時往上疊，不要蓋在一起
+        el.style.left = ((r.left - s.left + r.width * (0.2 + Math.random() * 0.4)) / ZK) + 'px';      // 畫面放大時，量到的是放大後的距離，要除回去
+        el.style.top = ((r.top - s.top) / ZK + 4 - $$('.float').length * 22) + 'px';   // 同時跳出好幾個時往上疊，不要蓋在一起
         $('#stage').appendChild(el);
         setTimeout(() => el.remove(), 1400);
     }
@@ -8437,10 +8459,10 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         c.style.top = c.style.bottom = '';
         c.classList.remove('hidden');
         /* 卡片放在要看的東西旁邊：東西在上半部就放它下面，在下半部就放它上面，免得蓋住 */
-        const st = $('#stage').getBoundingClientRect(), r = coachOn[0] && coachOn[0].getBoundingClientRect(), room = st.height - c.offsetHeight - 8;
+        const st = $('#stage').getBoundingClientRect(), r = coachOn[0] && coachOn[0].getBoundingClientRect(), H = st.height / ZK, room = H - c.offsetHeight - 8;
         if (L.at === 'top') c.style.top = '8px';                // 夜醫館：熱點散在圖的中段，卡片放最上面才不會蓋到
-        else if (r && r.top - st.top < st.height / 2) c.style.top = Math.max(8, Math.min(r.bottom - st.top + 10, room)) + 'px';
-        else if (r) c.style.bottom = Math.max(8, Math.min(st.bottom - r.top + 10, room)) + 'px';
+        else if (r && r.top - st.top < st.height / 2) c.style.top = Math.max(8, Math.min((r.bottom - st.top) / ZK + 10, room)) + 'px';
+        else if (r) c.style.bottom = Math.max(8, Math.min((st.bottom - r.top) / ZK + 10, room)) + 'px';
         else c.style.top = '14%';
         $('#co-ok').onclick = (e) => { e.stopPropagation(); coachHide(); coachFlush(); };
         $('#co-off').onclick = (e) => { e.stopPropagation(); const m = loadMeta(); m.tutorOff = true; saveMeta(m); coachQ = []; coachHide(); };
@@ -9780,15 +9802,32 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         }).join('');
         return li ? `<ul class="ans${cls ? ' ' + cls : ''}">${li}</ul>` : '';
     };
-    /* 名詞解釋（業餘，2026-11-22 Claude 起草，待佑彥審）：脈象、舌象與常見的病位用語，點一下跳出一行白話 */
+    /* 名詞解釋（業餘，2026-11-22 Claude 起草，2026-11-23 佑彥定稿）：脈象、舌象與常見的病位用語，點一下跳出一行白話 */
     const GLOSS = {
         浮: '脈浮：手指輕輕一搭就摸得到，多半病還在體表。', 沉: '脈沉：要用力按到底才摸得到，多半病在裡面。', 緊: '脈緊：像按在繃緊的繩子上，多主寒、主痛。',
         緩: '脈緩：跳得從容、偏軟，常見於汗出、營衛不和。', 數: '脈數：跳得快，一呼一吸超過五下，多主熱。', 弦: '脈弦：像按在琴弦上，直而有力，多和肝膽、疼痛、水飲有關。',
         滑: '脈滑：像珠子在盤裡滾，流利圓滑，多主痰、食積或熱。', 細: '脈細：細得像一條線，多主血虛、陰虛。', 澀: '脈澀：跳得不順，像刀輕刮竹子，多主血少或瘀阻。',
         洪大: '脈洪大：又大又有力，來勢洶湧，多主熱盛。', 結代: '脈結代：跳一跳會停一下，多是心的氣血不足。',
         舌淡: '舌淡：舌色偏淡白，多是氣血不足或有寒。', 舌紅: '舌紅：舌色偏紅，多主熱。', 苔白: '苔白：舌面一層白苔，多主寒或病還在表。', 苔黃: '苔黃：舌面一層黃苔，多主熱。',
-        膩: '苔膩：舌苔像一層油膩的膜，多是濕或痰。', 齒痕: '齒痕：舌邊有牙齒壓出的痕，多是脾虛、水濕。', 瘀點: '瘀點：舌上紫暗的小點，多有瘀血。', 少苔: '少苔：舌面幾乎沒有苔，多是陰虛。'
+        膩: '苔膩：舌苔像一層油膩的膜，多是濕或痰。', 齒痕: '齒痕：舌邊有牙齒壓出的痕，多是脾虛、水濕。', 瘀點: '瘀點：舌上紫暗的小點，多有瘀血。', 少苔: '少苔：舌面幾乎沒有苔，多是陰虛。',
+        /* 八綱（2026-11-23 Claude 起草）：只用在八綱小標籤，不會自動套在問診回答上 */
+        表: '表：病在身體的外層，皮膚、肌肉、關節這一帶。常見怕冷、發熱、頭痛身痛，脈多浮。',
+        裡: '裡：病已經進到身體裡面，在腸胃、臟腑。常見口渴、便祕或拉肚子、肚子脹痛。',
+        半表半裡: '半表半裡：病卡在外層與裡面的中間，進不去也出不來。常見一陣冷一陣熱、胸脅悶脹、口苦。',
+        寒: '寒：身體偏冷。怕冷、手腳冰、不渴或只想喝熱的，舌淡、苔白。',
+        熱: '熱：身體偏熱。怕熱、口渴想喝冷的、小便黃，舌紅、苔黃，脈多數。',
+        虛: '虛：身體的本錢不夠。容易累、出虛汗、說話沒力，脈無力。治的時候要補、要扶。',
+        實: '實：病邪很盛，身體也還有力氣和它對抗。症狀來得猛，脈有力。治的時候要散、要清、要下。'
     };
+    const bgChips = (p) => (p.bagang || []).map(t => `<span class="gl bg" data-gl="${t}">${t}</span>`).join('');
+    /* 業餘的醫案：把關鍵的回答串到證與方，看得出是怎麼推出來的；最後提醒真實生活要看醫師 */
+    function amChain(Q, steps) {
+        const c = V.c;
+        const clues = (c.keyQ || []).filter(id => c.a[id]).map(id => { const q = Q.find(x => x.id === id); return `<li><b>${q.g || q.q}</b>${q.g ? ` <span class="dim">${q.q}</span>` : ''}　${gloss(c.a[id], id === 'pulse' || id === 'look' || id === 'tongue')}</li>`; }).join('');
+        return `<div class="chain small"><b class="hint">線索連連看</b>　<span class="dim">這位病人最要緊的幾句話</span><ul class="ans">${clues}</ul>${steps.map(t => `<div class="to">↓ ${t}</div>`).join('')}</div>`;
+    }
+    const SAFE_SH = '遊戲裡的病人是虛構的，方子只為他一個人開。真實生活中，同樣是著涼，體質不同用藥就不同。身體不舒服請先給醫師看過，不要照著遊戲自己抓藥。';
+    const SAFE_EY = '遊戲裡的病人是虛構的。眼睛的病變化快，視力突然變差、眼睛紅痛、看到閃光或黑影變多，請盡快找眼科醫師。';
     const GLOSS_PULSE = ['洪大', '結代', '浮', '沉', '緊', '緩', '數', '弦', '滑', '細', '澀'];
     const GLOSS_LOOK = ['舌淡', '舌紅', '苔白', '苔黃', '膩', '齒痕', '瘀點', '少苔'];
     function gloss(text, on) {
@@ -9806,6 +9845,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         pop = document.createElement('div'); pop.id = 'gl-pop';
         const t = GLOSS[g.dataset.gl] || '';
         pop.innerHTML = t.replace(/^([^：]+)：/, '<b>$1</b>：');
+        pop.style.fontSize = (0.88 * ZK) + 'em';       // 畫面放大時，解釋的字也跟著放大
         document.body.appendChild(pop);
         const r = g.getBoundingClientRect();
         pop.style.left = Math.max(6, Math.min(innerWidth - pop.offsetWidth - 6, r.left)) + 'px';
@@ -9870,7 +9910,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         const curP = V.pattern && SH.PATTERNS[V.pattern];
         panel(`<h3>定證 <span>他像哪一種病？點一下看說明</span></h3>${shAnswers('small')}
             <div class="grid am-pick" style="margin-top:8px">${opts.map(k => `<button class="btn${V.pattern === k ? ' on' : ''}" data-p="${k}"><b>${SH.PATTERNS[k].alias}</b></button>`).join('')}</div>
-            <div class="stick">${eyInfo(curP && curP.alias, curP && `這叫「${curP.name}」。治法：${curP.law}`)}
+            <div class="stick">${eyInfo(curP && curP.alias, curP && `這叫「${curP.name}」。治法：${curP.law}<br>八綱　${bgChips(curP)}<span class="dim">點一下看白話</span>`)}
             <div class="foot"><button class="btn" id="back">回診間</button><button class="btn go px" id="next" ${V.pattern ? '' : 'disabled'}>就是這一種</button></div></div>`);
         $$('#panel [data-p]').forEach(b => b.onclick = () => { V.pattern = b.dataset.p; V.jing = jingOf(V.pattern); shPatternAm(); });
         $('#back').onclick = () => hub();
@@ -10231,7 +10271,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                 <tr><td>結案時</td><td>病人信任 ${V.trust}　共看了 ${V.visits} 次，耗去心神 ${V.spiritUsed}</td></tr>
                 ${gainHTML()}
             </table>
+            ${isAmateur() ? amChain(SH.QUESTIONS, [`八綱　${bgChips(p)}`, `證　<b class="name">${p.name}</b>（${p.alias}）`, `方　<b class="name">${SH.FORMULAS[p.formula].name}</b>　${SH.FORMULAS[p.formula].note}`]) : ''}
             ${quote ? `<div class="quote small">《傷寒論》：「${quote}」</div>` : ''}
+            ${isAmateur() ? `<div class="safe small">${SAFE_SH}</div>` : ''}
             <div class="foot"><button class="btn go px" id="next">${V.tutor ? '我記下了' : nextLabel()}</button></div>`);
         speak(review(comment));
         $('#next').onclick = V.tutor ? tutorEnd : nextPatient;
@@ -10519,7 +10561,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                 ${gainHTML()}
             </table>
             ${c.quote && c.quote.text ? `<div class="quote small">${c.quote.src}：「${c.quote.text}」</div>` : ''}
+            ${isAmateur() ? amChain(EY.QUESTIONS, [`病名　<b class="name">${c.disease}</b>（${c.modern}）`, `證　<b class="name">${p.name}</b>（${p.alias}）`, `處置　<b class="name">${EY.PLANS[c.right].name}</b>`]) : ''}
             <div class="note small"><b class="hint">給病人的叮嚀</b>（取自林佑彥《眼癒力》）　${c.advice}${c.modernNote ? `<br>${c.modernNote}` : ''}</div>
+            ${isAmateur() ? `<div class="safe small">${SAFE_EY}</div>` : ''}
             <div class="foot"><button class="btn go px" id="next">${nextLabel()}</button></div>`);
         speak(Mt(comment));
         $('#next').onclick = nextPatient;
@@ -10653,6 +10697,33 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         showTitle();
     };
     $$('.snd').forEach(b => { b.textContent = muted ? '聲音：關' : '聲音：開'; b.onclick = () => setMuted(!muted); });
+    /* 電腦版放大與懷舊螢幕（佑彥 2026-11-23）：寬螢幕上把 960×700 的畫面等比例放大填滿；懷舊螢幕外面畫一台舊螢幕，預設關閉。
+       手機（寬度 760 以下）不放大、不加外框。全螢幕按鈕只在瀏覽器支援時出現（iPhone 不支援） */
+    let crtOn = false;
+    try { crtOn = localStorage.getItem('xinglin-crt') === '1'; } catch (e) { /* 讀不到就當作關 */ }
+    const BZ = { side: 34, top: 34, bottom: 64, gap: 14 };
+    function fitStage() {
+        const st = $('#stage'), b = document.body, W = innerWidth, H = innerHeight;
+        const crt = crtOn && W > 760;
+        b.classList.toggle('crt', crt);
+        b.style.padding = crt ? `${BZ.top + BZ.gap}px ${BZ.side + BZ.gap}px ${BZ.bottom + BZ.gap}px` : '';
+        const aw = crt ? W - 2 * (BZ.side + BZ.gap) : W, ah = crt ? H - BZ.top - BZ.bottom - 2 * BZ.gap : H;
+        ZK = W > 760 && aw >= 960 && ah >= 700 ? Math.min(aw / 960, ah / 700) : 1;
+        st.style.zoom = ZK === 1 ? '' : String(ZK);
+        if (crt && ZK === 1) { st.style.width = Math.min(960, aw) + 'px'; st.style.height = Math.min(700, ah) + 'px'; }   // 視窗太小放不下外框時，畫面縮小而不是字縮小
+        else { st.style.width = ''; st.style.height = ''; }
+        if (crt) { const r = st.getBoundingClientRect(); Object.assign($('#bezel').style, { left: (r.left - BZ.side) + 'px', top: (r.top - BZ.top) + 'px', width: (r.width + 2 * BZ.side) + 'px', height: (r.height + BZ.top + BZ.bottom) + 'px' }); }
+        $('#t-crt').textContent = crtOn ? '懷舊螢幕：開' : '懷舊螢幕：關';
+        $('#t-full').textContent = document.fullscreenElement ? '離開全螢幕' : '全螢幕';
+    }
+    $('#t-crt').onclick = () => { crtOn = !crtOn; try { localStorage.setItem('xinglin-crt', crtOn ? '1' : '0'); } catch (e) { /* 只在這一次有效 */ } fitStage(); };
+    if (document.fullscreenEnabled) {
+        $('#t-full').classList.remove('hidden');
+        $('#t-full').onclick = () => { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(() => { /* 被瀏覽器擋下就算了 */ }); };
+        document.addEventListener('fullscreenchange', fitStage);
+    }
+    addEventListener('resize', fitStage);
+    fitStage();
     $('#start').onclick = () => {
         const m = loadMeta(), sel = $('#opt-tut .btn.on');
         m.tutorOff = !!sel && sel.dataset.tut === 'off'; saveMeta(m);
