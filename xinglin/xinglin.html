@@ -128,6 +128,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 .chain .ans { margin: 4px 0 0; }
 .chain .to { margin-top: 5px; color: var(--hint); }
 .chain .to b.name { color: var(--name); }
+.ycard { margin-top: 8px; padding: 7px 11px; border: 1px solid rgba(141, 255, 154, 0.45); border-radius: 6px; background: rgba(120, 220, 140, 0.08); }
+.ycard b { display: block; color: var(--up); letter-spacing: 0.15em; }
+.ycard .dim { display: block; margin-top: 2px; font-size: 0.86em; }
 .safe { margin-top: 8px; padding: 6px 11px; border-left: 3px solid #e0a26f; background: rgba(230, 160, 110, 0.08); color: #f0d6c0; }
 /* 電腦版：畫面等比例放大（fitStage）；懷舊螢幕：外面畫一台米色的舊螢幕（#bezel，佑彥 2026-11-23：不要掃描線） */
 #bezel { display: none; }
@@ -1379,7 +1382,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "先煮麻黃撇去浮沫，服後蓋被取微汗，不必喝粥",
         "q": "覆取微似汗，不須啜粥。",
         "g": "fu"
-       }
+       },
+       "plainNote": "讓緊閉的毛孔打開，出一身微汗，把寒氣散出去"
       },
       "guizhi": {
        "name": "桂枝湯",
@@ -1403,7 +1407,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "服藥後喝一碗熱稀粥助藥力，蓋被取微汗；汗出病好就停，不必喝完",
         "q": "服已須臾，歠熱稀粥一升餘，以助藥力。溫覆令一時許，遍身漐漐微似有汗者益佳，不可令如水流漓，病必不除。",
         "g": "zhou"
-       }
+       },
+       "plainNote": "調和體表，讓亂冒的汗收住；配一碗熱粥，幫身體出微汗"
       },
       "baihu": {
        "name": "白虎湯",
@@ -1426,7 +1431,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "和粳米同煮，米熟湯成，溫服，一日三次",
         "q": "煮米熟，湯成，去滓，溫服一升，日三服。",
         "g": "chang"
-       }
+       },
+       "plainNote": "把體內燒得正旺的熱清下去"
       },
       "chengqi": {
        "name": "大承氣湯",
@@ -1448,7 +1454,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "大黃後下、芒硝最後化開，分兩次服；瀉下了，剩下的就別再服",
         "q": "分溫再服。得下，餘勿服。",
         "g": "xia"
-       }
+       },
+       "plainNote": "用強力的瀉法，把堵在腸子裡的熱和硬便一次通下"
       },
       "lizhong": {
        "name": "理中湯",
@@ -1471,7 +1478,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "服湯後過一頓飯的工夫，喝一碗熱粥，保暖，別掀開衣被",
         "q": "服湯後，如食頃，飲熱粥一升許，微自溫，勿發揭衣被。",
         "g": "wen"
-       }
+       },
+       "plainNote": "把腸胃溫熱起來，讓消化恢復力氣"
       },
       "gegen": {
        "name": "葛根湯",
@@ -1497,7 +1505,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "先煮麻黃、葛根撇去白沫，服後蓋被取微汗",
         "q": "覆取微似汗。",
         "g": "fu"
-       }
+       },
+       "plainNote": "發汗散寒，同時把僵硬的頸背放鬆開來"
       },
       "xiaochaihu": {
        "name": "小柴胡湯",
@@ -1523,7 +1532,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "煮好去渣，再煎濃縮，溫服，一日三次",
         "q": "去滓，再煎取三升，溫服一升，日三服。",
         "g": "chang"
-       }
+       },
+       "plainNote": "病卡在半路，用和解的方法把它推出去"
       },
       "zhichi": {
        "name": "梔子豉湯",
@@ -1542,7 +1552,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "先煮梔子再下豆豉，分兩次服；吐了就停後服",
         "q": "得吐者，止後服。",
         "g": "tu"
-       }
+       },
+       "plainNote": "把病後殘留在胸口的悶熱清掉，讓人安下心來睡"
       },
       "banxiaxiexin": {
        "name": "半夏瀉心湯",
@@ -1612,7 +1623,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "分兩次溫服；身體壯實的人，附子、乾薑可用重些",
         "q": "分溫再服。強人可大附子一枚、乾薑三兩。",
         "g": "chang"
-       }
+       },
+       "plainNote": "把快要熄滅的陽氣救回來，讓身體重新暖起來"
       },
       "danggui": {
        "name": "當歸四逆湯",
@@ -1638,7 +1650,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "溫服，一日三次",
         "q": "溫服一升，日三服。",
         "g": "chang"
-       }
+       },
+       "plainNote": "養血又溫通，讓血流到手指腳趾，把手腳暖回來"
       },
       "guizhigegen": {
        "name": "桂枝加葛根湯",
@@ -1663,7 +1676,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "服後蓋被取微汗，不必喝粥；其餘照桂枝湯的將息與禁忌",
         "q": "覆取微似汗，不須啜粥，餘如桂枝法將息及禁忌。",
         "g": "fu"
-       }
+       },
+       "plainNote": "把亂冒的汗收住，同時放鬆僵硬的頸背"
       },
       "maxingshigan": {
        "name": "麻黃杏仁甘草石膏湯",
@@ -1686,7 +1700,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "先煮麻黃撇去浮沫，再下其餘的藥，溫服",
         "q": "煮麻黃，減二升，去上沫，內諸藥，煮取二升，去滓，溫服一升。",
         "g": "chang"
-       }
+       },
+       "plainNote": "把悶在肺裡的熱清出來，讓呼吸順下來"
       },
       "gegenqinlian": {
        "name": "葛根黃芩黃連湯",
@@ -1708,7 +1723,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "先煮葛根，再下其餘的藥，分兩次溫服",
         "q": "先煮葛根，減二升，內諸藥，煮取二升，去滓，分溫再服。",
         "g": "chang"
-       }
+       },
+       "plainNote": "清掉腸子裡的熱，止住拉肚子，同時解外面的感冒"
       },
       "dachaihu": {
        "name": "大柴胡湯",
@@ -1734,7 +1750,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "煮好去渣，再煎濃縮，溫服，一日三次",
         "q": "去滓，再煎，溫服一升，日三服。",
         "g": "chang"
-       }
+       },
+       "plainNote": "一邊和解卡住的病，一邊把裡面堵住的熱通下來"
       },
       "huangqin": {
        "name": "黃芩湯",
@@ -1757,7 +1774,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "溫服，白天兩次、夜裡一次",
         "q": "溫服一升，日再、夜一服。",
         "g": "chang"
-       }
+       },
+       "plainNote": "清掉腸子裡的熱，止住熱性的拉肚子"
       },
       "zhenwu": {
        "name": "真武湯",
@@ -1780,7 +1798,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "溫服，一次七合，一日三次",
         "q": "溫服七合，日三服。",
         "g": "chang"
-       }
+       },
+       "plainNote": "把身體的陽氣補回來，排掉多餘的水氣，人就站得穩"
       },
       "daqinglong": {
        "name": "大青龍湯",
@@ -1806,7 +1825,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "只取微汗；一服出了汗就停，不可再服，汗出太多用溫粉撲身",
         "q": "取微似汗。汗出多者，溫粉撲之。一服汗者，停後服。",
         "g": "fu"
-       }
+       },
+       "plainNote": "發汗散外面的寒，同時清裡面的熱；一服出汗就停"
       },
       "guizhifuzi": {
        "name": "桂枝加附子湯",
@@ -1831,7 +1851,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "照桂枝湯的服法將息：喝熱稀粥、蓋被取微汗，汗出就停",
         "q": "將息如前法。",
         "g": "zhou"
-       }
+       },
+       "plainNote": "把漏掉的陽氣補回來，讓止不住的汗收住"
       },
       "xiaochengqi": {
        "name": "小承氣湯",
@@ -1852,7 +1873,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "分兩次溫服；第一次服了解出大便，剩下的就別再服",
         "q": "初服當更衣，不爾者盡飲之，若更衣者，勿服之。",
         "g": "xia"
-       }
+       },
+       "plainNote": "比大承氣湯溫和，輕輕通便，把腸子裡的熱帶走"
       },
       "sinisan": {
        "name": "四逆散",
@@ -1875,7 +1897,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "研成散，米湯調服，一日三次",
         "q": "白飲和，服方寸匕，日三服。",
         "g": "san"
-       }
+       },
+       "plainNote": "疏通鬱住的氣，讓暖意送得到手腳"
       },
       "mafuxin": {
        "name": "麻黃附子細辛湯",
@@ -1896,7 +1919,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "先煮麻黃撇去浮沫，再下其餘的藥，溫服，一日三次",
         "q": "先煮麻黃，減二升，去上沫，內諸藥，煮取三升，去滓，溫服一升，日三服。",
         "g": "chang"
-       }
+       },
+       "plainNote": "一邊溫補陽氣，一邊把寒氣從體表散出去"
       },
       "xiaoqinglong": {
        "name": "小青龍湯",
@@ -1923,7 +1947,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "先煮麻黃撇去浮沫，再下其餘的藥，溫服",
         "q": "先煮麻黃，減二升，去上沫，內諸藥，煮取三升，去滓，溫服一升。",
         "g": "chang"
-       }
+       },
+       "plainNote": "散外面的寒，把肺裡的寒水化開，止咳平喘"
       },
       "guizhihoupo": {
        "name": "桂枝加厚朴杏子湯",
@@ -1949,7 +1974,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "溫服，蓋被取微汗",
         "q": "溫服一升，覆取微似汗。",
         "g": "fu"
-       }
+       },
+       "plainNote": "解外面的感冒，順便把往上衝的氣降下來"
       },
       "linggui": {
        "name": "茯苓桂枝白朮甘草湯",
@@ -1972,7 +1998,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "分三次溫服",
         "q": "分溫三服。",
         "g": "chang"
-       }
+       },
+       "plainNote": "溫暖脾胃，把停在身體裡的水化掉，頭就不暈"
       },
       "taohe": {
        "name": "桃核承氣湯",
@@ -1996,7 +2023,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "飯前溫服，一日三次；服後會微微腹瀉",
         "q": "先食溫服五合，日三服，當微利。",
         "g": "li"
-       }
+       },
+       "plainNote": "把結在下腹的瘀血和熱一起攻下來"
       },
       "xiaoxianxiong": {
        "name": "小陷胸湯",
@@ -2017,7 +2045,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "先煮栝蔞實，再下其餘的藥，分三次溫服",
         "q": "先煮栝蔞，取三升，去滓，內諸藥，煮取二升，去滓，分溫三服。",
         "g": "chang"
-       }
+       },
+       "plainNote": "把結在心窩的熱痰化開，胸口就鬆了"
       },
       "shengjiangxiexin": {
        "name": "生薑瀉心湯",
@@ -2044,7 +2073,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "煮好去渣，再煎濃縮，溫服，一日三次",
         "q": "去滓，再煎取三升，溫服一升，日三服。",
         "g": "chang"
-       }
+       },
+       "plainNote": "調和腸胃，把堵在心口的濕和水散開"
       },
       "zhigancao": {
        "name": "炙甘草湯",
@@ -2072,7 +2102,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "用清酒和水同煮，阿膠最後烊化，溫服，一日三次",
         "q": "以清酒七升，水八升，先煮八味，取三升，去滓，內膠烊消盡，溫服一升，日三服。",
         "g": "jiu"
-       }
+       },
+       "plainNote": "補足氣血，讓心跳回到穩定的節奏"
       },
       "tiaowei": {
        "name": "調胃承氣湯",
@@ -2093,7 +2124,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "芒硝最後放，微煮到滾，小口小口地溫服",
         "q": "內芒硝，更上火微煮令沸，少少溫服之。",
         "g": "shao"
-       }
+       },
+       "plainNote": "輕輕通便，把胃腸裡的燥熱帶走"
       },
       "yinchenhao": {
        "name": "茵陳蒿湯",
@@ -2114,7 +2146,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "先煮茵陳，再下梔子、大黃，分三次服；服後小便會變多、顏色深紅，黃從小便退",
         "q": "小便當利，尿如皂莢汁狀，色正赤，一宿腹減，黃從小便去也。",
         "g": "niao"
-       }
+       },
+       "plainNote": "清熱利濕，讓黃從小便排出去"
       },
       "baihurenshen": {
        "name": "白虎加人參湯",
@@ -2138,7 +2171,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "和粳米同煮，米熟湯成，溫服，一日三次",
         "q": "煮米熟，湯成，去滓，溫服一升，日三服。",
         "g": "chang"
-       }
+       },
+       "plainNote": "清掉體內的熱，同時補回流失的氣和水分"
       },
       "maziren": {
        "name": "麻子仁丸",
@@ -2162,7 +2196,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "做成蜜丸，每次十丸，一日三次，慢慢加量，大便通了就好",
         "q": "蜜和丸，如梧桐子大，飲服十丸，日三服，漸加，以知為度。",
         "g": "wan"
-       }
+       },
+       "plainNote": "潤腸通便，把乾澀的腸子潤開"
       },
       "zhuling": {
        "name": "豬苓湯",
@@ -2185,7 +2220,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "先煮四味，阿膠最後烊化，溫服，一日三次",
         "q": "先煮四味，取二升，去滓，內阿膠烊消，溫服七合，日三服。",
         "g": "chang"
-       }
+       },
+       "plainNote": "清熱利水，又不傷身體的津液，讓小便通暢"
       },
       "chaihuguizhi": {
        "name": "柴胡桂枝湯",
@@ -2213,7 +2249,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "煮好去渣，溫服",
         "q": "煮取三升，去滓，溫服一升。",
         "g": "chang"
-       }
+       },
+       "plainNote": "一邊和解卡住的病，一邊散外面的風寒"
       },
       "chaigui": {
        "name": "柴胡桂枝乾薑湯",
@@ -2239,7 +2276,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "溫服，一日三次；第一次服了會有點煩，再服，出了汗就好",
         "q": "初服微煩，復服，汗出便愈。",
         "g": "fan"
-       }
+       },
+       "plainNote": "和解卡住的病，同時溫化停在身體裡的水"
       },
       "guizhishaoyao": {
        "name": "桂枝加芍藥湯",
@@ -2263,7 +2301,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "分三次溫服；就是桂枝湯把芍藥加重",
         "q": "溫分三服。本云：桂枝湯，今加芍藥。",
         "g": "chang"
-       }
+       },
+       "plainNote": "溫和腸胃，放鬆肚子的抽痛"
       },
       "fuzitang": {
        "name": "附子湯",
@@ -2286,7 +2325,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "溫服，一日三次",
         "q": "溫服一升，日三服。",
         "g": "chang"
-       }
+       },
+       "plainNote": "溫補陽氣、驅散寒濕，讓骨節不再冷痛"
       },
       "huanglianejiao": {
        "name": "黃連阿膠湯",
@@ -2309,7 +2349,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "先煮三味，阿膠烊化，稍涼後再打入雞子黃攪勻，溫服，一日三次",
         "q": "先煮三物，取二升，去滓，內膠烊盡，小冷，內雞子黃，攪令相得，溫服七合，日三服。",
         "g": "ji"
-       }
+       },
+       "plainNote": "滋養不足的陰液、降下心火，讓人睡得著"
       },
       "taohua": {
        "name": "桃花湯",
@@ -2330,7 +2371,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "和粳米同煮，服時調入赤石脂末；一服就好，剩下的別再服",
         "q": "溫服七合，內赤石脂末方寸匕，日三服。若一服愈，餘勿服。",
         "g": "zhi"
-       }
+       },
+       "plainNote": "溫暖腸胃，把收不住的腹瀉收住"
       },
       "wuzhuyu": {
        "name": "吳茱萸湯",
@@ -2352,7 +2394,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "溫服，一次七合，一日三次",
         "q": "溫服七合，日三服。",
         "g": "chang"
-       }
+       },
+       "plainNote": "溫暖肝胃，把往上衝的寒氣壓下去，止嘔也止頭痛"
       },
       "baitouweng": {
        "name": "白頭翁湯",
@@ -2374,7 +2417,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "say": "溫服；不好，再服一碗",
         "q": "溫服一升。不愈，更服一升。",
         "g": "geng"
-       }
+       },
+       "plainNote": "清熱解毒，止住帶血的熱痢"
       }
      },
      "PATTERNS": {
@@ -2387,7 +2431,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "辛溫發汗",
-       "formula": "mahuang"
+       "formula": "mahuang",
+       "plain": "受寒後怕冷發抖、一滴汗也沒有、全身痠痛"
       },
       "xu": {
        "name": "太陽中風",
@@ -2398,7 +2443,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "虛"
        ],
        "law": "解肌發表，調和營衛",
-       "formula": "guizhi"
+       "formula": "guizhi",
+       "plain": "吹了風就怕風、一直冒細汗、身上微微發熱"
       },
       "yang": {
        "name": "陽明熱盛",
@@ -2409,7 +2455,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "清熱生津",
-       "formula": "baihu"
+       "formula": "baihu",
+       "plain": "全身大熱、大汗、口渴想喝冰水，一點也不怕冷"
       },
       "fu": {
        "name": "陽明腑實",
@@ -2420,7 +2467,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "峻下熱結",
-       "formula": "chengqi"
+       "formula": "chengqi",
+       "plain": "高燒好幾天、很多天沒解大便、肚子脹硬按了會痛"
       },
       "yin": {
        "name": "太陰病",
@@ -2431,7 +2479,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "虛"
        ],
        "law": "溫中祛寒，補氣健脾",
-       "formula": "lizhong"
+       "formula": "lizhong",
+       "plain": "吃冷喝冷傷了腸胃，肚子悶痛、拉稀、手腳冷"
       },
       "shaoyang": {
        "name": "少陽病",
@@ -2442,7 +2491,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "和解少陽",
-       "formula": "xiaochaihu"
+       "formula": "xiaochaihu",
+       "plain": "一陣冷一陣熱、胸口兩側悶脹、嘴苦、不想吃"
       },
       "shaoyin": {
        "name": "少陰病",
@@ -2453,7 +2503,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "虛"
        ],
        "law": "回陽救逆",
-       "formula": "sini"
+       "formula": "sini",
+       "plain": "整天昏昏欲睡、手腳冰冷、怕冷卻不發熱，脈很弱"
       },
       "jueyin": {
        "name": "厥陰寒厥",
@@ -2464,7 +2515,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "虛"
        ],
        "law": "溫經散寒，養血通脈",
-       "formula": "danggui"
+       "formula": "danggui",
+       "plain": "手腳冷到發紫發痛、脈細得快摸不到，身上倒還好"
       },
       "xiangqiang": {
        "name": "太陽經輸不利",
@@ -2475,7 +2527,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "發汗解表，升津舒經",
-       "formula": "gegen"
+       "formula": "gegen",
+       "plain": "吹了冷風，後頸到背僵得像木板，而且一點汗也沒有"
       },
       "xiangqiangxu": {
        "name": "太陽中風兼項強",
@@ -2486,7 +2539,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "虛"
        ],
        "law": "解肌祛風，升津舒經",
-       "formula": "guizhigegen"
+       "formula": "guizhigegen",
+       "plain": "流了汗又吹風，後頸僵硬，額頭一直冒細汗"
       },
       "xiongge": {
        "name": "陽明熱擾胸膈",
@@ -2497,7 +2551,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "清宣鬱熱",
-       "formula": "zhichi"
+       "formula": "zhichi",
+       "plain": "發燒退了，心口卻悶熱煩躁，整夜翻來覆去睡不著"
       },
       "feire": {
        "name": "太陽邪熱壅肺",
@@ -2508,7 +2563,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "清宣肺熱，降氣平喘",
-       "formula": "maxingshigan"
+       "formula": "maxingshigan",
+       "plain": "出過汗、不太怕冷了，卻喘得厲害，呼吸又粗又急"
       },
       "xieli": {
        "name": "太陽誤下熱利",
@@ -2519,7 +2575,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "清熱止利，兼以解表",
-       "formula": "gegenqinlian"
+       "formula": "gegenqinlian",
+       "plain": "吃了瀉藥後拉個不停，又急又臭、肛門灼痛，還會喘"
       },
       "shaoyangshi": {
        "name": "少陽兼裡實",
@@ -2530,7 +2587,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "和解少陽，內瀉熱結",
-       "formula": "dachaihu"
+       "formula": "dachaihu",
+       "plain": "忽冷忽熱好多天、一吃就吐、心口下面硬痛、大便不通"
       },
       "shaoyangli": {
        "name": "少陽熱利",
@@ -2541,7 +2599,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "清熱止利",
-       "formula": "huangqin"
+       "formula": "huangqin",
+       "plain": "發燒、嘴苦，肚子一陣陣痛，拉得熱熱黏黏"
       },
       "shuifan": {
        "name": "少陰陽虛水泛",
@@ -2552,7 +2611,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "虛"
        ],
        "law": "溫陽利水",
-       "formula": "zhenwu"
+       "formula": "zhenwu",
+       "plain": "汗出太多以後頭暈站不穩、身上肉跳、動一動就冒虛汗"
       },
       "qinglong": {
        "name": "太陽傷寒兼內熱",
@@ -2563,7 +2623,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "發汗解表，清熱除煩",
-       "formula": "daqinglong"
+       "formula": "daqinglong",
+       "plain": "淋雨後高燒、一點汗也沒有、怕冷，心裡卻煩躁得像火燒"
       },
       "louhan": {
        "name": "太陽病過汗漏汗",
@@ -2574,7 +2635,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "虛"
        ],
        "law": "調和營衛，扶陽固表",
-       "formula": "guizhifuzi"
+       "formula": "guizhifuzi",
+       "plain": "喝了發汗偏方後汗止不住，很怕風，手腳發緊"
       },
       "weizao": {
        "name": "陽明胃燥便硬",
@@ -2585,7 +2647,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "輕下熱結，除滿消痞",
-       "formula": "xiaochengqi"
+       "formula": "xiaochengqi",
+       "plain": "熱退了一些，但好幾天沒解大便、肚子脹、夜裡說胡話"
       },
       "yangyu": {
        "name": "少陰陽鬱",
@@ -2596,7 +2659,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "透邪解鬱，疏肝理脾",
-       "formula": "sinisan"
+       "formula": "sinisan",
+       "plain": "手腳冰冷卻不是虛寒，肚子一陣陣痛、拉不乾淨"
       },
       "lianggan": {
        "name": "少陰兼表",
@@ -2607,7 +2671,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "虛"
        ],
        "law": "溫經解表",
-       "formula": "mafuxin"
+       "formula": "mafuxin",
+       "plain": "平時就怕冷的老人家著涼，發熱卻整天想睡、脈很沉"
       },
       "shuiyin": {
        "name": "太陽傷寒兼水飲",
@@ -2618,7 +2683,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "解表散寒，溫肺化飲",
-       "formula": "xiaoqinglong"
+       "formula": "xiaoqinglong",
+       "plain": "受寒發熱、咳個不停，痰像清水一樣稀，不口渴"
       },
       "zhongfengchuan": {
        "name": "太陽中風兼喘",
@@ -2629,7 +2695,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "虛"
        ],
        "law": "解肌祛風，降氣平喘",
-       "formula": "guizhihoupo"
+       "formula": "guizhihoupo",
+       "plain": "本來就有點喘，又著了涼，一直冒細汗、微微地喘"
       },
       "shuiqi": {
        "name": "太陽病水氣上衝",
@@ -2640,7 +2707,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "虛"
        ],
        "law": "溫陽化飲，健脾利水",
-       "formula": "linggui"
+       "formula": "linggui",
+       "plain": "吐瀉之後，一站起來就天旋地轉，心口下面有氣往上頂"
       },
       "xuxue": {
        "name": "太陽蓄血",
@@ -2651,7 +2719,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "破血下瘀",
-       "formula": "taohe"
+       "formula": "taohe",
+       "plain": "發燒之後小肚子硬痛，人變得躁亂，像中了邪"
       },
       "xiaojiexiong": {
        "name": "太陽小結胸",
@@ -2662,7 +2731,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "清熱化痰，寬胸散結",
-       "formula": "xiaoxianxiong"
+       "formula": "xiaoxianxiong",
+       "plain": "心窩正中間悶著、一按就痛，咳出黃黏的痰"
       },
       "shuiqipi": {
        "name": "太陽病水飲食滯痞",
@@ -2673,7 +2743,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "虛"
        ],
        "law": "和胃消痞，宣散水氣",
-       "formula": "shengjiangxiexin"
+       "formula": "shengjiangxiexin",
+       "plain": "發汗後腸胃不和，心口堵、打嗝有餿味、肚子咕嚕叫、拉稀"
       },
       "xinji": {
        "name": "太陽病心陰陽兩虛",
@@ -2684,7 +2755,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "虛"
        ],
        "law": "益氣滋陰，通陽復脈",
-       "formula": "zhigancao"
+       "formula": "zhigancao",
+       "plain": "病後心口怦怦亂跳，跳著跳著像停了一下"
       },
       "zaore": {
        "name": "陽明燥熱初結",
@@ -2695,7 +2767,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "緩下熱結，和胃",
-       "formula": "tiaowei"
+       "formula": "tiaowei",
+       "plain": "發汗後熱沒退，身上像蒸籠一樣冒熱氣，幾天沒解大便"
       },
       "huangdan": {
        "name": "陽明濕熱發黃",
@@ -2706,7 +2779,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "清熱利濕退黃",
-       "formula": "yinchenhao"
+       "formula": "yinchenhao",
+       "plain": "發熱後眼白和皮膚黃得像橘子皮，小便少得像濃茶"
       },
       "jinshang": {
        "name": "陽明熱盛津氣兩傷",
@@ -2717,7 +2791,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "虛"
        ],
        "law": "清熱益氣生津",
-       "formula": "baihurenshen"
+       "formula": "baihurenshen",
+       "plain": "曬了一天又大汗之後，口渴得怎麼喝都不解渴"
       },
       "piyue": {
        "name": "陽明脾約",
@@ -2728,7 +2803,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "潤腸泄熱，行氣通便",
-       "formula": "maziren"
+       "formula": "maziren",
+       "plain": "久坐少動，大便乾硬像羊屎、好幾天一次，小便卻很頻"
       },
       "shuire": {
        "name": "陽明陰虛水熱互結",
@@ -2739,7 +2815,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "虛"
        ],
        "law": "滋陰清熱利水",
-       "formula": "zhuling"
+       "formula": "zhuling",
+       "plain": "發熱口渴一直想喝水，喝了卻尿不出來，小便又澀又熱"
       },
       "shaoyangbiao": {
        "name": "少陽兼表",
@@ -2750,7 +2827,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "和解少陽，解肌發表",
-       "formula": "chaihuguizhi"
+       "formula": "chaihuguizhi",
+       "plain": "感冒六七天，還有點發熱怕冷，四肢關節痠疼，想吐"
       },
       "shaoyangyin": {
        "name": "少陽兼水飲",
@@ -2761,7 +2839,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "虛"
        ],
        "law": "和解少陽，溫化水飲",
-       "formula": "chaigui"
+       "formula": "chaigui",
+       "plain": "發過汗又攻下之後，胸脅脹滿、口渴、只有頭上冒汗"
       },
       "fuman": {
        "name": "太陰腹滿時痛",
@@ -2772,7 +2851,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "虛"
        ],
        "law": "溫脾和絡，緩急止痛",
-       "formula": "guizhishaoyao"
+       "formula": "guizhishaoyao",
+       "plain": "吃瀉藥以後肚子一直脹，一陣陣痛，揉一揉會好些"
       },
       "hanshi": {
        "name": "少陰陽虛寒濕",
@@ -2783,7 +2863,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "虛"
        ],
        "law": "溫經助陽，祛寒除濕",
-       "formula": "fuzitang"
+       "formula": "fuzitang",
+       "plain": "長年受寒，背上冷得像貼了冰，全身骨節痛，手腳冰冷"
       },
       "rehua": {
        "name": "少陰熱化",
@@ -2794,7 +2875,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "虛"
        ],
        "law": "滋陰降火，交通心腎",
-       "formula": "huanglianejiao"
+       "formula": "huanglianejiao",
+       "plain": "心裡像有火在燒、整夜睡不著，臉頰發紅，舌紅少苔"
       },
       "huatuo": {
        "name": "少陰虛寒滑脫",
@@ -2805,7 +2887,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "虛"
        ],
        "law": "溫中澀腸固脫",
-       "formula": "taohua"
+       "formula": "taohua",
+       "plain": "拉肚子好些天收不住，便裡帶暗紅膿血，肚子喜歡溫暖按著"
       },
       "ganhan": {
        "name": "厥陰肝寒上逆",
@@ -2816,7 +2899,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "虛"
        ],
        "law": "溫中補虛，降逆止嘔",
-       "formula": "wuzhuyu"
+       "formula": "wuzhuyu",
+       "plain": "受寒後頭頂抽痛、一直乾嘔、嘴裡冒清口水"
       },
       "reli": {
        "name": "厥陰熱利",
@@ -2827,7 +2911,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "實"
        ],
        "law": "清熱解毒，涼血止痢",
-       "formula": "baitouweng"
+       "formula": "baitouweng",
+       "plain": "吃了壞掉的東西，拉肚子帶血、又臭又黏、肛門灼熱、口渴"
       }
      },
      "OUTCOME": {
@@ -4011,7 +4096,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "老陳帶著半籃雞蛋來，說田裡的活又能幹了。",
        "angry": "老陳的兒子上門，說爹的病越治越重，話說得很難聽。",
        "_review": "已審",
-       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審"
+       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審",
+       "card": "淋雨吹風回到家，先換下濕衣、擦乾頭髮，喝碗熱湯，早點蓋被休息。發高燒不退、喘不過氣，要盡快就醫。"
       },
       {
        "id": "wen",
@@ -4055,7 +4141,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "文遠親手抄了一卷書送來，字跡工整。",
        "angry": "文遠沒有抱怨，只是之後改去別家看診了。",
        "_review": "已審",
-       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審"
+       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審",
+       "card": "體質弱、容易出汗的人，汗濕了要盡快擦乾換衣，別坐在風口。生病時喝碗熱稀粥，比硬撐著吃大餐好。"
       },
       {
        "id": "bo",
@@ -4098,7 +4185,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "伯高遣人送來重禮，還要為我引薦太守。",
        "angry": "伯高揚言要拆了我的招牌。",
        "_review": "已審",
-       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審"
+       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審",
+       "card": "高燒大汗時要補充水分，少量多次喝溫水，不要一口氣灌冰水。燒到神智不清，要立刻就醫。"
       },
       {
        "id": "hu",
@@ -4142,7 +4230,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "胡帳房親自送來一本謄得工工整整的帳冊，說是替我這小診間記的。",
        "angry": "胡帳房的兒子說，爹的肚子越脹越硬，他們要另請高明。",
        "_review": "已審",
-       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審"
+       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審",
+       "card": "發燒時更要多喝水、吃好消化的東西，大便才不會乾結。肚子脹硬劇痛、好幾天沒排便又發燒，要趕快就醫，不要自己吃瀉藥。"
       },
       {
        "id": "shui",
@@ -4186,7 +4275,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "阿水送來一簍剛撈上來的魚，還特地說，他現在都帶熱飯上船了。",
        "angry": "阿水沒再來。聽說他瘦了一大圈，槳都划不動了。",
        "_review": "已審",
-       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審"
+       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審",
+       "card": "腸胃怕冷的人，少喝冰水、少吃生冷，三餐吃溫熱的。拉肚子時喝些溫米湯補水，拉到頭暈口乾要就醫。"
       },
       {
        "id": "quan",
@@ -4230,7 +4320,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "阿全扛了一袋米來，說胃口回來了，一頓能吃兩碗。",
        "angry": "阿全的工頭上門，說人越吃越虛，連工都上不了。",
        "_review": "已審",
-       "_note": "少陽：依 251、252、253、254 條起草；佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審"
+       "_note": "少陽：依 251、252、253、254 條起草；佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審",
+       "card": "感冒拖了好幾天沒好，別再硬撐著上工，好好睡覺、吃清淡的。一直反覆發燒，要找醫師看看是不是別的病。"
       },
       {
        "id": "han",
@@ -4274,7 +4365,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "韓老爹拄著拐杖自己走來，說兒子不信，非要跟來看看。",
        "angry": "韓老爹的兒子紅著眼來說，爹這幾天越來越叫不醒了。",
        "_review": "已審",
-       "_note": "少陰：依 288、289、292、293 條起草；佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審"
+       "_note": "少陰：依 288、289、292、293 條起草；佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審",
+       "card": "老人家感冒不一定發高燒。若變得整天昏睡、叫不太醒、手腳冰冷，是危險的訊號，要立刻送醫。"
       },
       {
        "id": "tao",
@@ -4318,7 +4410,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "陶師傅送來一匹染好的青布，說今年冬天總算不怕下河了。",
        "angry": "陶師傅託人帶話，說手指頭冷得連布都抓不住，這個冬天怕是做不成了。",
        "_review": "已審",
-       "_note": "厥陰：依 350、356 條起草；佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審"
+       "_note": "厥陰：依 350、356 條起草；佑彥 2026-11-15 看過審稿頁，確認無誤；漏斗四診的胸脅、按腹與追問是 2026-11-15 起草，待審",
+       "card": "常泡冷水工作的人，收工後用溫水泡手腳、擦乾保暖，戴手套穿襪子。手指發白發紫又痛又麻，要找醫師檢查血液循環。"
       },
       {
        "id": "qiao",
@@ -4361,7 +4454,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "阿樵挑來一擔劈好的乾柴，堆在診間門口，一句話也沒說就走了。",
        "angry": "阿樵的娘來說，兒子的脖子還是轉不過來，山也上不了。",
        "_review": "已審",
-       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完"
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完",
+       "card": "天冷出門圍上圍巾，護住後頸。頸背僵硬時可以熱敷，慢慢轉動肩頸，不要用力扳。"
       },
       {
        "id": "fang",
@@ -4404,7 +4498,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "方小哥送來一部新刻的醫書，說是掌櫃讓他挑的。",
        "angry": "書鋪掌櫃說，方小哥脖子僵了半個月，搬不動書，只好先回鄉下了。",
        "_review": "已審",
-       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完"
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完",
+       "card": "流汗後別站在風口或冷氣下吹，先擦乾換衣。久坐低頭的人，每隔一陣子起身轉轉脖子。"
       },
       {
        "id": "zhuang",
@@ -4447,7 +4542,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "莊少爺讓夥計送來一匹上好的細布，說這幾晚總算睡著了。",
        "angry": "布莊的人說，少爺越治越煩，又去請別的大夫了。",
        "_review": "已審",
-       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完"
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完",
+       "card": "病好之後別急著大補，也別一下換好幾位醫師。先吃清淡、早點睡。心煩睡不著時，睡前少看手機、少喝濃茶咖啡。"
       },
       {
        "id": "yue",
@@ -4490,7 +4586,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "老岳又能吹嗩吶了，特地在診間門口吹了一段喜慶的曲子。",
        "angry": "樂班的人說，老岳喘得更厲害了，這個月的活都推了。",
        "_review": "已審",
-       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完"
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完",
+       "card": "感冒後開始喘、呼吸急促、嘴唇發紫，要盡快就醫。自己買發汗藥吃，汗出太多反而傷身。"
       },
       {
        "id": "liang",
@@ -4533,7 +4630,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "阿福挑著涼粉擔子經過，硬是給我盛了一大碗。",
        "angry": "阿福的鄰居說，他拉得人都瘦了一圈，往後不來了。",
        "_review": "已審",
-       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完"
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完",
+       "card": "感冒發燒別亂吃瀉藥來退火。拉得厲害要補充水分和鹽分，口乾、尿少、頭暈就要就醫。"
       },
       {
        "id": "biao",
@@ -4576,7 +4674,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "老雷走鏢回來，帶了一包關外的老山參給我，說是路上順手買的。",
        "angry": "鏢局的人說，老雷嘔得連水都喝不進，換了大夫。",
        "_review": "已審",
-       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完"
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完",
+       "card": "吐個不停又肚子硬痛，可能是膽、胰臟或腸子的急症，要盡快就醫。平時吃飯七分飽，少油炸。"
       },
       {
        "id": "hai",
@@ -4619,7 +4718,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "阿海送來一簍剛上岸的鮮魚。",
        "angry": "漁村的人說，阿海拉得出不了海，罵我的藥不靈。",
        "_review": "已審",
-       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完"
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完",
+       "card": "海鮮和剩菜要新鮮、煮熟，夏天特別注意。拉肚子帶血或高燒，要就醫。"
       },
       {
        "id": "geng",
@@ -4662,7 +4762,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "老馮夜裡打更經過，特地在診間門口多敲了一下梆子，說是報平安。",
        "angry": "更夫行的人說，老馮暈得連梆子都拿不住，換了大夫。",
        "_review": "已審",
-       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完"
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；證、方、各方結果都是新起草的；佑彥 2026-11-17 審完",
+       "card": "發汗藥不是越多越好，汗出得像淋雨反而傷身。頭暈站不穩時先坐下或躺下，避免跌倒。"
       },
       {
        "id": "pan",
@@ -4705,7 +4806,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "阿磐鑿了一方石硯送來，說是用採石場最好的那塊石頭。",
        "angry": "採石場的人說，阿磐燒了好幾天，煩得把屋裡的東西都砸了。",
        "_review": "已審",
-       "_note": "2026-11-20 Claude 起草（補病例第三批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-20 Claude 起草（補病例第三批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "淋雨受寒後高燒煩躁，表示身體反應很強，要好好休息、補充水分。這類方子藥力猛，一定要由醫師開，不能自己抓。"
       },
       {
        "id": "liusao",
@@ -4748,7 +4850,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "柳嫂送來一板剛點好的豆腐，還冒著熱氣。",
        "angry": "豆腐坊的夥計說，老闆娘的汗還是止不住，磨坊只好先關了。",
        "_review": "已審",
-       "_note": "2026-11-20 Claude 起草（補病例第三批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-20 Claude 起草（補病例第三批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "發汗的偏方別亂喝，汗出一整夜很耗元氣。出汗多要補充水分，換乾衣保暖，休息比上工要緊。"
       },
       {
        "id": "cai",
@@ -4791,7 +4894,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "老蔡做了一桌菜請我，說這是他病好後掌的第一回勺。",
        "angry": "酒樓的人說，老蔡脹得下不了床，掌櫃另請了大廚。",
        "_review": "已審",
-       "_note": "2026-11-20 Claude 起草（補病例第三批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-20 Claude 起草（補病例第三批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "在熱灶前工作要常喝水、多吃蔬菜。好幾天沒排便又發燒、說胡話，要就醫。"
       },
       {
        "id": "zhou",
@@ -4834,7 +4938,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "老周把當鋪裡收來的一方舊墨送給我，說是他這輩子經手最好的一件。",
        "angry": "當鋪的人說，老周手腳還是冷，肚子還是痛，已經告假回鄉了。",
        "_review": "已審",
-       "_note": "2026-11-20 Claude 起草（補病例第三批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-20 Claude 起草（補病例第三批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "手腳冰冷不一定是體虛，也可能是壓力大、氣悶住了。不要自己亂吃溫補的藥，多活動、適度紓壓。"
       },
       {
        "id": "laogeng",
@@ -4877,7 +4982,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "老耿病好後回城門當值，看到我經過，挺直了腰敬了一個禮。",
        "angry": "老耿的兒子來說，爹越睡越沉，換了大夫。",
        "_review": "已審",
-       "_note": "2026-11-20 Claude 起草（補病例第三批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-20 Claude 起草（補病例第三批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "老人家感冒要特別留意精神，整天昏睡、叫醒又迷糊，要盡快就醫。值夜班或天冷外出要穿暖。"
       },
       {
        "id": "wei",
@@ -4920,7 +5026,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "老魏挑來兩擔最清的井水，倒進醫館的水缸，一文錢也不收。",
        "angry": "街坊說，老魏咳得挑不動水了，只好讓兒子頂著。",
        "_review": "已審",
-       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "每到冬天就咳的人，入冬前就要注意保暖、少吃冰冷。咳到喘不過氣，或痰變黃濃、發高燒，要就醫。"
       },
       {
        "id": "ma",
@@ -4963,7 +5070,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "老馬在茶館開講新的段子，說的是一位大夫一帖藥治好了說書人的喘。",
        "angry": "茶館掌櫃說，老馬喘得說不了書，換了別的先生。",
        "_review": "已審",
-       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "有氣喘老毛病的人，感冒要及早處理，不要亂吃瀉藥。喘到說不完一句話，要立刻就醫。"
       },
       {
        "id": "lan",
@@ -5006,7 +5114,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "阿蘭送來一包今年的頭春茶，說是她自己採的第一簍。",
        "angry": "茶園的人說，阿蘭暈得上不了茶山，回娘家養病去了。",
        "_review": "已審",
-       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "從躺著或蹲著起身時慢一點，先坐一下再站。頭暈合併說話不清、手腳無力，要立刻就醫。"
       },
       {
        "id": "niu",
@@ -5049,7 +5158,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "牛屠戶清醒後，提來一刀上好的五花肉，紅著臉說那幾天的事他都記不得了。",
        "angry": "牛娘子說，屠戶越來越瘋，只好請了廟裡的人來作法。",
        "_review": "已審",
-       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "人突然胡言亂語、行為反常，不是中邪，是身體出了大問題，要立刻送醫。"
       },
       {
        "id": "luo",
@@ -5092,7 +5202,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "小羅從貨擔裡挑了一把最好的牛角梳送我。",
        "angry": "街上的人說，小羅心口痛得挑不動擔子，好幾天沒出來了。",
        "_review": "已審",
-       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "心窩痛不一定是胃，也可能是心臟。胸口悶痛、冒冷汗、痛到手臂或下巴，要立刻就醫。"
       },
       {
        "id": "tan",
@@ -5135,7 +5246,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "老譚送來一罈新釀的米酒，說這回的酒他嚐得出味道了。",
        "angry": "酒坊的人說，老譚肚子一直響，連酒都嚐不準了。",
        "_review": "已審",
-       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "病後腸胃弱，吃飯七分飽，少喝酒、少油膩，細嚼慢嚥。"
       },
       {
        "id": "bai",
@@ -5178,7 +5290,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "白師傅紮了一盞走馬燈送我，燈轉起來，上面畫的是一位大夫替人把脈。",
        "angry": "紙紮鋪的徒弟說，師傅心慌得拿不穩竹篾，鋪子暫時關了。",
        "_review": "已審",
-       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "心跳亂、漏拍，尤其上了年紀，要去做心電圖檢查。睡眠要足，少喝濃茶咖啡。"
       },
       {
        "id": "zhuang2",
@@ -5221,7 +5334,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "阿壯病好那天，硬要抬著轎子送我回家，說不收錢。",
        "angry": "轎行的人說，阿壯熱得抬不動轎，被換下來了。",
        "_review": "已審",
-       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "發燒時多喝水、吃粥和蔬菜，大便才不會乾硬。吃了發汗藥沒退燒，不要一直加量，要找醫師。"
       },
       {
        "id": "jiang",
@@ -5264,7 +5378,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "阿江從上游帶回一根上好的杉木，說給醫館做一條新的長凳。",
        "angry": "排幫的人說，阿江黃得越來越深，排也放不了了。",
        "_review": "已審",
-       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "眼白、皮膚變黃，可能是肝膽出了問題，一定要就醫抽血檢查，不要只靠偏方。"
       },
       {
        "id": "lu",
@@ -5307,7 +5422,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "老陸挑來一擔新曬的白鹽，說是今年曬得最好的一批。",
        "angry": "鹽場的人說，老陸渴得一直喝水，人卻瘦了一大圈。",
        "_review": "已審",
-       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "在大太陽下工作，要戴帽子、常喝水、適時休息。中暑頭暈、不再出汗、意識模糊，要立刻送醫。"
       },
       {
        "id": "kong",
@@ -5350,7 +5466,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "孔師爺寫了一幅字送我，寫的是「醫者意也」。",
        "angry": "縣衙的人說，孔師爺又去買了瀉藥，瀉得連公堂都上不了。",
        "_review": "已審",
-       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "久坐的人每天起來走走，多喝水、多吃蔬菜水果。不要常吃瀉藥，腸子會越來越懶。"
       },
       {
        "id": "liu6",
@@ -5393,7 +5510,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "小六每回我去茶館，都替我留靠窗的位子，茶也泡得特別濃。",
        "angry": "茶館掌櫃說，小六尿不出來，熱也不退，只好回家躺著。",
        "_review": "已審",
-       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "平時要多喝水、別憋尿。小便灼痛、帶血或發燒，要就醫檢查是不是泌尿道感染。"
       },
       {
        "id": "biao2",
@@ -5436,7 +5554,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "阿彪病好後，在戲台上連翻了十八個跟斗，下台時朝我拱了拱手。",
        "angry": "戲班的人說，阿彪關節痛得上不了台，班主氣得直跺腳。",
        "_review": "已審",
-       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "感冒還沒好就急著出力，容易拖得更久。痠痛時多休息、熱敷，等燒退了再慢慢恢復操練。"
       },
       {
        "id": "ji",
@@ -5479,7 +5598,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "季大哥走貨回來，帶了一包南方的好茶葉給我。",
        "angry": "商隊的人說，季大哥寒熱不退，貨也押不了，困在客棧裡。",
        "_review": "已審",
-       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "出門在外生病，別一路換醫師、換藥。一位醫師看完給藥，就給身體幾天時間反應。"
       },
       {
        "id": "yan",
@@ -5522,7 +5642,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "老閻磨了一袋最細的麵粉送來，說可以給醫館的人做饅頭。",
        "angry": "磨坊的人說，老閻肚子痛得推不動磨，請了半個月的假。",
        "_review": "已審",
-       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "著涼不要用瀉藥把寒氣瀉掉，反而傷腸胃。肚子悶痛時可以熱敷、輕輕揉，吃溫熱好消化的東西。"
       },
       {
        "id": "huo",
@@ -5565,7 +5686,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "夏天最熱的那幾日，老霍偷偷送來一塊冰，說給大夫消暑。",
        "angry": "冰窖的人說，老霍骨頭痛得搬不了冰，回鄉下去了。",
        "_review": "已審",
-       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "在冷的地方工作要穿暖，護住背和腰，下班泡個溫水澡。關節又紅又腫又痛，要就醫。"
       },
       {
        "id": "lin",
@@ -5608,7 +5730,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "林秀才寫了一篇賦送我，說這是他落榜以來第一回寫得下去的文章。",
        "angry": "林家的人說，秀才整夜不睡，人都熬瘦了，換了大夫。",
        "_review": "已審",
-       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "心事重、睡不好，睡前別再想著白天的事，可以散步、泡腳。長期失眠或情緒低落，請找醫師聊聊。"
       },
       {
        "id": "yi",
@@ -5651,7 +5774,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "易嫂送來一對親手做的紅燭，說醫館夜裡看診用得著。",
        "angry": "易家婆婆說，媳婦拉得起不了床，人瘦得只剩一把骨頭。",
        "_review": "已審",
-       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "便裡帶血，不要因為害羞而忍著，一定要就醫檢查。"
       },
       {
        "id": "hui",
@@ -5694,7 +5818,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "阿蕙把醫館的布巾、診巾全收去洗了一遍，洗得又白又香。",
        "angry": "河邊的人說，阿蕙頭痛得蹲不下去，衣服都退回給人家了。",
        "_review": "已審",
-       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "冬天碰冷水的工作，做完把手擦乾保暖，頭也要戴帽子護著。頭痛劇烈又嘔吐、視力模糊，可能是急性青光眼，要立刻就醫。"
       },
       {
        "id": "cai2",
@@ -5737,7 +5862,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
        "thanks": "阿財挑了一個最大的西瓜抱來，說這個保證是好的。",
        "angry": "街上的人說，阿財拉得瓜攤都擺不了，人也瘦了。",
        "_review": "已審",
-       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫"
+       "_note": "2026-11-22 Claude 起草（補病例第四批），待佑彥審；證、方、各方結果都是新起草的；立繪還沒畫",
+       "card": "天熱食物容易壞，切開的瓜果要冷藏、盡快吃完。拉肚子帶血、發高燒，要就醫。"
       }
      ]
     };
@@ -5989,7 +6115,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "fail": "這一案走了彎路。紅腫眵多、起病急、鄰里同病，這是外來的風熱，補不得，升不得。"
        },
        "_review": "已審",
-       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤"
+       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤",
+       "card": "紅眼睛會傳染：常洗手、別用手揉眼，毛巾和枕頭套自己用、勤換洗。眼睛痛、怕光、看東西變模糊，要找眼科。"
       },
       {
        "id": "c2",
@@ -6182,7 +6309,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "fail": "這一案沒有走上正路。不紅不痛、慢慢來的影子，多是久視久勞傷了精血，要養，急不得。"
        },
        "_review": "已審",
-       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤"
+       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤",
+       "card": "眼前有幾隻小黑點飄來飄去，多半不要緊，越盯著它越在意反而越煩。黑點突然變多、看到閃光，或像有簾子遮住，要立刻散瞳檢查。"
       },
       {
        "id": "c3",
@@ -6272,7 +6400,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "fail": "這一案要原原本本記下來。暴痛、嘔吐、瞳神散大、視物驟降，是急症，不是哪一張方子的事。"
        },
        "_review": "已審",
-       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤"
+       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤",
+       "card": "眼睛脹痛又頭痛、想吐、看燈有彩色光圈，可能是急性青光眼，幾個小時就會傷到視力，要立刻掛急診。"
       },
       {
        "id": "c4",
@@ -6441,7 +6570,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "fail": "這一案走了彎路。腫在胞瞼，口臭便秘，夜夜炙肉，這是脾胃的熱往上衝，補不得，升不得。"
        },
        "_review": "已審",
-       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤"
+       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤",
+       "card": "長針眼不要擠。沒有紅痛時熱敷，幫阻塞的油脂排出；紅腫痛時可以冰敷。少吃烤炸辣、早點睡，才不會一顆接一顆長。"
       },
       {
        "id": "c5",
@@ -6608,7 +6738,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "fail": "這一案沒有走上正路。不紅不痛、午後加重、聲低食少，是脾氣虛弱抬不起胞瞼，要補，要升，不能清。"
        },
        "_review": "已審",
-       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤"
+       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤",
+       "card": "眼皮越到下午越重，多半是累出來的：三餐定時、細嚼慢嚥、少吃冰冷，睡飽一點。眼皮突然垂下來，或合併看東西變兩個、說話不清，要立刻就醫。"
       },
       {
        "id": "c6",
@@ -6739,7 +6870,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "fail": "這一案沒有走上正路。不紅不痛、慢慢加重的霧，濁在瞳神裡頭，多是年高精血不足，要養，不能清。"
        },
        "_review": "已審",
-       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤"
+       "_note": "佑彥 2026-11-15 看過審稿頁，確認無誤",
+       "card": "上了年紀看東西越來越霧，可能是白內障。早期可以調養、定期追蹤；調養一段時間沒有改善，就該接受手術，拖太久反而會引起眼壓升高。"
       },
       {
        "id": "c8",
@@ -6829,7 +6961,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "fail": "這一案要原原本本記下來。外觀乾淨、正中突然黑影、看直線變彎，是瞳神深處出血，要立刻送。"
        },
        "_review": "已審",
-       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；佑彥 2026-11-17 審完；引文由佑彥提供（本機 Excel）"
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；佑彥 2026-11-17 審完；引文由佑彥提供（本機 Excel）",
+       "card": "看東西正中間突然出現黑影，或直線變彎，是黃斑部出了問題，要當天找眼科。五十歲以後，可以常常遮住一眼、輪流看門框或格子線，及早發現變化。"
       },
       {
        "id": "c9",
@@ -6964,7 +7097,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "fail": "這一案沒有走上正路。紅繞黑睛、瞳神縮小、口苦脈弦、每回都在勞累後發作，要從三焦經絡著手，不能只清，也不能亂補。"
        },
        "_review": "已審",
-       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；佑彥 2026-11-17 審完；引文由佑彥提供（本機 Excel）"
+       "_note": "2026-11-17 Claude 起草（補病例第一批），待佑彥審；佑彥 2026-11-17 審完；引文由佑彥提供（本機 Excel）",
+       "card": "眼睛紅、痛、怕光又看不清，和一般的紅眼睛不同，要找眼科。會反覆發作的人，作息規律、減少壓力，想一想每次發作前有什麼共同的原因。"
       },
       {
        "id": "c10",
@@ -7272,7 +7406,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "fail": "不紅不痛、眼珠發脹、旁邊看不全，是青風內障。他的病在堵，不在虛，也不能往上提。"
        },
        "_review": "已審",
-       "_note": "2026-11-17 Claude 起草（長期病人），待佑彥審；佑彥 2026-11-17 審完；引文由佑彥提供（本機 Excel）"
+       "_note": "2026-11-17 Claude 起草（長期病人），待佑彥審；佑彥 2026-11-17 審完；引文由佑彥提供（本機 Excel）",
+       "card": "慢性青光眼早期幾乎沒有感覺，看得到的範圍是從旁邊慢慢變窄。四十歲以後定期量眼壓、檢查視神經；確診後按時點藥、晚上十一點前睡、心情放平穩。"
       },
       {
        "id": "c11",
@@ -7624,7 +7759,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "fail": "天黑看不見、看東西像從竹筒裡看，人瘦、頭暈耳鳴、腰痠，是精血虛損。平補補不上去，苦寒更傷她。"
        },
        "_review": "已審",
-       "_note": "2026-11-17 Claude 起草（長期病人），待佑彥審；佑彥 2026-11-17 審完；引文由佑彥提供（本機 Excel）"
+       "_note": "2026-11-17 Claude 起草（長期病人），待佑彥審；佑彥 2026-11-17 審完；引文由佑彥提供（本機 Excel）",
+       "card": "天黑就看不見、看得到的範圍又越來越窄，要做詳細的視網膜檢查。這是要長期相處的病：出門戴帽子和太陽眼鏡防曬，及早認識輔具與社會資源，心安比四處求偏方更要緊。"
       },
       {
        "id": "c12",
@@ -7758,7 +7894,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         "fail": "這一案走了彎路。看近清楚、看遠模糊，讀久更甚，眉間緊繃，這是久視筋脈拘緊，要柔肝緩急，再教他讀書的分寸。"
        },
        "_review": "已審",
-       "_note": "2026-11-18 Claude 起草（補病例第二批），待佑彥審；證型取自內容總表 E08-1；引文待補；立繪還沒畫"
+       "_note": "2026-11-18 Claude 起草（補病例第二批），待佑彥審；證型取自內容總表 E08-1；引文待補；立繪還沒畫",
+       "card": "孩子讀書要燈光充足、書離眼睛一尺以上，看三十分鐘就起來望遠處。每天到戶外走動，是預防近視最有效的方法。"
       }
      ]
     };
@@ -8048,7 +8185,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
     function loadMeta() {
         let m = null;
         try { m = JSON.parse(localStorage.getItem(META_KEY) || memMeta); } catch (e) { try { m = JSON.parse(memMeta); } catch (e2) { m = null; } }
-        return Object.assign({ runs: 0, ach: [], cases: {}, dil: [], epi: [], books: 0, herbs: [] }, m || {});
+        return Object.assign({ runs: 0, ach: [], cases: {}, dil: [], epi: [], books: 0, herbs: [], cards: [] }, m || {});
     }
     function saveMeta(m) {
         memMeta = JSON.stringify(m);
@@ -8108,9 +8245,13 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         const epi = EPI.map(e => (m.epi.includes(e.id) ? `<li><b class="name">${e.name}</b>　${e.desc}</li>` : '<li class="dim">？？？</li>')).join('');
         const dil = Object.keys(DILEMMAS).map(id => (m.dil.includes(id) ? `<li><b class="name">${DILEMMAS[id].title}</b></li>` : '<li class="dim">？？？</li>')).join('');
         const seen = all.filter(c => m.cases[c.id]).length;
+        const withCard = all.filter(c => c.card), gotCard = withCard.filter(c => m.cards.includes(c.id));
+        const cardList = withCard.map(c => (m.cards.includes(c.id) ? `<li><b class="name">${c.name}</b>　${c.card}</li>` : '<li class="dim">？？？</li>')).join('');
+        const cardSec = withCard.length ? `<h2>養生小卡 <span class="px">${gotCard.length}/${withCard.length}</span>　業餘難度看完病人時收下</h2><ul class="small notes">${cardList}</ul>` : '';
         return `<div class="small hint">行醫 <b class="px">${m.runs}</b> 輪，成書 <b class="px">${m.books}</b> 部。札記記在這台裝置的瀏覽器裡。</div>
             <h2>成就 <span class="px">${m.ach.length}/${ACH.length}</span></h2><ul class="small notes">${ach}</ul>
             <h2>看過的病人 <span class="px">${seen}/${all.length}</span>　只記最好的一次結果</h2><ul class="small notes two">${cases}</ul>
+            ${cardSec}
             <h2>心法 <span class="px">${m.epi.length}/${EPI.length}</span></h2><ul class="small notes">${epi}</ul>
             <h2>困境 <span class="px">${m.dil.length}/${Object.keys(DILEMMAS).length}</span></h2><ul class="small notes two">${dil}</ul>`;
     }
@@ -9810,10 +9951,10 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         洪大: '脈洪大：又大又有力，來勢洶湧，多主熱盛。', 結代: '脈結代：跳一跳會停一下，多是心的氣血不足。',
         舌淡: '舌淡：舌色偏淡白，多是氣血不足或有寒。', 舌紅: '舌紅：舌色偏紅，多主熱。', 苔白: '苔白：舌面一層白苔，多主寒或病還在表。', 苔黃: '苔黃：舌面一層黃苔，多主熱。',
         膩: '苔膩：舌苔像一層油膩的膜，多是濕或痰。', 齒痕: '齒痕：舌邊有牙齒壓出的痕，多是脾虛、水濕。', 瘀點: '瘀點：舌上紫暗的小點，多有瘀血。', 少苔: '少苔：舌面幾乎沒有苔，多是陰虛。',
-        /* 八綱（2026-11-23 Claude 起草）：只用在八綱小標籤，不會自動套在問診回答上 */
+        /* 八綱（2026-11-23 Claude 起草、佑彥審過，半表半裡是佑彥改的）：只用在八綱小標籤，不會自動套在問診回答上 */
         表: '表：病在身體的外層，皮膚、肌肉、關節這一帶。常見怕冷、發熱、頭痛身痛，脈多浮。',
         裡: '裡：病已經進到身體裡面，在腸胃、臟腑。常見口渴、便祕或拉肚子、肚子脹痛。',
-        半表半裡: '半表半裡：病卡在外層與裡面的中間，進不去也出不來。常見一陣冷一陣熱、胸脅悶脹、口苦。',
+        半表半裡: '半表半裡：病卡在外層與裡面的中間，通常在黏膜、真皮、腺體，進不去也出不來。常見一陣冷一陣熱、胸脅悶脹、口苦。',      // 佑彥 2026-11-23 改
         寒: '寒：身體偏冷。怕冷、手腳冰、不渴或只想喝熱的，舌淡、苔白。',
         熱: '熱：身體偏熱。怕熱、口渴想喝冷的、小便黃，舌紅、苔黃，脈多數。',
         虛: '虛：身體的本錢不夠。容易累、出虛汗、說話沒力，脈無力。治的時候要補、要扶。',
@@ -9825,6 +9966,14 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         const c = V.c;
         const clues = (c.keyQ || []).filter(id => c.a[id]).map(id => { const q = Q.find(x => x.id === id); return `<li><b>${q.g || q.q}</b>${q.g ? ` <span class="dim">${q.q}</span>` : ''}　${gloss(c.a[id], id === 'pulse' || id === 'look' || id === 'tongue')}</li>`; }).join('');
         return `<div class="chain small"><b class="hint">線索連連看</b>　<span class="dim">這位病人最要緊的幾句話</span><ul class="ans">${clues}</ul>${steps.map(t => `<div class="to">↓ ${t}</div>`).join('')}</div>`;
+    }
+    /* 養生小卡（業餘，佑彥 2026-11-23）：病例的 card，醫案裡送一張，記進杏林札記（meta.cards） */
+    function amCard() {
+        const c = V.c;
+        if (!isAmateur() || !c.card) return '';
+        const m = loadMeta();
+        if (!m.cards.includes(c.id)) { m.cards.push(c.id); saveMeta(m); }
+        return `<div class="ycard small"><b>養生小卡</b>${c.card}<span class="dim">已收進杏林札記</span></div>`;
     }
     const SAFE_SH = '遊戲裡的病人是虛構的，方子只為他一個人開。真實生活中，同樣是著涼，體質不同用藥就不同。身體不舒服請先給醫師看過，不要照著遊戲自己抓藥。';
     const SAFE_EY = '遊戲裡的病人是虛構的。眼睛的病變化快，視力突然變差、眼睛紅痛、看到閃光或黑影變多，請盡快找眼科醫師。';
@@ -9909,8 +10058,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         const opts = amOpts('sh-p', right, same.length >= 2 ? same : same.concat(rest));
         const curP = V.pattern && SH.PATTERNS[V.pattern];
         panel(`<h3>定證 <span>他像哪一種病？點一下看說明</span></h3>${shAnswers('small')}
-            <div class="grid am-pick" style="margin-top:8px">${opts.map(k => `<button class="btn${V.pattern === k ? ' on' : ''}" data-p="${k}"><b>${SH.PATTERNS[k].alias}</b></button>`).join('')}</div>
-            <div class="stick">${eyInfo(curP && curP.alias, curP && `這叫「${curP.name}」。治法：${curP.law}<br>八綱　${bgChips(curP)}<span class="dim">點一下看白話</span>`)}
+            <div class="grid am-pick" style="margin-top:8px">${opts.map(k => `<button class="btn${V.pattern === k ? ' on' : ''}" data-p="${k}"><b>${SH.PATTERNS[k].plain || SH.PATTERNS[k].alias}</b></button>`).join('')}</div>
+            <div class="stick">${eyInfo(curP && (curP.plain || curP.alias), curP && `這叫「${curP.name}」（${curP.alias}）。治法：${curP.law}<br>八綱　${bgChips(curP)}<span class="dim">點一下看白話</span>`)}
             <div class="foot"><button class="btn" id="back">回診間</button><button class="btn go px" id="next" ${V.pattern ? '' : 'disabled'}>就是這一種</button></div></div>`);
         $$('#panel [data-p]').forEach(b => b.onclick = () => { V.pattern = b.dataset.p; V.jing = jingOf(V.pattern); shPatternAm(); });
         $('#back').onclick = () => hub();
@@ -9926,7 +10075,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         const cur = V.am.pickF;
         panel(`<h3>處方 <span>我認的病：${SH.PATTERNS[V.pattern].name}</span></h3>
             <div class="grid am-pick">${opts.map(k => `<button class="btn${cur === k ? ' on' : ''}" data-af="${k}"><b>${SH.FORMULAS[k].name}</b></button>`).join('')}</div>
-            <div class="stick">${eyInfo(cur && SH.FORMULAS[cur].name, cur && SH.FORMULAS[cur].note)}
+            <div class="stick">${eyInfo(cur && SH.FORMULAS[cur].name, cur && (SH.FORMULAS[cur].plainNote || SH.FORMULAS[cur].note))}
             <div class="foot"><button class="btn" id="back">回診間</button><button class="btn go px" id="next" ${cur ? '' : 'disabled'}>就開這一帖</button></div></div>`);
         $$('#panel [data-af]').forEach(b => b.onclick = () => { V.am.pickF = b.dataset.af; shPickAm(); });
         $('#back').onclick = () => hub();
@@ -10271,7 +10420,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
                 <tr><td>結案時</td><td>病人信任 ${V.trust}　共看了 ${V.visits} 次，耗去心神 ${V.spiritUsed}</td></tr>
                 ${gainHTML()}
             </table>
-            ${isAmateur() ? amChain(SH.QUESTIONS, [`八綱　${bgChips(p)}`, `證　<b class="name">${p.name}</b>（${p.alias}）`, `方　<b class="name">${SH.FORMULAS[p.formula].name}</b>　${SH.FORMULAS[p.formula].note}`]) : ''}
+            ${isAmateur() ? amChain(SH.QUESTIONS, [`八綱　${bgChips(p)}`, `證　<b class="name">${p.name}</b>（${p.alias}）`, `方　<b class="name">${SH.FORMULAS[p.formula].name}</b>　${SH.FORMULAS[p.formula].plainNote || SH.FORMULAS[p.formula].note}`]) : ''}
+            ${amCard()}
             ${quote ? `<div class="quote small">《傷寒論》：「${quote}」</div>` : ''}
             ${isAmateur() ? `<div class="safe small">${SAFE_SH}</div>` : ''}
             <div class="foot"><button class="btn go px" id="next">${V.tutor ? '我記下了' : nextLabel()}</button></div>`);
@@ -10563,6 +10713,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
             ${c.quote && c.quote.text ? `<div class="quote small">${c.quote.src}：「${c.quote.text}」</div>` : ''}
             ${isAmateur() ? amChain(EY.QUESTIONS, [`病名　<b class="name">${c.disease}</b>（${c.modern}）`, `證　<b class="name">${p.name}</b>（${p.alias}）`, `處置　<b class="name">${EY.PLANS[c.right].name}</b>`]) : ''}
             <div class="note small"><b class="hint">給病人的叮嚀</b>（取自林佑彥《眼癒力》）　${c.advice}${c.modernNote ? `<br>${c.modernNote}` : ''}</div>
+            ${amCard()}
             ${isAmateur() ? `<div class="safe small">${SAFE_EY}</div>` : ''}
             <div class="foot"><button class="btn go px" id="next">${nextLabel()}</button></div>`);
         speak(Mt(comment));
