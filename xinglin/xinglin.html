@@ -15,7 +15,9 @@
 <meta property="og:title" content="水火既濟：杏林問診（試玩版）">
 <meta property="og:description" content="跟著師父望聞問切、辨證開方。方子開出去，要等病人回診才知道對不對。">
 <meta property="og:url" content="https://yylin.tw/xinglin">
-<meta property="og:image" content="https://yylin.thothcdn.com/images/yylin.tw/upload_file/ab8fdfe7-fb59-4655-843a-35fe9ae6ba5b.png">
+<meta property="og:image" content="https://yylin.thothcdn.com/images/yylin.tw/upload_file/3620527a-9060-47af-a12c-858a9099c5cb.jpg">
+<meta property="og:image:width" content="1000">
+<meta property="og:image:height" content="525">
 <meta property="og:locale" content="zh_TW">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="https://yylin.tw/images/yylin.tw/favicon.png">
@@ -7949,7 +7951,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     }
     function maxAsk() {
         const base = V.kind === 'sh' ? { amateur: 6, easy: 5, mid: 4 }[S.diff] || 3 : (isEasy() ? 4 : 3);
-        return Math.max(1, base + S.study + (S.skill >= 10 ? 1 : 0) - (V.lowSpirit ? 1 : 0));
+        return Math.max(1, base + S.study + (S.skill >= 10 ? 1 : 0) - (V.lowSpirit ? 1 : 0) + (V.reAsk || 0));      // reAsk：回診沒治好、重新看過時多問的項數
     }
     /* 醫術：每結一案就長一點，到門檻會讓看診省力。聲望：治好加、治壞減，影響新病人的信任 */
     const askCost = () => (S.skill >= 30 ? 2 : 3);
@@ -8272,19 +8274,27 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
     </svg>`;
     const SIL = { hero: figSil('hero', '#1f3a30', '#2f5a48', false), master: figSil('master', '#3a1c18', '#6a2c22', true), mentor: figSil('mentor', '#2a2440', '#4a4068', true) };
     const paid = () => !!V.paidPattern && V.paidPattern === V.pattern;
+    const reLeft = () => (V.round >= 2 && V.reAsk ? `，可再問 ${Math.max(0, maxAsk() - V.asked.length)} 項` : '');
+    /* 回診沒治好、選「更方」（佑彥 2026-11-23：要能重新問診與辨證，才符合臨床）：回到診間，已問的都還在，多給 RE_ASK 問；
+       可以補問、重新定證（改了證照樣再耗心神），也可以直接改方。初診定的證記在 V.pat0，醫案裡會列出前後兩次 */
+    const RE_ASK = 2;
+    function reExam(lines) {
+        V.round = 2; V.reAsk = RE_ASK; V.pat0 = V.pattern; V.pend = null; V.dingOpts = null;
+        hub([narr('我請病人坐下，重新看過一遍。')].concat(lines || [], tipsOr('要補問幾項、重新定證，或是直接改方，都可以。', '上一回哪一個線索沒問，或是問了卻沒放在心上？可以再問幾項，證認錯了就重新定證。')));
+    }
     function hub(lines) {
         const sh = V.kind === 'sh', n = V.asked.length, eyed = V.wheelOk !== null;
         if (V.tutor) lines = tutorHub(n);
         const pats = sh ? SH.PATTERNS : EY.PATTERNS;
         const steps = sh ? [
-            { name: '四診', on: true, done: n > 0, sub: n ? `已問 ${n} 項` : '望聞問切', go: shAsk },
+            { name: '四診', on: true, done: n > 0, sub: n ? `已問 ${n} 項${reLeft()}` : '望聞問切', go: shAsk },
             /* 八綱這一步 2026-11-20 拿掉（佑彥：各家爭議多）；定證本來就先定六經病位，再定方證 */
             { name: '定證', on: n > 0, done: paid(), sub: paid() ? pats[V.pattern].name : '六經與方證', go: shPattern },
             { name: '處方', on: paid(), done: !!V.pend, sub: V.pend ? '已開方' : (pickMode() ? '類方選方' : '君臣佐使'), go: () => { V.pend = null; V.dingOpts = null; shRx(); } },
             { name: '醫囑', on: !!V.pend, done: false, sub: '煎服與將息', go: () => dingStep(V.pend.res, V.pend.fk) }
         ] : [
             { name: '察目', on: !eyed, done: eyed, sub: eyed ? `${WHEELS[V.wheel].name}　${WHEELS[V.wheel].part}` : '五輪定位', go: eyEye },
-            { name: '問診', on: eyed, done: n > 0, sub: n ? `已問 ${n} 項` : '起病與起居', go: eyAsk },
+            { name: '問診', on: eyed, done: n > 0, sub: n ? `已問 ${n} 項${reLeft()}` : '起病與起居', go: eyAsk },
             { name: '辨證', on: eyed && n > 0, done: paid(), sub: paid() ? pats[V.pattern].name : '斷為何證', go: eyPattern },
             { name: '處置', on: paid(), done: false, sub: '立法施治', go: eyPlan }
         ];
@@ -9947,7 +9957,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             <div class="askg"><b>${pickBook === 'jg' ? '病篇' : '類方'}</b><div class="grid">${tabs}</div></div>
             ${fam ? `<div class="askg"><b>${fam.name}</b><div class="grid">${cards}</div></div>` : '<div class="small dim">先選這個證屬於哪一類方。</div>'}
             <div class="stick">${eyInfo(pickF, pInfo)}
-            <div class="foot">${V.round === 1 ? '<button class="btn" id="back">回診間</button>' : ''}<button class="btn go px" id="next" ${pickF ? '' : 'disabled'}>交付藥方</button></div></div>`);
+            <div class="foot"><button class="btn" id="back">回診間</button><button class="btn go px" id="next" ${pickF ? '' : 'disabled'}>交付藥方</button></div></div>`);
         $$('#panel [data-book]').forEach(b => b.onclick = () => { if (pickBook !== b.dataset.book) { pickBook = b.dataset.book; pickFam = ''; } shPick(); });
         $$('#panel [data-fam]').forEach(b => b.onclick = () => { pickFam = b.dataset.fam; shPick(); });
         $$('#panel [data-pickf]').forEach(b => b.onclick = () => { pickF = b.dataset.pickf; shPick(); });
@@ -9979,7 +9989,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         panel(`<h3>${V.round === 1 ? '處方' : '複診處方'} <span>我定的證：${SH.PATTERNS[V.pattern].name}</span></h3>
             ${formulas}<div class="slots">${slots}</div><div class="herbs">${herbs}</div>
             <div class="stick">${rInfo}
-            <div class="foot"><button class="btn" id="clear">清空</button>${V.round === 1 ? '<button class="btn" id="back">回診間</button>' : ''}<button class="btn go px" id="next" ${rx.jun.length ? '' : 'disabled'}>交付藥方</button></div></div>`);
+            <div class="foot"><button class="btn" id="clear">清空</button><button class="btn" id="back">回診間</button><button class="btn go px" id="next" ${rx.jun.length ? '' : 'disabled'}>交付藥方</button></div></div>`);
         $$('#panel [data-slot]').forEach(el => el.onclick = () => { curSlot = el.dataset.slot; shRx(); });
         $$('#panel [data-h]').forEach(el => el.onclick = () => {
             const h = el.dataset.h;
@@ -10167,7 +10177,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             const keep = res.r === 'better' ? '<button class="octw" id="keep"><span class="oct"><b>守方</b></span><span class="sub">效不更方，原方再進幾帖</span></button>' : '';
             panel(`<h3>回診　${V.c.name}</h3>${body}
                 <div class="octs">${keep}
-                    <button class="octw" id="redo"><span class="oct"><b>更方</b></span><span class="sub">回頭檢視判斷，重新辨證處方</span></button>
+                    <button class="octw" id="redo"><span class="oct"><b>更方</b></span><span class="sub">重新問診、辨證，再開方</span></button>
                     <button class="octw" id="refer"><span class="oct"><b>轉介</b></span><span class="sub">坦承力有未逮，轉介他醫</span></button>
                 </div>`);
             if (res.fate) lines.push(...tips('方證既然相應，就不要因為一時未癒而動搖。'));
@@ -10181,10 +10191,8 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                 leave('守原方，再服幾帖');
             };
             $('#redo').onclick = () => {
-                V.round = 2;
                 if (V.lastRx && V.lastRx.pick) { pickF = V.lastRx.pick; pickFam = V.lastRx.fam || ''; } else { rx = clone(V.lastRx); curSlot = 'jun'; }
-                speak(narr('我請病人坐下，重新看過一遍。'));
-                shRx();
+                reExam();
             };
             $('#refer').onclick = () => {
                 V.round = 2; V.referred = true;
@@ -10195,6 +10203,9 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         }
         speak(lines);
     }
+    const patRow = (pats, mark) => (V.pat0 && V.pat0 !== V.pattern
+        ? `<tr><td>初診定的證</td><td>${pats[V.pat0].name}　${mark(V.pat0 === V.c.pattern)}</td></tr><tr><td>複診改定</td><td>${pats[V.pattern].name}　${mark(V.pattern === V.c.pattern)}</td></tr>`
+        : `<tr><td>我定的證</td><td>${pats[V.pattern].name}　${mark(V.pattern === V.c.pattern)}</td></tr>`);
     function shRecord() {
         const c = V.c, p = SH.PATTERNS[c.pattern];
         const mark = (ok) => (ok ? '<span class="up">相符</span>' : '<span class="down">不符</span>');
@@ -10214,7 +10225,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
             <table class="rec small">
                 <tr><td>實際的證</td><td><b class="name">${p.name}</b>（${p.alias}）　治法：${p.law}　主方：${SH.FORMULAS[p.formula].name}</td></tr>
                 <tr><td>我問了</td><td>${V.asked.map(id => SH.QUESTIONS.find(q => q.id === id).q).join('、')}（三個關鍵問題問到 ${keyAsked} 個）</td></tr>
-                <tr><td>我定的證</td><td>${SH.PATTERNS[V.pattern].name}　${mark(V.pattern === c.pattern)}</td></tr>
+                ${patRow(SH.PATTERNS, mark)}
                 ${V.results.some(r => r.ding !== undefined) ? `<tr><td>醫囑</td><td>${V.results.filter(r => r.ding !== undefined).map(r => r.ding ? '<span class="up">交代得對</span>' : '<span class="down">交代錯了</span>').join('、')}</td></tr>` : ''}
                 ${rows}
                 <tr><td>結案時</td><td>病人信任 ${V.trust}　共看了 ${V.visits} 次，耗去心神 ${V.spiritUsed}</td></tr>
@@ -10342,7 +10353,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         panel(`<h3>${V.round === 1 ? '處置' : '複診處置'} <span>我定的證：${EY.PATTERNS[V.pattern].name}</span></h3>
             <div class="grid">${btns}</div>
             <div class="stick">${eyInfo(cur && cur.name, cur && (isEasy() || V.plan === 'refer') ? cur.sub : '')}
-            <div class="foot">${V.round === 1 && !V.noRefer ? '<button class="btn" id="back">回診間</button>' : ''}<button class="btn go px" id="next" ${V.plan ? '' : 'disabled'}>就這麼辦</button></div></div>`);
+            <div class="foot">${!V.noRefer ? '<button class="btn" id="back">回診間</button>' : ''}<button class="btn go px" id="next" ${V.plan ? '' : 'disabled'}>就這麼辦</button></div></div>`);
         $$('#panel [data-plan]').forEach(b => b.onclick = () => { V.plan = b.dataset.plan; eyPlan(); });
         if ($('#back')) $('#back').onclick = () => hub();
         $('#next').onclick = eySubmit;
@@ -10397,7 +10408,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
         else if (V.round >= 2) done('再次回診', o.r === 'better' ? '' : c.angry);
         else {
             const keep = o.r === 'better' ? '<button class="octw" id="keep"><span class="oct"><b>守方</b></span><span class="sub">效不更方，原方減量再進幾帖</span></button>' : '';
-            const redo = c.onlyLate ? '' : '<button class="octw" id="redo"><span class="oct"><b>更方</b></span><span class="sub">回頭檢視判斷，換一個治法</span></button>';
+            const redo = c.onlyLate ? '' : '<button class="octw" id="redo"><span class="oct"><b>更方</b></span><span class="sub">重新問診、辨證，換一個治法</span></button>';
             const late = `<button class="octw" id="late"><span class="oct"><b>${c.onlyLate ? '急送' : '轉介'}</b></span><span class="sub">${c.onlyLate ? '立刻送專科，不能再等了' : '坦承力有未逮，轉請專治眼病的大夫'}</span></button>`;
             panel(`<h3>回診　${c.name}</h3>${body}<div class="octs">${keep}${redo}${late}</div>`);
             if (c.onlyLate) lines.push(...tips('現在不是檢討方子的時候。'));
@@ -10410,11 +10421,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                 speak(narr('我請病人照原方減量再服幾帖。'));
                 leave('效不更方，原方減量');
             };
-            if ($('#redo')) $('#redo').onclick = () => {
-                V.round = 2; V.plan = null;
-                speak(narr('我請病人坐下，重新看過一遍。'));
-                eyPlan();
-            };
+            if ($('#redo')) $('#redo').onclick = () => { V.plan = null; reExam(); };
             $('#late').onclick = () => {
                 V.round = 2; V.referred = true;
                 addTrust(c.late.trust); hud();
@@ -10506,7 +10513,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
                 <tr><td>實際的證</td><td>${p.name}　合適的處置：${EY.PLANS[c.right].name}</td></tr>
                 <tr><td>察目</td><td>我看的是${w.name}（${w.part}）　${mark(V.wheelOk)}${V.wheelOk ? '' : `　病在${rw.name}（${rw.part}），屬${rw.organ}`}</td></tr>
                 <tr><td>我問了</td><td>${V.asked.map(id => EY.QUESTIONS.find(q => q.id === id).q).join('、')}（三個關鍵問題問到 ${V.keyHit} 個）</td></tr>
-                <tr><td>我定的證</td><td>${EY.PATTERNS[V.pattern].name}　${mark(V.pattern === c.pattern)}</td></tr>
+                ${patRow(EY.PATTERNS, mark)}
                 ${rows}
                 <tr><td>結案時</td><td>病人信任 ${V.trust}　共看了 ${V.visits} 次，耗去心神 ${V.spiritUsed}</td></tr>
                 ${gainHTML()}
