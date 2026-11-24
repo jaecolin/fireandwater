@@ -155,6 +155,21 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
 .bp span { position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%); white-space: nowrap; padding: 1px 7px; font-size: 0.8em; color: var(--name); background: rgba(6, 10, 34, 0.85); border: 1px solid var(--gold); border-radius: 3px; }
 .bp span i { font-style: normal; color: var(--up); margin-left: 4px; }
 @media (max-width: 640px) { .bench { height: 10.5em; } .bp { height: 9.8em; } .bp span { font-size: 0.72em; padding: 0 4px; } }
+/* 一生回顧牆（2026-11-24）：結局的病人立繪，有好結果彩色、其餘淡墨 */
+.wall-ch { margin: 8px 0 4px; color: var(--name); font-weight: 700; font-size: 0.92em; }
+.wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(4.8em, 1fr)); gap: 6px; }
+.wp { position: relative; padding: 0; aspect-ratio: 3 / 4; overflow: hidden; cursor: pointer; border: 1px solid var(--gold-dark); border-radius: 3px; background: linear-gradient(180deg, #3a3122, #1c1810); }
+.wp img { width: 100%; height: 130%; object-fit: cover; object-position: 50% 4%; display: block; }
+.wp span { position: absolute; left: 0; right: 0; bottom: 0; padding: 1px 2px; font-size: 0.74em; color: var(--name); background: rgba(6, 10, 34, 0.82); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wp.ink { background: linear-gradient(180deg, #4a4740, #24221e); }
+.wp.ink img { filter: grayscale(1) sepia(0.18) brightness(0.82) contrast(0.9); opacity: 0.72; }
+.wp.ink span { color: #b8b2a2; }
+.wp.on { outline: 2px solid var(--gold); outline-offset: 1px; }
+.wp:hover img, .wp:focus-visible img { transform: scale(1.04); }
+.wp img { transition: transform 0.15s; }
+.wall-h { margin: 4px 0 2px; padding-left: 1.2em; }
+#panel > .stick .wall-d { text-align: left; max-height: 9.5em; overflow-y: auto; }
+#panel > .stick .wall-d.empty { text-align: center; }
 .thank-face { float: left; width: 7.5em; height: 10em; margin: 0 10px 6px 0; background: bottom center / contain no-repeat; }
 .ans li.fu { padding-left: 1.6em; border-bottom-style: dotted; font-size: 0.94em; }
 .ans li.fu b { color: var(--hint); }
@@ -846,10 +861,10 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
 
             <h2>難度</h2>
             <div class="opt pick" id="opt-diff">
-                <button class="btn" data-diff="amateur">業餘<small>不必懂中醫。你是醫館的藥童，跟著師父看病、抓藥。一天約兩位病人，關鍵症狀會標出來，名詞點一下就有解釋，每一步都三選一；開錯藥只是好得慢，不會出事。</small></button>
-                <button class="btn on" data-diff="easy">入門<small>一輪約三、四十分鐘，一天約三位病人。問診項數多，師父會提點，看得到藥材功效，可套用成方。</small></button>
-                <button class="btn" data-diff="mid">進階<small>一輪約一個半小時，一天約五位病人。只有習醫章有提點；立業章起從類方加減選方。</small></button>
-                <button class="btn" data-diff="hard">專業<small>一天約五位病人。問診項數少，沒有提點，每一帖都一味一味自己配，對錯到醫案才揭曉。</small></button>
+                <button class="btn" data-diff="amateur">業餘<small>不必懂中醫。你是醫館的藥童，跟著師父看病、抓藥。每章三位新病人，一天一位，關鍵症狀會標出來，名詞點一下就有解釋，每一步都三選一；開錯藥只是好得慢，不會出事。</small></button>
+                <button class="btn on" data-diff="easy">入門<small>一輪約四、五十分鐘，每章三位新病人。問診項數多，師父會提點，看得到藥材功效，可套用成方。</small></button>
+                <button class="btn" data-diff="mid">進階<small>一輪約一個半小時，每章四、五位新病人。只有習醫章有提點；立業章起從類方加減選方。</small></button>
+                <button class="btn" data-diff="hard">專業<small>每章四、五位新病人。問診項數少，沒有提點，每一帖都一味一味自己配，對錯到醫案才揭曉。</small></button>
             </div>
             <div class="optinfo" id="opt-diff-info"></div>
 
@@ -5938,47 +5953,58 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
      "PATTERNS": {
       "fengre": {
        "name": "風熱外襲",
-       "alias": "外來的風熱疫氣，起病急，紅腫眵多"
+       "alias": "外來的風熱疫氣，起病急，紅腫眵多",
+       "plain": "眼睛突然又紅又腫、眼屎很多，身邊的人也一個接一個紅眼"
       },
       "laosun": {
        "name": "肝腎勞損",
-       "alias": "久視久勞，精血暗耗，眼睛失養"
+       "alias": "久視久勞，精血暗耗，眼睛失養",
+       "plain": "長年熬夜用眼，眼睛又乾又累、腰痠，身體的本錢慢慢耗掉"
       },
       "fenghuo": {
        "name": "肝膽風火上攻",
-       "alias": "氣火暴升，閉塞目中，來勢急重"
+       "alias": "氣火暴升，閉塞目中，來勢急重",
+       "plain": "一動氣火就往頭上衝，眼睛脹痛、頭痛、想吐，來得又急又猛"
       },
       "qixu": {
        "name": "脾虛氣弱",
-       "alias": "清陽不升，倦怠乏力，眼睛無神"
+       "alias": "清陽不升，倦怠乏力，眼睛無神",
+       "plain": "吃得少、容易累、說話沒力，眼皮越到下午越抬不起來"
       },
       "weire": {
        "name": "脾胃內熱",
-       "alias": "炙烤辛辣吃多了，胃火上衝，胞瞼紅腫"
+       "alias": "炙烤辛辣吃多了，胃火上衝，胞瞼紅腫",
+       "plain": "愛吃烤炸辣，嘴破、口臭、便祕，眼皮紅腫冒膿頭"
       },
       "chengshu": {
        "name": "圓翳成熟期",
-       "alias": "年高肝腎陰精漸虧，瞳神內翳障已深，藥力難以化開"
+       "alias": "年高肝腎陰精漸虧，瞳神內翳障已深，藥力難以化開",
+       "plain": "上了年紀，眼裡那層霧已經厚到藥化不開，只看得到光影"
       },
       "xuere": {
        "name": "血熱妄行",
-       "alias": "血中有熱，不循常道，溢於瞳神深處"
+       "alias": "血中有熱，不循常道，溢於瞳神深處",
+       "plain": "血裡有熱，眼底出了血，看東西正中間忽然一團黑影"
       },
       "sanjiao": {
        "name": "少陽三焦鬱熱",
-       "alias": "三焦氣機不暢，鬱而化熱，上攻瞳神"
+       "alias": "三焦氣機不暢，鬱而化熱，上攻瞳神",
+       "plain": "心裡悶著事，一陣冷一陣熱，眼睛紅痛怕光，好了又犯"
       },
       "muluo": {
        "name": "氣滯血瘀，目絡不暢",
-       "alias": "長年勞神緊繃，氣血運行不暢，眼中脈道壅滯"
+       "alias": "長年勞神緊繃，氣血運行不暢，眼中脈道壅滯",
+       "plain": "長年操心緊繃，眼裡的血路不通，看得到的範圍從旁邊慢慢變窄"
       },
       "jingxu": {
        "name": "精血虛損",
-       "alias": "久耗眼力心力，精血不能上榮於目"
+       "alias": "久耗眼力心力，精血不能上榮於目",
+       "plain": "身體的本錢耗得太深，天一黑就看不見，看的範圍越來越窄"
       },
       "jinji": {
        "name": "久視筋脈拘緊",
-       "alias": "長時間近看，氣血消耗，眼周筋脈繃著放不開"
+       "alias": "長時間近看，氣血消耗，眼周筋脈繃著放不開",
+       "plain": "整天低頭近看，眼睛的筋繃著放不開，遠的模糊、近的還清楚"
       }
      },
      "PLANS": {
@@ -7959,7 +7985,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
     const APP_SVG = HERO_SVG.replace('#22306e', '#2e4a3a').replace('#2C4F3E', '#7a6230');
 
     /* ================= 一生的骨架 =================
-       五章。每章從病例庫抽 quota 位新病人，分兩天上門；病人都結案後，這一章才結束。
+       五章。每章從病例庫抽 quota 位新病人，分 ARR_DAYS（三）天上門；病人都結案後，這一章才結束。
        之後病例庫變大，每一輪抽到的人不同，一輪的長度不變。 */
     /* 每一章有一個心結（heart）：章首提出，該章的困境考驗它，章末用一個場景收住。
        lines、end 可以是陣列，也可以是回傳陣列的函式（要看前面幾章發生過什麼的時候）。 */
@@ -7975,7 +8001,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
           end: [{ text: '師父翻了翻我的病歷簿，沒有說好，也沒有說不好。' }, { who: SHM, text: '都記下來了，就好。' },
                 { who: SHM, text: '《易》有一卦叫既濟，水在火上，飯才煮得熟。醫者的身和心也是這樣，哪一頭偏了，都看不好病人。' },
                 { text: '那時候，我只記住了前半句。' }] },
-        { name: '立業', quota: 2, heart: '怕沒人來', bg: 'bg-s-sign.webp',
+        { name: '立業', quota: 3, heart: '怕沒人來', bg: 'bg-s-sign.webp',
           lines: [{ text: '幾年過去。我要走的那天，師父沒有送藥，也沒有送書。' },
                   { who: SHM, text: '這本簿子是空的。往後沒有人替你看方子了。錯了，是你的。對了，也不全是你的。' },
                   { text: '我在城南賃了一間小屋，掛上自己的招牌。母親來看過一次。她摸了摸那塊招牌，沒有說話。' },
@@ -7983,7 +8009,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
           end: () => lowFame()
               ? [{ text: '招牌掛了幾年，漆有些褪了。路過的人看一眼，多半就走過去了。' }, { text: '我慢慢明白，招牌是病人替我掛上去的。病人不來，招牌也就只是一塊木頭。' }]
               : [{ text: '招牌掛了幾年，漆有些褪了。認得這塊招牌的人，倒是多了。' }, { text: '我慢慢明白，招牌是病人替我掛上去的。' }] },
-        { name: '盛年', quota: 2, heart: '怕治不好', bg: 'bg-s-bench.webp',
+        { name: '盛年', quota: 3, heart: '怕治不好', bg: 'bg-s-bench.webp',
           lines: () => {
               const w = chenWas();
               const chen = w === 'good' ? '長凳上有張熟面孔。老陳陪著孫子來，見了我只點點頭，說：大夫忙，我們等。'
@@ -8002,7 +8028,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
           end: () => [lowFame() ? { text: '病人不多，每一位的名字我都記得。也記得哪幾位，是我沒有看好的。' } : { text: '我開始記不住每一位病人的名字。這讓我有些不安。' },
                 { text: '倒是病歷簿的邊上，多了幾行小字。白睛和黑睛表面那層膜出毛病的人，皮膚、口鼻也常不安穩。眼珠深處血絡出事的人，心與血脈多半先有徵兆。' },
                 { text: '五輪說得到眼睛的表面，說不到這麼深的地方。我還說不清，先記著。' }] },
-        { name: '傳承', quota: 2, heart: '怕說我不知道', bg: 'bg-s-mother.webp',
+        { name: '傳承', quota: 3, heart: '怕說我不知道', bg: 'bg-s-mother.webp',
           lines: () => {
               const p = S.app.parent ? P[S.app.parent] : null;
               const who = p ? (S.app.why === 'bad'
@@ -8018,7 +8044,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
           end: [{ text: '我看著小滿替病人診脈的樣子，想起師父當年看我的眼神。' }, { who: APP, text: '師父，您病歷簿邊上這些小字是什麼？' },
                 { who: '我', text: '人在娘胎裡，是一層一層長出來的。我在想，眼睛的每一層，和身上哪一處是同一個來處。' },
                 { who: APP, text: '那晶珠和神膏呢？' }, { who: '我', text: '我歸在腎。道理還說不圓，可是照著治，是對的。想清楚了，再告訴你。' }] },
-        { name: '晚年', quota: 2, heart: '怕來不及', bg: 'bg-s-oldhome.webp',
+        { name: '晚年', quota: 3, heart: '怕來不及', bg: 'bg-s-oldhome.webp',
           lines: [{ text: '我回了一趟師父的舊居。屋子還在，藥櫃空了。窗下那張我坐了三年的凳子，也還在。' },
                   { text: '我的眼睛也花了。看診的時候，得把病人的手拉近一點。' }, { text: '來的人少了。我有更多時間，把每一位看清楚。' }],
           end: [{ text: '我把診間的鑰匙交了出去。病歷簿，我自己留著。' }] }
@@ -8037,8 +8063,10 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
             /* 病人輪替（2026-11-22）：札記裡還沒看過的病人優先，玩第二、三輪會遇到新面孔；其次是合乎這一章程度的，同程度隨機 */
             .sort((a, b) => (a.s - b.s) || (b.lv - a.lv) || (a.o - b.o));
         const picks = pool.slice(0, quotaOf(k)).map(x => x.id);
-        const n1 = Math.ceil(picks.length / 2);
-        return { 1: picks.slice(0, n1), 2: picks.slice(n1) };
+        /* 門診日調整（2026-11-24 佑彥選乙）：新病人分三天上門（原本兩天），多出來的人數排在前面幾天 */
+        const out = {}; let at = 0;
+        for (let d = 1; d <= ARR_DAYS; d++) { const n = Math.floor(picks.length / ARR_DAYS) + (d <= picks.length % ARR_DAYS ? 1 : 0); out[d] = picks.slice(at, at + n); at += n; }
+        return out;
     }
 
     /* ================= 狀態 ================= */
@@ -8051,18 +8079,20 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
     const S = Object.assign({ diff: 'easy', hero: 'm' }, fresh());       // hero：主角 m 男、f 女（舊存檔沒有這一欄就當男）
     const P = {};               // 病歷簿：每位病人一筆，跨門診日保存
     let V = null;               // 目前在診間的病人
-    /* 難度（2026-11-17 佑彥定三級）：入門 easy（一天約三位，約三四十分鐘）、進階 mid（一天約五位，約一個半小時，類方加減）、專業 hard（一天約五位，方子一味一味自己配）。
+    /* 難度（2026-11-17 佑彥定三級）：入門 easy（每章三位，約四五十分鐘）、進階 mid（每章四五位，約一個半小時，類方加減）、專業 hard（每章四五位，方子一味一味自己配）。新病人分三天上門（2026-11-24）。
        isEasy() 是只給入門的提點；!isHard() 是入門與進階都有的資訊（藥材功效、類方組成、察目的臟腑） */
     const isEasy = () => S.diff === 'easy' || S.diff === 'amateur';          // 業餘也有入門的全部提點
     const isAmateur = () => S.diff === 'amateur';                             // 業餘（2026-11-22 佑彥）：主角是藥童，三選一、標關鍵、名詞解釋、不會出事
     const isHard = () => S.diff === 'hard';
     const DIFF_NAME = { amateur: '業餘', easy: '入門', mid: '進階', hard: '專業' };
     const diffName = (d) => DIFF_NAME[d || S.diff] || '入門';
+    const ARR_DAYS = 3;                          // 每章新病人分幾天上門（2026-11-24 由兩天改三天）
+    const QUOTA_AM = 3;                          // 業餘每章的新病人數（2026-11-24 由 2 改 3，一天一位）
     const QUOTA_MORE = [4, 5, 5, 5, 5];          // 進階、專業每章的新病人數（入門用 CHAPTERS 的 quota）。病例庫不夠時，有幾位就排幾位
     /* 病例不夠時，把剩下的病例平均留給後面幾章，免得晚年章沒人上門；病例補足後就是 QUOTA_MORE */
     function quotaOf(k) {
         const left = SH.CASES.concat(EY.CASES).filter(c => !P[c.id]).length;
-        const q = isAmateur() ? 2 : isEasy() ? CHAPTERS[k].quota : Math.min(QUOTA_MORE[k], Math.max(CHAPTERS[k].quota, Math.ceil(left / (CHAPTERS.length - k))));
+        const q = isAmateur() ? QUOTA_AM : isEasy() ? CHAPTERS[k].quota : Math.min(QUOTA_MORE[k], Math.max(CHAPTERS[k].quota, Math.ceil(left / (CHAPTERS.length - k))));
         /* 自己開業之後，聲望低就少人上門：聲望低於 0 少一位，低於 −10 少兩位，至少還有一位（佑彥 2026-11-18） */
         return k >= 2 ? Math.max(1, q - (S.fame < -10 ? 2 : (S.fame < 0 ? 1 : 0))) : q;
     }
@@ -9704,17 +9734,38 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         if (poor) S.flags.poverty = true;
         const list = Object.values(P).sort((a, b) => a.firstDay - b.firstDay);
         setBg(poor ? 'bg-e-poor.webp' : 'bg-e-book.webp');           // 結局插圖：貧病交加、著書傳世
-        const rows = CHAPTERS.map((ch, i) => {
-            const ps = list.filter(p => p.firstCh === i);
-            return ps.length ? `<tr><td colspan="2"><b class="name">第${CN[i + 1]}章　${ch.name}</b></td></tr>${ps.map(caseRow).join('')}` : '';
-        }).join('');
         const ok = list.filter(p => GOOD4.includes(p.outcome)).length;
-        panel(`<h3>這一生 <span>${list.length} 位病人，${ok} 位有好結果</span></h3>
-            <table class="rec small">${rows}</table>
-            <div class="small hint" style="margin-top:8px">醫術 ${S.skill}　修為 ${S.peace}（${tierOf()}）　聲望 ${S.fame}　金錢 ${S.money}　既濟 ${S.jiji} 天</div>
-            <div class="foot"><button class="btn go px" id="next">${poor ? "收起診間" : "整理醫案"}</button></div>`);
+        let sel = '';
+        /* 一生回顧牆（2026-11-24）：這一輪看過的病人立繪依章排成一面牆，有好結果的是彩色（病好版），其餘淡墨；點一下在下面看當年的醫案 */
+        const wall = () => CHAPTERS.map((ch, i) => {
+            const ps = list.filter(p => p.firstCh === i);
+            return ps.length ? `<div class="wall-ch">第${CN[i + 1]}章　${ch.name}</div><div class="wall">${ps.map(p => {
+                const good = p.status === 'closed' && GOOD4.includes(p.outcome);
+                const src = good && p.c.face && !p.c.life ? faceUrl(p.c, 'w') : faceOf(p);
+                return `<button class="wp${good ? '' : ' ink'}${sel === p.id ? ' on' : ''}" data-w="${p.id}"><img src="${src}" alt="" loading="lazy"><span>${p.c.name}</span></button>`;
+            }).join('')}</div>` : '';
+        }).join('');
+        const detail = () => {
+            const p = sel && P[sel];
+            if (!p) return '<div class="desc d-info wall-d empty"><span class="dim">彩色的是有好結果的，淡墨的是沒治好、沒回來或還在治的。點一張臉，看當年的醫案。</span></div>';
+            const pats = p.kind === 'sh' ? SH.PATTERNS : EY.PATTERNS;
+            const mine = p.pattern && p.pattern !== p.c.pattern ? `　<span class="dim">我定的證：${pats[p.pattern].name}</span>` : '';
+            const h = histOf(p);
+            return `<div class="desc d-info wall-d"><b class="name">${p.c.name}</b>　<span class="small hint">${p.c.type}，第 ${p.firstDay} 個門診日初診，共看了 ${p.visits} 次</span>
+                <div class="small">${truthOf(p)}${mine}<br><span class="${GOOD4.includes(outOf(p)) ? 'up' : 'down'}">${outOf(p)}</span></div>
+                ${h ? `<ul class="small wall-h">${h}</ul>` : ''}${p.c.card && isAmateur() ? `<div class="small dim">養生小卡：${p.c.card}</div>` : ''}</div>`;
+        };
+        const draw = () => {
+            panel(`<h3>這一生 <span>${list.length} 位病人，${ok} 位有好結果</span></h3>
+                ${wall() || '<div class="dim">這一生沒有留下病人的紀錄。</div>'}
+                <div class="small hint" style="margin-top:8px">醫術 ${S.skill}　修為 ${S.peace}（${tierOf()}）　聲望 ${S.fame}　金錢 ${S.money}　既濟 ${S.jiji} 天</div>
+                <div class="stick">${detail()}
+                <div class="foot"><button class="btn go px" id="next">${poor ? "收起診間" : "整理醫案"}</button></div></div>`);
+            $$('#panel [data-w]').forEach(b => b.onclick = () => { sel = sel === b.dataset.w ? '' : b.dataset.w; const y = $('#panel').scrollTop; draw(); $('#panel').scrollTop = y; });
+            $('#next').onclick = () => (poor ? finale(list, []) : writeBook(list));
+        };
+        draw();
         speak(narr(poor ? '米缸空了好幾天。我把診間的門板一塊一塊上好，只帶走了病歷簿。' : '我把病歷簿從頭翻了一遍。每一頁都是一張臉。'));
-        $('#next').onclick = () => (poor ? finale(list, []) : writeBook(list));
     }
     /* 著書：從自己的醫案裡選幾則放在卷首 */
     function writeBook(list) {
@@ -9809,6 +9860,12 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
     }
 
     /* ================= 病歷簿 ================= */
+    function histOf(p) {             // 一位病人每一診的處置與結果（病歷簿、一生回顧牆共用）
+        const res = (x) => (x.shown ? `　<span class="${rCls(x.r)}">${R_NAME[x.r]}</span>` : '　<span class="dim">結果未明</span>');
+        return p.kind === 'sh'
+            ? p.results.map((r, i) => `<li>${i === 0 ? '初診' : '複診'}：${r.rx}${res(r)}</li>`).join('')
+            : p.log.map(l => `<li>${l.title}：${l.what}${res(l)}</li>`).join('');
+    }
     function bookHTML() {
         const list = Object.values(P).sort((a, b) => a.firstDay - b.firstDay);
         if (!list.length) return '<div class="dim">還沒有病人。</div>';
@@ -9819,10 +9876,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
                 : p.status === 'waiting' ? `<span class="tag back">治療中，第 ${p.due} 個門診日回診</span>` : '<span class="tag">診間中</span>';
             const pats = p.kind === 'sh' ? SH.PATTERNS : EY.PATTERNS;
             const mine = p.pattern ? `我定的證：${pats[p.pattern].name}` : '尚未定證';
-            const res = (x) => (x.shown ? `　<span class="${rCls(x.r)}">${R_NAME[x.r]}</span>` : '　<span class="dim">結果未明</span>');
-            const hist = p.kind === 'sh'
-                ? p.results.map((r, i) => `<li>${i === 0 ? '初診' : '複診'}：${r.rx}${res(r)}</li>`).join('')
-                : p.log.map(l => `<li>${l.title}：${l.what}${res(l)}</li>`).join('');
+            const hist = histOf(p);
             const truth = p.status === 'closed' ? `<div class="small hint">${p.kind === 'sh' ? '實際的證：' + SH.PATTERNS[p.c.pattern].name : '病名：' + p.c.disease + '（' + p.c.modern + '）'}</div>` : '';
             return `<div class="bk"><div><span class="name">${p.c.name}</span> <span class="small hint">${p.c.type}</span>　${st}</div>
                 <div class="small">第 ${p.firstDay} 個門診日初診　${mine}　信任 ${p.trust}</div>${truth}${hist ? `<ul class="small">${hist}</ul>` : ''}</div>`;
@@ -10522,12 +10576,13 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
     function eyPattern() {
         const keysP = isAmateur() ? amOpts('ey-p', V.c.pattern, Object.keys(EY.PATTERNS)) : Object.keys(EY.PATTERNS);
         const btns = keysP.map(k => { const p = EY.PATTERNS[k];
-            return `<button class="btn${V.pattern === k ? ' on' : ''}" data-p="${k}"><b>${p.name}</b></button>`; }).join('');
+            return `<button class="btn${V.pattern === k ? ' on' : ''}" data-p="${k}"><b>${(isAmateur() && p.plain) || p.name}</b></button>`; }).join('');
         const cur = V.pattern && EY.PATTERNS[V.pattern];
+        const amP = isAmateur() && cur && cur.plain;        // 業餘（2026-11-24）：按鈕寫白話，選了才揭曉證名
         panel(`<h3>辨證 <span>察目所見加上問診所得</span></h3>${eyAnswers('small')}
             <div class="grid" style="margin-top:8px">${btns}</div>
             <div class="small dim" style="margin-top:8px">定證耗心神 ${patCost()}。之後回頭改證，要再耗一次。</div>
-            <div class="stick">${eyInfo(cur && cur.name, cur && isEasy() ? cur.alias : '')}
+            <div class="stick">${amP ? eyInfo(cur.plain, `這叫「${cur.name}」：${cur.alias}`) : eyInfo(cur && cur.name, cur && isEasy() ? cur.alias : '')}
             <div class="foot"><button class="btn" id="back">回診間</button><button class="btn go px" id="next" ${V.pattern ? '' : 'disabled'}>就定此證</button></div></div>`);
         $$('#panel [data-p]').forEach(b => b.onclick = () => { V.pattern = b.dataset.p; eyPattern(); });
         $('#back').onclick = () => hub();
