@@ -8074,7 +8074,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
     /* 第一代的數值：energy 精力、peace 修為、money 金錢；jiji 既濟的天數、bal 目前的身心狀態、over 透支次數、poor 連續入不敷出的天數、epi 已領悟的心法 */
     const fresh = () => ({ energy: 70, peace: 0, money: 20, jiji: 0, bal: '', over: 0, poor: 0, epi: [], gives: 0,
                            day: 1, ch: 0, chDay: 1, arr: {}, spirit: 70, skill: 0, fame: 0, study: 0, studyNext: 0, queue: [], news: [], metEye: false, learn: {}, bk: {}, needLearn: '', dil: [], echo: [], flags: {}, dilLog: [], lifeNews: [],
-                           debt: 0, debtDays: 0, hqBoost: 0, owned: {}, today: {}, duBuys: 0,       // 2026-11-22 上街：欠杜掌櫃的藥錢、欠了幾天、上等藥材還有幾天、書肆買來的書、今天早上做的事
+                           debt: 0, debtDays: 0, hqBoost: 0, owned: {}, today: {}, duBuys: 0, nightN: {}, nightLast: 0, nightLog: [],       // nightN、nightLast、nightLog：夜裡的事每章幾次、上一次是哪一天、遇過哪些（2026-11-24）。2026-11-22 上街：欠杜掌櫃的藥錢、欠了幾天、上等藥材還有幾天、書肆買來的書、今天早上做的事
                            app: { on: false, exp: 0, done: false } });       // app：學徒（第四章起）
     const S = Object.assign({ diff: 'easy', hero: 'm' }, fresh());       // hero：主角 m 男、f 女（舊存檔沒有這一欄就當男）
     const P = {};               // 病歷簿：每位病人一筆，跨門診日保存
@@ -9643,6 +9643,128 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         if (a > b) pk.push(`${B.name}讀到${CN[a]}重：${B.lv[a - 1]}。`);
         dayEnd(`今晚讀${B.name}。${night('study')}`, pk.filter(Boolean).join('　'));
     }
+    /* ================= 夜裡的事（2026-11-24 丙，文字是 Claude 的草稿，等佑彥審） =================
+       門診日結束、按「天亮了」之後，偶爾有人敲門或捎東西來。每晚 NIGHT_RATE 的機會，一章最多 NIGHT_PER_CH 次，不連著兩晚。
+       同一件事一輪只來一次（謝禮、沒回診的消息、睡不著是每位病人各一次）。效果都小，重點是讓病人與身邊的人在夜裡回來一下。
+       who() 回傳這件事的對象（病人或 true），沒有就不會發生；play() 回傳要演的 lines，和效果 v 或兩個選項 opts */
+    const NIGHT_RATE = 0.35, NIGHT_PER_CH = 2;
+    const pickOne = (a) => a[Math.floor(Math.random() * a.length)];
+    const unseenRes = (p) => ((p.kind === 'sh' ? p.results : p.log) || []).slice().reverse().find(x => !x.shown);
+    const NIGHTS = {
+        gift: { title: '門檻上的竹籃', art: 'bg-n-gift.webp',
+            who: () => S.ch >= 1 && Object.values(P).filter(p => p.status === 'closed' && GOOD4.includes(p.outcome) && !p.died && !p.thanked).sort((a, b) => b.firstDay - a.firstDay)[0],
+            play: (p) => {
+                p.thanked = true;
+                const g = pickOne(['十來顆雞蛋', '一把還帶著露水的青菜', '幾條剛挖出來的地瓜', '一小袋新米']);
+                return { lines: [{ text: '夜裡，門外有人輕輕叩了兩下。開了門，外頭沒有人。' },
+                    { text: `門檻上擱著一只竹籃，蓋著一塊藍布。掀開來，是${g}，籃邊壓著一張摺得小小的紙。` },
+                    { text: `紙上的字歪歪斜斜：${p.c.name}，謝大夫。` }, { text: `我把那張紙夾進病歷簿，${p.c.name}的那一頁。` }],
+                    v: { spirit: 5 }, log: `${p.c.name}送來了謝禮，沒有留下來讓我道謝。` };
+            } },
+        news: { title: '捎來的消息', art: 'bg-n-knock.webp',
+            who: () => Object.values(P).filter(p => p.status === 'lost' && !p.newsBack && unseenRes(p))[0],
+            play: (p) => {
+                const x = unseenRes(p), ok = R_GOOD.includes(x.r);
+                x.shown = true; p.newsBack = true; p.newsR = x.r;
+                const head = { text: `快熄燈的時候，有人敲門。是${p.c.name}的鄰居，說是順路，替${p.c.name}捎一句話。` };
+                return ok ? { lines: [head, { text: '「那幾帖藥吃完就好了。忙著幹活，忘了回來跟大夫說一聲。」' }, { text: '那一頁病歷，結果一直空著。今晚總算能補上。' }],
+                              v: { spirit: 4 }, log: `${p.c.name}沒有回診，原來是好了（${R_NAME[x.r]}）。病歷補上了。` }
+                          : { lines: [head, { text: '「那幾帖藥吃了不見好，後來去了別家看。現在怎麼樣，我也說不清。」' }, { text: '那一頁病歷，結果一直空著。今晚補上了，寫得很慢。' }],
+                              v: { spirit: -3, skill: 1 }, log: `${p.c.name}沒有回診，原來是吃了不見好（${R_NAME[x.r]}），去了別家。病歷補上了。` };
+            } },
+        sleepless: { title: '睡不著', art: 'bg-o-lamp.webp',
+            who: () => Object.values(P).filter(p => p.status === 'closed' && !GOOD4.includes(p.outcome) && p.outcome !== '轉介' && !p.mourned).sort((a, b) => b.firstDay - a.firstDay)[0],
+            play: (p) => {
+                p.mourned = true;
+                return { lines: [{ text: `夜裡我睡不著，又想起${p.c.name}。` },
+                    { text: p.died ? `${p.c.name}已經不在了。我一遍一遍地想，那時候還能做什麼。` : '那幾帖藥，我到底是哪一步看錯了？' }],
+                    opts: [{ short: '翻書', name: '點燈，把那一頁病歷和醫書對著看', hint: '精力 −6，醫術 +1', v: { energy: -6, skill: 1 },
+                             log: '我點了燈，把那一頁病歷和醫書對著看，看到雞叫。錯在哪裡，我大概知道了。知道了，心裡反而踏實一些。' },
+                           { short: '熄燈', name: '把燈吹熄，明天還有病人', hint: '心神 +3，修為 +1', v: { spirit: 3, peace: 1 },
+                             log: '我把燈吹熄。錯了的事記在病歷簿裡，跑不掉。明天還有人等著，我得先把自己顧好。' }] };
+            } },
+        letter: { title: '師父的信', art: 'bg-n-letter.webp', who: () => S.ch === 1 && !S.flags.nLetter,
+            play: () => {
+                S.flags.nLetter = true;
+                const say = S.over > 0 || S.energy < 30 ? '聽說你常看到三更。燈油要省，人也要省。'
+                          : (lowFame() ? '聽說你那裡人少。人少，正好一位一位看清楚。' : '聽說你那裡人漸漸多了。人多了，更要記得每一位的名字。');
+                return { lines: [{ text: '夜裡，同鄉的貨郎捎來一封信。信封上是師父的字。' }, { text: `信上寫：${say}` }, { text: '末了還有一行：天冷，添衣。' },
+                    { text: '信只有這幾行。我讀了兩遍，夾進病歷簿裡。' }], v: { spirit: 6 }, log: '師父捎來一封信，只有幾行。' };
+            } },
+        mother: { title: '母親的包袱', art: 'bg-n-parcel.webp', who: () => (S.ch === 1 || S.ch === 2) && !S.flags.nMother,
+            play: () => {
+                S.flags.nMother = true;
+                const head = [{ text: '夜裡，同鄉的嬸子來敲門，替母親捎來一個藍布包袱。' },
+                              { text: '裡頭一雙新納的布鞋、一小罐醃菜，還有一小串銅錢，用紅線一枚一枚穿好。鞋底納得密密的。母親的眼睛不好，不知道納了多少個晚上。' }];
+                return S.poor > 0 || S.money < livingCost()
+                    ? { lines: head.concat({ text: '包袱裡夾著一張請人代寫的字條：省著用，別讓人知道你缺錢。' }, { text: '我握著那串錢，坐了很久。' }),
+                        v: { money: 6, spirit: 2 }, log: '母親捎來了布鞋、醃菜和一串銅錢。這串錢，我收下了。' }
+                    : { lines: head.concat({ text: '包袱裡夾著一張請人代寫的字條：吃飽，睡好。' }, { text: '那串錢，我原樣包好，託嬸子帶回去。布鞋當晚就穿上了。' }),
+                        v: { spirit: 5 }, log: '母親捎來了布鞋和醃菜。銅錢我託人帶了回去。' };
+            } },
+        copy: { title: '小滿的燈', art: 'bg-n-copy.webp', who: () => S.ch === 3 && S.app.on && !S.flags.nCopy,
+            play: () => {
+                S.flags.nCopy = true;
+                return { lines: [{ text: '夜深了，小滿房裡的燈還亮著。' }, { text: '我推門進去。他趴在案上睡著了，手裡還捏著筆，那張方子抄到一半。' }],
+                    opts: [{ short: '叫醒', name: '叫他回床上睡', hint: '心神 +2，修為 +1', v: { spirit: 2, peace: 1 },
+                             log: '我把他叫醒，讓他回床上睡。他迷迷糊糊地說：師父，我還沒抄完。我說：方子不會跑，你的身子會。說完我自己也愣了一下。這種話，從前是師父對我說的。' },
+                           { short: '陪抄', name: '坐下來，把那張方子接著抄完', hint: '精力 −5，心神 +4', v: { energy: -5, spirit: 4 },
+                             log: '我沒有叫醒他。坐下來，把那張方子接著抄完。天快亮時他醒了，看見案上兩種字跡接在一起，愣了很久，沒有說話。' }] };
+            } },
+        cake: { title: '一盒喜餅', art: 'bg-n-knock.webp',
+            who: () => S.ch === 4 && !S.flags.nCake && Object.values(P).filter(p => p.firstCh <= 1 && p.status === 'closed' && GOOD4.includes(p.outcome) && !p.died).sort((a, b) => a.firstDay - b.firstDay)[0],
+            play: (p) => {
+                S.flags.nCake = true;
+                return { lines: [{ text: '夜裡有人敲門，是個二十出頭的年輕人，捧著一盒喜餅。' },
+                    { text: `他說他是${p.c.name}的孫子。家裡人常提起，當年那場病是大夫看好的。這回他成親，家裡交代，喜餅要先送一盒到大夫這裡。` },
+                    { text: `年輕人走了以後，我把那一年的病歷簿找出來，翻到${p.c.name}那一頁。` }], v: { spirit: 6, peace: 1 }, log: `${p.c.name}的孫子成親，送來一盒喜餅。` };
+            } }
+    };
+    function pickNight() {
+        if (S.ch === 0 && S.chDay === 1) return null;                   // 第一晚：睡不著、想著那幾張方子，已經有自己的一段
+        if ((S.nightN[S.ch] || 0) >= NIGHT_PER_CH || S.nightLast === S.day - 1 || Math.random() >= NIGHT_RATE) return null;
+        const ok = Object.keys(NIGHTS).map(id => ({ id, ctx: NIGHTS[id].who() })).filter(x => x.ctx);
+        return ok.length ? pickOne(ok) : null;
+    }
+    function nightEvent(ev, done) {
+        V = null; hud();
+        S.nightN[S.ch] = (S.nightN[S.ch] || 0) + 1; S.nightLast = S.day; S.nightLog.push(ev.id);
+        const n = NIGHTS[ev.id], r = n.play(ev.ctx === true ? null : ev.ctx);
+        const img = `<div class="dimg" style="background-image:url('${ART}${n.art}')"></div>`;
+        const finish = (v, log, sub) => {
+            const overdrawn = v.energy ? addEnergy(v.energy) : false;
+            addSpirit(v.spirit || 0);
+            S.money = Math.max(0, S.money + (v.money || 0));
+            const perk = [v.skill ? addSkill(v.skill) : '', v.peace ? addPeace(v.peace) : '', overdrawn ? '精力見底還硬撐，不足的部分加倍從心神扣了回來。' : ''].filter(Boolean).join('　');
+            hud();
+            const delta = [v.energy ? `精力 ${signed(v.energy)}` : '', v.spirit ? `心神 ${signed(v.spirit)}` : '', v.peace ? `修為 ${signed(v.peace)}` : '',
+                           v.money ? `金錢 ${signed(v.money)}` : '', v.skill ? `醫術 ${signed(v.skill)}` : ''].filter(Boolean).join('　');
+            panel(`<h3>夜裡　${n.title}${sub ? ` <span>${sub}</span>` : ''}</h3><div class="dwrap">${img}<div class="see">${log}</div></div>
+                <div class="small hint" style="margin-top:8px">${delta}</div>${perk ? `<div style="margin-top:6px"><b class="name">${perk}</b></div>` : ''}
+                <div class="foot"><button class="btn go px" id="next">天亮了</button></div>`);
+            speak(narr(log));
+            $('#next').onclick = () => { setBg(); done(); };
+        };
+        setBg(n.art);
+        story(n.title, '夜裡', r.lines, () => {
+            if (!r.opts) return finish(r.v, r.log);
+            const last = r.lines[r.lines.length - 1].text;
+            panel(`<h3>夜裡　${n.title} <span>此刻的我：精力 ${S.energy}　心神 ${S.spirit}　修為 ${S.peace}　醫術 ${S.skill}</span></h3>
+                <div class="dwrap">${img}<div class="see">${last}</div></div>
+                <div class="octs">${r.opts.map((o, i) => `<button class="octw" data-d="${i}"><span class="oct"><b>${o.short}</b></span></button>`).join('')}</div>
+                <div class="desc d-info" id="d-info">點一下要怎麼做，看清楚會怎樣，再按「確定」。</div>
+                <div class="foot"><button class="btn go px" id="d-go" disabled>確定</button></div>`);
+            let pick = -1;
+            $$('#panel [data-d]').forEach(b => b.onclick = () => {
+                pick = +b.dataset.d;
+                const o = r.opts[pick];
+                $$('#panel [data-d]').forEach(x => x.classList.toggle('on', x === b));
+                $('#d-info').innerHTML = `<b class="name">${o.name}</b><div class="small hint" style="margin-top:4px">${o.hint}</div>`;
+                $('#d-go').disabled = false;
+            });
+            $('#d-go').onclick = () => { if (pick < 0) return; const o = r.opts[pick]; finish(o.v, o.log, o.name); };
+        });
+    }
     function dayEnd(text, perk) {
         if (S.ch === 0 && S.chDay === 1) text += '夜裡我卻睡不著，一直想著白天那幾張方子。師父房裡的燈，也還亮著。';
         const notes = [], perks = [perk];
@@ -9675,13 +9797,18 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
             <div class="small hint" style="margin-top:6px">夜裡歇息，精力 +8，心神 +5。治療中的病人還有 ${open} 位。</div>
             <div class="foot"><button class="btn go px" id="next">${broke ? '撐不下去了' : '天亮了'}</button></div>`);
         speak(narr(text));
-        $('#next').onclick = () => { if (broke) return ending('poverty'); S.day++; S.chDay++; dayStart(); };
+        $('#next').onclick = () => {
+            if (broke) return ending('poverty');
+            const go = () => { S.day++; S.chDay++; dayStart(); };
+            const ev = pickNight();
+            if (ev) nightEvent(ev, go); else go();
+        };
     }
 
     /* ================= 章節 ================= */
     const GOOD4 = GOOD3.concat('好轉');
     const truthOf = (p) => (p.kind === 'sh' ? `${SH.PATTERNS[p.c.pattern].name}（${SH.PATTERNS[p.c.pattern].alias}）` : `${p.c.disease}（${p.c.modern}）`);
-    const outOf = (p) => (p.status === 'closed' ? p.outcome + (p.died ? '，已過世' : '') : (p.status === 'lost' ? '沒有回診，結果不明' : (p.status === 'longterm' ? '長期調理，往後還會再來' : '尚在治療中')));
+    const outOf = (p) => (p.status === 'closed' ? p.outcome + (p.died ? '，已過世' : '') : (p.status === 'lost' ? (p.newsBack ? `沒有回診，後來聽說${R_NAME[p.newsR] || '結果不明'}` : '沒有回診，結果不明') : (p.status === 'longterm' ? '長期調理，往後還會再來' : '尚在治療中')));
     const caseRow = (p) => `<tr><td>${p.c.name}</td><td>${truthOf(p)}<br><span class="${GOOD4.includes(outOf(p)) ? 'up' : 'down'}">${outOf(p)}</span>　<span class="dim">共看了 ${p.visits} 次</span></td></tr>`;
     function startChapter() {
         S.chDay = 1;
@@ -9722,9 +9849,24 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
             S.ch++;
             if (S.ch >= CHAPTERS.length) return ending();
             addSpirit(15); addEnergy(15); S.day++;
+            const ps = PASSAGE[S.ch];
+            if (ps) return story('歲月流轉', '', ps.lines(), startChapter, ps.art);
             startChapter();
         };
     }
+    /* 章間過場（2026-11-24 丙，文字是 Claude 的草稿，等佑彥審）：換章時先演一小段歲月在醫館留下的痕跡，再進下一章的章首。
+       鍵是「要進的那一章」。圖裡都不畫主角，男女都能代入 */
+    const PASSAGE = {
+        1: { art: 'bg-t-tree.webp', lines: () => [{ text: '前院那株杏樹，開了花，結了果，落了葉。又開了花。' },
+            { text: isAmateur() ? '我從磨墨、抓藥，坐到了診桌旁。師父的藥櫃，我閉著眼睛也摸得到哪一格是哪一味。' : '師父的藥櫃，我閉著眼睛也摸得到哪一格是哪一味。' }] },
+        2: { art: 'bg-t-sign.webp', lines: () => [{ text: '招牌的漆褪了，我自己爬上梯子補了一回。' },
+            { text: lowFame() ? '街上的人走過去，沒有人抬頭。' : '底下有人喊：大夫，小心點。是常來的病人，順手替我扶住了梯子。' },
+            { text: '補完漆，我在梯子上多站了一會兒。從這裡看得見整條街。' }] },
+        3: { art: 'bg-t-bench.webp', lines: () => [{ text: lowFame() ? '廊下那條長凳常常空著，倒讓隔壁的貓佔了。' : '廊下那條長凳，天一亮就坐滿了人。只有開門前這一會兒，是隔壁那隻貓的。' },
+            { text: '凳面被坐得發亮，邊角都磨圓了。那是這些年來過的每一個人。' }] },
+        4: { art: 'bg-t-door.webp', lines: () => [{ text: '診間的門框上，有幾道淺淺的刻痕。是小滿剛來那年起，我隔一陣子替他量一次留下的。' },
+            { text: '最上面那一道，早就比我高了。如今他進門，得低一下頭。' }, { text: '那幾道刻痕，我沒有讓人刨掉。' }] }
+    };
 
     /* ================= 結局：一生回顧、著書、後記 ================= */
     function ending(reason) {
