@@ -741,6 +741,39 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
 #m-right.hbmode .hb-grid { flex: 2 1 0; min-height: 0; overflow-y: auto; margin: 4px 0 8px; align-content: start; padding-right: 2px; }
 #m-right.hbmode .hb-card { flex: 1 1 0; min-height: 0; overflow-y: auto; margin: 0; }
 #m-right.hbmode .hb-pic { width: 6.5em; height: 6.5em; }
+/* 導引與經絡（2026-11-25）：八段錦八式排成兩列；部位圖上的穴點由程式疊上去 */
+.octs.gong8 { display: grid; grid-template-columns: repeat(4, auto); gap: 10px 14px; justify-content: center; margin: 10px 0 4px; }
+.octs.gong8 .octw { width: auto; min-width: 0; }
+.octs.gong8 .oct { width: 72px; height: 72px; }
+.octw.did .oct::after { content: '通'; position: absolute; right: 9px; top: 7px; font-size: 0.72em; color: #9fe0a0; }
+.xue-pic { position: relative; width: 100%; max-width: 300px; margin: 6px auto; border: 1px solid var(--gold-dark); border-radius: 3px; background: #f1ece2; }
+.xue-pic img { display: block; width: 100%; height: auto; border-radius: 3px; }
+.xue-pic.find { cursor: crosshair; }
+.xue-dot, .xue-try { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; pointer-events: none; }
+.xue-dot { background: #d23c2c; border: 2px solid #fff3c4; box-shadow: 0 0 0 3px rgba(210, 60, 44, 0.35); animation: xuePulse 1.6s ease-in-out infinite; }
+.xue-try { border: 2px dashed #2f409a; background: rgba(47, 64, 154, 0.2); }
+@keyframes xuePulse { 50% { box-shadow: 0 0 0 8px rgba(210, 60, 44, 0.12); } }
+@media (prefers-reduced-motion: reduce) { .xue-dot { animation: none; } }
+.xue-chips { display: flex; flex-wrap: wrap; gap: 6px 8px; margin: 4px 0 6px; }
+.xue-chips .btn { width: auto; padding: 3px 12px 3px 22px; }
+.xf-row { display: flex; gap: 14px; align-items: flex-start; }
+.xf-txt { flex: 1; min-width: 0; line-height: 1.7; }
+.xf-row .xue-pic { flex: 0 0 270px; margin: 0; }
+.xue-card { display: flex; gap: 12px; align-items: flex-start; margin: 6px 0; }
+.xue-card .xue-pic { flex: 0 0 230px; margin: 0; }
+.xue-txt { flex: 1; min-width: 0; line-height: 1.65; }
+.xue-txt b:not(.name) { color: var(--hint); font-weight: 400; }
+#m-right .chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+#m-right .chips .btn { padding: 2px 8px; font-size: 0.9em; }
+#m-right .chips .btn.old, .xue-chips .btn.old { opacity: 0.55; }
+.xue-chips .btn small { font-size: 0.75em; margin-left: 2px; }
+@media (max-width: 640px) {
+    .octs.gong8 .oct { width: 60px; height: 60px; }
+    .octs.gong8 { gap: 8px 8px; }
+    .xue-card, .xf-row { flex-direction: column; }
+    .xf-row .xue-pic { flex: none; width: 78%; margin: 0 auto; }
+    .xue-card .xue-pic { flex: none; width: 70%; margin: 0 auto; }
+}
 </style>
 </head>
 <body>
@@ -8074,7 +8107,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
     /* 第一代的數值：energy 精力、peace 修為、money 金錢；jiji 既濟的天數、bal 目前的身心狀態、over 透支次數、poor 連續入不敷出的天數、epi 已領悟的心法 */
     const fresh = () => ({ energy: 70, peace: 0, money: 20, jiji: 0, bal: '', over: 0, poor: 0, epi: [], gives: 0,
                            day: 1, ch: 0, chDay: 1, arr: {}, spirit: 70, skill: 0, fame: 0, study: 0, studyNext: 0, queue: [], news: [], metEye: false, learn: {}, bk: {}, needLearn: '', dil: [], echo: [], flags: {}, dilLog: [], lifeNews: [],
-                           debt: 0, debtDays: 0, hqBoost: 0, owned: {}, today: {}, duBuys: 0, nightN: {}, nightLast: 0, nightLog: [],       // nightN、nightLast、nightLog：夜裡的事每章幾次、上一次是哪一天、遇過哪些（2026-11-24）。2026-11-22 上街：欠杜掌櫃的藥錢、欠了幾天、上等藥材還有幾天、書肆買來的書、今天早上做的事
+                           debt: 0, debtDays: 0, hqBoost: 0, owned: {}, today: {}, duBuys: 0, nightN: {}, nightLast: 0, nightLog: [], gong: {}, meri: [], xue: [],       // nightN、nightLast、nightLog：夜裡的事每章幾次、上一次是哪一天、遇過哪些（2026-11-24）。2026-11-22 上街：欠杜掌櫃的藥錢、欠了幾天、上等藥材還有幾天、書肆買來的書、今天早上做的事
                            app: { on: false, exp: 0, done: false } });       // app：學徒（第四章起）
     const S = Object.assign({ diff: 'easy', hero: 'm' }, fresh());       // hero：主角 m 男、f 女（舊存檔沒有這一欄就當男）
     const P = {};               // 病歷簿：每位病人一筆，跨門診日保存
@@ -8139,11 +8172,11 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
     }
     function maxAsk() {
         const base = V.kind === 'sh' ? { amateur: 6, easy: 5, mid: 4 }[S.diff] || 3 : (isEasy() ? 4 : 3);
-        return Math.max(1, base + S.study + (S.skill >= 10 ? 1 : 0) - (V.lowSpirit ? 1 : 0) + (V.reAsk || 0));      // reAsk：回診沒治好、重新看過時多問的項數
+        return Math.max(1, base + S.study + (S.skill >= 10 ? 1 : 0) - (V.lowSpirit ? 1 : 0) + (V.reAsk || 0) + (meri('luli') ? 1 : 0));      // meri luli：通肺・大腸，問診多一項      // reAsk：回診沒治好、重新看過時多問的項數
     }
     /* 醫術：每結一案就長一點，到門檻會讓看診省力。聲望：治好加、治壞減，影響新病人的信任 */
     const askCost = () => (S.skill >= 30 ? 2 : 3);
-    const patCost = () => (S.skill >= 20 ? 3 : 5) - (bookLv('sh') >= 2 ? 1 : 0);
+    const patCost = () => (S.skill >= 20 ? 3 : 5) - (bookLv('sh') >= 2 ? 1 : 0) - (meri('lrgb') ? 1 : 0);        // meri lrgb：通肝・膽，定證少耗 1
     const PERKS = [[10, '往後每一診可以多問一項。'], [20, '往後定證少耗心神 2。'], [30, '往後問診每一項只耗心神 2。']];
     function addSkill(n) {
         const b = S.skill; S.skill += n;
@@ -8215,7 +8248,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
     function loadMeta() {
         let m = null;
         try { m = JSON.parse(localStorage.getItem(META_KEY) || memMeta); } catch (e) { try { m = JSON.parse(memMeta); } catch (e2) { m = null; } }
-        return Object.assign({ runs: 0, ach: [], cases: {}, dil: [], epi: [], books: 0, herbs: [], cards: [] }, m || {});
+        return Object.assign({ runs: 0, ach: [], cases: {}, dil: [], epi: [], books: 0, herbs: [], cards: [], xue: [], qj: [] }, m || {});
     }
     function saveMeta(m) {
         memMeta = JSON.stringify(m);
@@ -8277,11 +8310,15 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         const seen = all.filter(c => m.cases[c.id]).length;
         const withCard = all.filter(c => c.card), gotCard = withCard.filter(c => m.cards.includes(c.id));
         const cardList = withCard.map(c => (m.cards.includes(c.id) ? `<li><b class="name">${c.name}</b>　${c.card}</li>` : '<li class="dim">？？？</li>')).join('');
+        const xk = Object.keys(XUE), mx = m.xue || [], mq = m.qj || [];
+        const xueSec = `<h2>穴位小卡 <span class="px">${xk.filter(id => mx.includes(id)).length}/${xk.length}</span>　練功打通經絡時學會，「經絡」頁可以翻看</h2><ul class="small notes two">${xk.map(id => (mx.includes(id) ? `<li><b class="name">${XUE[id].n}</b>　${JING12[XUE[id].j]}</li>` : '<li class="dim">？？？</li>')).join('')}</ul>
+            <h2>奇經八脈 <span class="px">${mq.length}/${QIJING.length}</span>　學到八脈交會穴就點亮</h2><ul class="small notes two">${QIJING.map(q => (mq.includes(q) ? `<li><b class="name">${q}</b></li>` : '<li class="dim">？？？</li>')).join('')}</ul>`;
         const cardSec = withCard.length ? `<h2>養生小卡 <span class="px">${gotCard.length}/${withCard.length}</span>　業餘難度看完病人時收下</h2><ul class="small notes">${cardList}</ul>` : '';
         return `<div class="small hint">行醫 <b class="px">${m.runs}</b> 輪，成書 <b class="px">${m.books}</b> 部。札記記在這台裝置的瀏覽器裡。</div>
             <h2>成就 <span class="px">${m.ach.length}/${ACH.length}</span></h2><ul class="small notes">${ach}</ul>
             <h2>看過的病人 <span class="px">${seen}/${all.length}</span>　只記最好的一次結果</h2><ul class="small notes two">${cases}</ul>
             ${cardSec}
+            ${xueSec}
             <h2>心法 <span class="px">${m.epi.length}/${EPI.length}</span></h2><ul class="small notes">${epi}</ul>
             <h2>困境 <span class="px">${m.dil.length}/${Object.keys(DILEMMAS).length}</span></h2><ul class="small notes two">${dil}</ul>`;
     }
@@ -8588,14 +8625,18 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         fee: { t: '診金', sel: '.s-mn', x: () => '看完一位病人就有診金，記在「金錢」。窮苦人家給得少，權貴給得多；沒治好，診金也少。' },
         night: { t: '門診後', at: 'top', phase: 'night', sel:() => ($('#nt-pic .spot.cur') ? '#nt-pic .spot.cur' : '#nt-pic [data-act="rest"]'),
                  x: () => `門診後只能做一件事，做完就天亮。${hoverTip()}。${$('#nt-pic .spot.cur') ? '今晚該讀的書，書案已經亮著。' : '累了就休養，心亂就靜坐，想多學就研讀。'}` },
-        morning: { t: '白天醫館', at: 'top', phase: 'morning', sel: '#nt-pic [data-act="open"]', x: () => `開門前可以先做一件事：整理藥櫃、晒藥搗藥、晨練，或直接「開門看診」。${hoverTip()}。` },
+        morning: { t: '白天醫館', at: 'top', phase: 'morning', sel: '#nt-pic [data-act="open"]', x: () => `開門前可以先做一件事：整理藥櫃、晒藥搗藥、練功，或直接「開門看診」。${hoverTip()}。` },
         street: { t: '上街', at: 'top', phase: 'street', sel: '#nt-pic [data-act="home"]', x: () => `看完診可以上街做一件事。地圖上標著名字的是治療中的病人家，點了去探望；門口亮燈的是治好的人家。也可以施藥、到藥行買上等藥材（錢不夠可以賒帳）或請教藥材、書肆買書、茶樓聽消息${isEasy() ? '（有時聽得到明天誰要上門）' : ''}。不想逛就「回醫館」。` },
         living: { t: '生計', sel: '.s-mn', x: () => '自立門戶之後，每天收工要付生計；用了杜掌櫃的藥材，還要付藥錢。錢不夠就三餐不繼，連續幾天付不出來，診間就開不下去。' },
         jiji: { t: '既濟', sel: '.v-bal', x: () => '收工時精力與心神都在五成以上、相差不大，就是「既濟」：身心會自己回復，修為也會增長。偏了一邊是「未濟」，門診後做的事，要往不足的那一邊補。' },
         tired: { t: '量力而為', x: () => '精力不到三十，研讀讀不下書；心神不到三十，休養睡不安穩；不到二十，看診能問的變少。累的時候，先把自己顧好。' },
         dilemma: { t: '困境', x: () => '困境沒有標準答案。每個選項下面寫了此刻要付出什麼；同一個選擇，在你有餘力與已透支時，結果不同。有些後果要到下一章才看得見。' },
         herbs: { t: '本草圖鑑', sel: '.menubtn', x: () => '杜掌櫃開的是藥行。選單裡的「本草」是本草圖鑑，開方用過的藥會點亮。往後他供的藥材分粗、中、上、道地四等，藥越好，病越不容易纏綿不去。' },
-        menu: { t: '選單', sel: '.menubtn', x: () => `「選單」${canHover() ? '（也可以按 M 鍵）' : ''}裡有七頁：狀態看身心，病歷看每位病人，心法是領悟，醫典查《傷寒》《金匱》，本草是圖鑑，札記記下每一輪，系統可以開關聲音、回到標題、重看教學。` },
+        menu: { t: '選單', sel: '.menubtn', x: () => `「選單」${canHover() ? '（也可以按 M 鍵）' : ''}裡有八頁：狀態看身心，病歷看每位病人，心法是領悟，醫典查《傷寒》《金匱》，本草是圖鑑，經絡記著練功與穴位，札記記下每一輪，系統可以開關聲音、回到標題、重看教學。` },
+        gong: { t: '練功', sel: '#panel .gong8', x: () => `八段錦有八式，每天著重練一式。同一式練滿 ${GONG_NEED} 次，就通一組經絡，多一項本事，也學會那組經上的幾個穴位。一輪練不完，每一輪通的經可以不一樣。` },
+        zhou: { t: '小周天', sel: '.menubtn', x: () => '任督通了，就是小周天。往後收工時，精力與心神相差 35 以內都算既濟；早上練功也多了一式「抱月樁」。' },
+        xt: { t: '衛教', sel: '#panel .xue-chips', x: () => '學過的穴位可以教病人回家自己按，教得合適病人更信你。眼睛紅腫熱痛、眼壓過高、青光眼急性發作的病人，不要教按眼周。' },
+        meri: { t: '經絡', sel: '.menubtn', x: () => '通了的經絡、學過的穴位，都記在選單的「經絡」頁。穴位只教位置與日常按揉，不教下針。' },
         chapter: { t: '一章結束', sel: '#next', x: () => '這一章看過的病人都列在這裡。歲月流轉，下一章醫館的境況會不一樣，上門的病人也會換一批。' }
     };
     let coachQ = [], coachOn = [];
@@ -8650,7 +8691,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
     function addEnergy(d) {
         const v = S.energy + d;
         if (d) floatText(`精力 ${sgn(d)}`, d > 0 ? 'up' : 'down', '#sc-stat');
-        if (v < 0) { S.energy = 0; S.over++; addSpirit(Math.round(v * 2.5)); return true; }
+        if (v < 0) { S.energy = 0; S.over++; addSpirit(Math.round(v * (meri('kibl') ? 2 : 2.5))); return true; }      // meri kibl：通腎・膀胱，透支扣得少
         S.energy = Math.min(100, v);
         return false;
     }
@@ -8740,7 +8781,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
     function evalBalance() {
         const e = S.energy / 100, s = S.spirit / 100;
         const prev = S.bal;
-        S.bal = (e >= 0.5 && s >= 0.5 && Math.abs(e - s) <= 0.25) ? 'jiji' : (e - s >= 0.4 ? 'body' : (s - e >= 0.4 ? 'mind' : ''));
+        S.bal = (e >= 0.5 && s >= 0.5 && Math.abs(e - s) <= (meri('zhou') ? 0.35 : 0.25)) ? 'jiji' : (e - s >= 0.4 ? 'body' : (s - e >= 0.4 ? 'mind' : ''));
         if (S.bal === 'jiji') {
             S.jiji++;
             const pk = addPeace(1);
@@ -8854,7 +8895,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         hud();
         /* 看診耗精力：新病人 10，回診 3。三秒停頓法：新病人進門先定一定神 */
         if (V.status === 'new' || V.held) {
-            addEnergy(-10);
+            addEnergy(meri('sjpc') ? -8 : -10);          // meri sjpc：通三焦・心包，新病人少耗 2
             if (S.epi.includes('pause')) addSpirit(2);
             hud();
             V.status = 'seeing'; (V.kind === 'sh' ? shStart : eyStart)();
@@ -9344,6 +9385,306 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         { who: DU, text: '你肯常來，我也不跟你算那麼細了。往後上等的貨，一包算你六。' },
         narr('（往後上等藥材一包 6）')];
     const caseById = (id) => SH.CASES.find(c => c.id === id) || EY.CASES.find(c => c.id === id);
+    /* ================= 導引與經絡（2026-11-25 第一期，佑彥：照建議做，文件/規劃-導引與經絡.md） =================
+       不做針刺。每天早上「練功」：打一套八段錦，著重其中一式（GONG8），功夫記在 S.gong。同一式練到 GONG_NEED 次，打通那一組表裡經（MERI），
+       解鎖一項本事（meri(k)），並學會那組經上的穴位（S.xue）。第一次打通任何一組時，另外學會經外奇穴（太陽、魚腰、印堂；佑彥定印堂算奇穴）。
+       第四式（往後瞧）、第八式（七顛）通任督，是第三期的小周天，這一期只記功夫。
+       穴位的位置、按法、功用、禁忌都是醫學內容：《眼癒力》的照書，其餘 Claude 起草（src），佑彥審過才上線。
+       部位圖 art/xw-*.webp 只有輪廓，穴點由程式依 at（圖上的百分比）疊上去，座標要佑彥校對 */
+    const GONG_NEED = 3;
+    const GONG8 = [
+        { k: 'tuo', short: '托天', name: '兩手托天理三焦', grp: 'sjpc', art: 'bg-g-tuo.webp', yao: '雙腳與肩同寬，十指交叉、翻掌上托，抬頭看手；吸氣上撐，呼氣放下。' },
+        { k: 'gong', short: '開弓', name: '左右開弓似射鵰', grp: 'luli', art: 'bg-g-gong.webp', yao: '蹲成馬步，一手拉弦到胸前，一手伸出食指中指向旁推出，眼看推出的手，左右輪流。' },
+        { k: 'ju', short: '單舉', name: '調理脾胃須單舉', grp: 'spst', art: 'bg-g-ju.webp', yao: '一手掌心朝上托過頭頂，一手掌心朝下按在胯旁，上下對拉，左右輪流。' },
+        { k: 'qiao', short: '後瞧', name: '五勞七傷往後瞧', grp: 'du', art: 'bg-g-qiao.webp', yao: '身體正直不動，頭慢慢轉向身後，眼往後看，左右輪流。' },
+        { k: 'bai', short: '擺尾', name: '搖頭擺尾去心火', grp: 'htsi', art: 'bg-g-bai.webp', yao: '蹲成馬步，雙手扶在大腿上，上身俯身向一側擺動，頭與臀一前一後，左右輪流。' },
+        { k: 'pan', short: '攀足', name: '兩手攀足固腎腰', grp: 'kibl', art: 'bg-g-pan.webp', yao: '雙腿伸直，雙手沿腰背往下，彎腰摸到腳面，再慢慢起身。' },
+        { k: 'nu', short: '怒目', name: '攥拳怒目增氣力', grp: 'lrgb', art: 'bg-g-nu.webp', yao: '蹲成馬步，握拳收在腰間，一拳緩緩衝出，雙眼圓睜看著拳頭，左右輪流。' },
+        { k: 'dian', short: '七顛', name: '背後七顛百病消', grp: 'ren', art: 'bg-g-dian.webp', yao: '雙腳併攏，提起腳跟，再輕輕落下震一下，連做七次。' }
+    ];
+    const JING12 = { lu: '手太陰肺經', li: '手陽明大腸經', st: '足陽明胃經', sp: '足太陰脾經', ht: '手少陰心經', si: '手太陽小腸經', bl: '足太陽膀胱經', ki: '足少陰腎經',
+                   pc: '手厥陰心包經', sj: '手少陽三焦經', gb: '足少陽膽經', lr: '足厥陰肝經', du: '督脈', ren: '任脈', qi: '經外奇穴' };
+    /* 六組表裡經與任督。perk 是遊戲效果，why 只是讓玩家記得住的由頭，不是醫學主張 */
+    const MERI = {
+        luli: { name: '肺・大腸', jing: ['lu', 'li'], show: 'he', perk: '問診多一項', why: '面口合谷收；肺主氣，氣足話也問得多' },
+        spst: { name: '脾・胃', jing: ['st', 'sp'], show: 'zusanli', perk: '夜裡精力多回復 3', why: '脾胃為後天之本' },
+        htsi: { name: '心・小腸', jing: ['ht', 'si'], show: 'shenmen', perk: '心神不到三十時，休養不再減半', why: '去心火，心神安' },
+        kibl: { name: '腎・膀胱', jing: ['bl', 'ki'], show: 'jingming', perk: '透支時從心神扣的倍數由 2.5 降為 2', why: '腎藏精，是根本' },
+        sjpc: { name: '三焦・心包', jing: ['sj', 'pc'], show: 'neiguan', perk: '新病人耗精力少 2', why: '三焦通調一身之氣' },
+        lrgb: { name: '肝・膽', jing: ['gb', 'lr'], show: 'taichong', perk: '定證、辨證耗心神少 1', why: '肝開竅於目，膽主決斷' },
+        du: { name: '督脈', jing: ['du'], later: true },
+        ren: { name: '任脈', jing: ['ren'], later: true },
+        /* 第三期（2026-11-26）：後瞧、七顛各練滿，正經通三組、修為到通透，就通小周天 */
+        zhou: { name: '小周天', jing: ['du', 'ren'], show: 'baihui', perk: '收工時既濟的判定放寬：精力與心神相差 35 以內都算（原本 25）', why: '任督相接，水升火降' }
+    };
+    const XW_IMG = { face: '頭面', neck: '後頸', palm: '手掌', hand: '手背', arm: '手臂', legin: '小腿內側', legout: '小腿外側', foot: '足背', top: '頭頂', back: '腰背', belly: '胸腹' };
+    const RUB = '用指腹按揉三十次，以痠脹為度。';
+    const NO_EYE = '眼壓過高、青光眼急性發作、高血壓，或眼睛紅腫熱痛時，不要按眼周。';
+    const NO_SKIN = '皮膚有傷口、紅腫時不要按。';
+    const BELLY = '雙掌疊放貼住，順時針輕揉三十圈，揉到腹部溫熱。';
+    const NO_BELLY = '孕婦不要按腹部；剛吃飽一小時內不要按。' + NO_SKIN;
+    /* 穴位（第一期 28 個）。src：書＝《眼癒力》，草＝Claude 起草。jiao：八脈交會穴通的奇經 */
+    const XUE = {
+        // 肺・大腸
+        lieque: { n: '列缺', j: 'lu', img: 'palm', at: [41.1, 73.1], src: '草', jiao: '任脈', pos: '手腕拇指側，腕橫紋上一寸半。兩手虎口交叉，食指尖落下的小凹陷。', how: RUB, use: '「頭項尋列缺」：頭痛、頸項僵硬、咳嗽。', no: NO_SKIN },
+        chize: { n: '尺澤', j: 'lu', img: 'arm', at: [33.5, 56.4], src: '草', pos: '肘彎橫紋上，中間那條大筋（肱二頭肌腱）靠拇指側的凹陷。', how: RUB, use: '咳嗽、氣喘、喉嚨痛。', no: NO_SKIN },
+        he: { n: '合谷', j: 'li', img: 'hand', at: [57.9, 51.4], src: '書', pos: '手背虎口，第一、二掌骨之間，約在第二掌骨的中點。', how: RUB, use: '「面口合谷收」：頭面、眼睛的保健常配這一穴。', no: '孕婦不宜按。' + NO_SKIN },
+        quchi: { n: '曲池', j: 'li', img: 'arm', at: [35.8, 52.7], src: '草', pos: '彎起手肘，肘橫紋靠拇指側的盡頭凹陷。', how: RUB, use: '清熱，常用於發熱、皮膚癢、手臂痠痛。', no: NO_SKIN },
+        // 脾・胃
+        chengqi: { n: '承泣', j: 'st', img: 'face', at: [41.8, 46.3], src: '書', pos: '眼睛平視，瞳孔正下方，眼眶下緣。', how: '用指腹輕輕按揉三十次，不要壓到眼球。', use: '流淚、眼癢、看不清楚。', no: NO_EYE },
+        sibai: { n: '四白', j: 'st', img: 'face', at: [41.8, 49], src: '書', pos: '瞳孔正下方，承泣再往下一點，眼眶下緣下方的小凹陷。', how: RUB, use: '祛風明目。', no: NO_EYE },
+        zusanli: { n: '足三里', j: 'st', img: 'legout', at: [46.1, 39.6], src: '草', pos: '膝蓋下方外側凹陷往下四橫指，小腿骨（脛骨）前緣往外一橫指。', how: RUB, use: '「肚腹三里留」：腸胃不適、體力的日常保健。', no: NO_SKIN },
+        gongsun: { n: '公孫', j: 'sp', img: 'legin', at: [45.9, 89.4], src: '草', jiao: '衝脈', pos: '腳的內側，沿著大拇趾後面那根長骨往腳跟方向摸，摸到骨頭底端，它前下方的凹陷（腳底與腳背皮膚交界處）。', how: RUB, use: '胃脘脹痛、消化不良。', no: NO_SKIN },
+        sanyinjiao: { n: '三陰交', j: 'sp', img: 'legin', at: [59.5, 67.6], src: '草', pos: '內踝尖往上四橫指，小腿骨（脛骨）內側的後緣。', how: RUB, use: '脾、肝、腎三條陰經在這裡交會：腸胃、睡眠、婦科的日常保健。', no: '孕婦不宜按。' + NO_SKIN },
+        // 心・小腸
+        shenmen: { n: '神門', j: 'ht', img: 'palm', at: [58.1, 63.2], src: '草', pos: '手腕內側橫紋上，靠小指那一側有一條筋，筋靠拇指那一邊的凹陷。', how: RUB, use: '安神：失眠、心悸、心煩。', no: NO_SKIN },
+        houxi: { n: '後溪', j: 'si', img: 'hand', at: [33.9, 45.8], src: '草', jiao: '督脈', pos: '輕輕握拳，小指根部關節後方、掌側橫紋的盡頭。', how: RUB, use: '頸項僵硬、肩背痠痛、頭痛。', no: NO_SKIN },
+        yanglao: { n: '養老', j: 'si', img: 'hand', at: [40.2, 71], src: '草', pos: '手腕背側，小指側那顆突起的圓骨頭（尺骨小頭）靠拇指那一邊的骨縫。', how: RUB, use: '古書常用於目視不明，也用於肩臂痠痛。', no: NO_SKIN },
+        // 腎・膀胱
+        jingming: { n: '睛明', j: 'bl', img: 'face', at: [46.3, 42.2], src: '書', pos: '兩眼內眼角稍上方的凹陷。', how: '用指尖輕輕點按，不要壓到眼球。', use: '泄熱明目、祛風通絡。', no: NO_EYE },
+        cuanzhu: { n: '攢竹', j: 'bl', img: 'face', at: [46.7, 38.3], src: '書', pos: '眉頭的凹陷。', how: RUB, use: '祛風、泄熱、明目。', no: NO_EYE },
+        shenmai: { n: '申脈', j: 'bl', img: 'legout', at: [40, 87.4], src: '草', jiao: '陽蹻脈', pos: '外踝尖正下方的凹陷。', how: RUB, use: '頭痛、失眠、腰腿痠。', no: NO_SKIN },
+        zhaohai: { n: '照海', j: 'ki', img: 'legin', at: [57.6, 82], src: '草', jiao: '陰蹻脈', pos: '內踝尖正下方的凹陷。', how: RUB, use: '咽喉乾、失眠。', no: NO_SKIN },
+        taixi: { n: '太溪', j: 'ki', img: 'legin', at: [61.7, 77.6], src: '草', pos: '內踝尖與腳跟大筋（跟腱）之間的凹陷。', how: RUB, use: '腰痠、耳鳴、腳跟痛。', no: NO_SKIN },
+        // 三焦・心包
+        sizhukong: { n: '絲竹空', j: 'sj', img: 'face', at: [33.7, 38.5], src: '書', pos: '眉尾的凹窩。', how: RUB, use: '減緩刺癢、疏風明目。', no: NO_EYE },
+        waiguan: { n: '外關', j: 'sj', img: 'hand', at: [46.5, 82.4], src: '草', jiao: '陽維脈', pos: '手背腕橫紋往上三橫指，前臂兩根骨頭之間，和內關正對。', how: RUB, use: '頭痛、耳鳴、手腕痠痛。', no: NO_SKIN },
+        neiguan: { n: '內關', j: 'pc', img: 'palm', at: [50.7, 80.9], src: '草', jiao: '陰維脈', pos: '手腕內側橫紋往上三橫指，兩條筋的中間。', how: RUB, use: '心悸、胸悶、噁心、暈車。', no: NO_SKIN },
+        laogong: { n: '勞宮', j: 'pc', img: 'palm', at: [57.9, 40.9], src: '草', pos: '手掌心，輕輕握拳時中指尖點到的地方。', how: '兩掌對搓到發熱；搓手熨目時，溫熱的就是這裡。', use: '清心安神。', no: NO_SKIN },
+        // 肝・膽
+        tongziliao: { n: '瞳子髎', j: 'gb', img: 'face', at: [36.3, 43.4], src: '書', pos: '外眼角旁，骨頭邊緣的凹窩。', how: RUB, use: '平肝熄風、明目退翳，也幫助黑眼圈與眼睛乾澀。', no: NO_EYE },
+        fengchi: { n: '風池', j: 'gb', img: 'neck', at: [41, 53], src: '草', pos: '後頸，頭骨下緣，兩條大筋外側的凹陷，約與耳垂同高。', how: '雙手拇指按住，按揉三十次，以痠脹為度。', use: '頭痛、頸項僵硬、眼睛疲勞。', no: NO_SKIN },
+        zulinqi: { n: '足臨泣', j: 'gb', img: 'foot', at: [61.8, 51.2], src: '草', jiao: '帶脈', pos: '腳背，第四、五趾的骨頭交會處前方的凹陷。', how: RUB, use: '頭痛、目赤腫痛、脅肋脹痛。', no: NO_SKIN },
+        taichong: { n: '太衝', j: 'lr', img: 'foot', at: [41.5, 41.5], src: '草', pos: '腳背，大拇趾與第二趾的骨頭交會處前方的凹陷。', how: RUB, use: '頭痛眩暈、眼睛紅痛、情緒煩躁。', no: NO_SKIN },
+        // 經外奇穴（佑彥 2026-11-25 定：印堂算奇穴）
+        taiyang: { n: '太陽', j: 'qi', img: 'face', at: [32.7, 41.5], src: '書', pos: '眉尾與外眼角之間，往後約一橫指的凹陷。', how: RUB, use: '清肝明目、通絡止痛，也治頭痛。', no: NO_EYE },
+        yuyao: { n: '魚腰', j: 'qi', img: 'face', at: [41.4, 37.3], src: '書', pos: '眉毛正中。', how: RUB, use: '舒緩眼部發炎、紅腫疼痛。', no: NO_EYE },
+        yintang: { n: '印堂', j: 'qi', img: 'face', at: [50, 38.3], src: '草', pos: '兩眉頭連線的正中。', how: RUB, use: '安神、頭痛、鼻塞。', no: NO_SKIN },
+        // 任督（第三期，通小周天時學會）
+        baihui: { n: '百會', j: 'du', img: 'top', at: [50, 40], src: '草', pos: '頭頂正中，兩耳尖往上連線的交點。', how: '用指腹輕輕按揉三十次，或用掌心輕輕拍幾下。', use: '頭痛、頭暈、精神不振。', no: '高血壓的人不要用力拍打頭頂。' + NO_SKIN },
+        mingmen: { n: '命門', j: 'du', img: 'back', at: [50, 56], src: '草', pos: '腰背正中，和肚臍正對的那一節脊椎下方的凹陷。', how: '兩掌搓熱，貼在腰後上下來回搓，搓到腰部發熱。', use: '腰痠、怕冷、手腳冰冷。', no: NO_SKIN },
+        tanzhong: { n: '膻中', j: 'ren', img: 'belly', at: [50, 58], src: '草', pos: '胸口正中，兩乳頭連線的中點。', how: RUB, use: '胸悶、心情鬱悶、呼吸不暢。', no: NO_SKIN },
+        qihai: { n: '氣海', j: 'ren', img: 'belly', at: [50, 86], src: '草', pos: '肚臍正下方一寸半，約兩橫指。下丹田所在。', how: BELLY, use: '體虛乏力、腹脹。', no: NO_BELLY },
+        guanyuan: { n: '關元', j: 'ren', img: 'belly', at: [50, 89.5], src: '草', pos: '肚臍正下方三寸，約四橫指。下丹田所在。', how: BELLY, use: '手腳冰冷、小便頻、體虛。', no: NO_BELLY }
+    };
+    /* 第三期：通小周天的條件，與通了以後多的一式抱月樁（《眼癒力》的站樁；要領是 Claude 起草，要換成書上的寫法） */
+    const ZHOU = { qiao: 3, dian: 3, zheng: 3, peace: 30 };
+    const BAOYUE = { k: 'bao', short: '抱月', name: '抱月樁', art: 'bg-g-bao.webp', src: '書', yao: '雙腳與肩同寬，重心平放兩腳掌；膝蓋微彎，不超過腳尖。脊椎挺直但不用力，頭頂懸、收下巴，舌頂上顎。雙手在小腹前環抱，像抱著一顆大西瓜，掌心朝內。靜靜站一炷香。' };
+    /* 第二期：奇經八脈。學到它的八脈交會穴（XUE 的 jiao）就點亮，跨輪記在札記 */
+    const QIJING = ['任脈', '督脈', '衝脈', '帶脈', '陰蹻脈', '陽蹻脈', '陰維脈', '陽維脈'];
+    /* 第二期：衛教。看完病、藥包好以後，可以教病人一個學過的穴回家按。
+       TEACH：和這位病人的病相合的穴（Claude 起草，佑彥審）。TEACH_NO：不能按眼周的病人與理由，教了眼周的穴會被師父或書中師攔下來。
+       《眼癒力》的注意事項：眼壓過高、青光眼急性發作、高血壓、紅腫熱痛時不要按眼周（NO_EYE） */
+    const XUE_EYE = ['chengqi', 'sibai', 'jingming', 'cuanzhu', 'sizhukong', 'tongziliao', 'taiyang', 'yuyao'];
+    const TEACH = {
+        chen: ['fengchi', 'lieque', 'he'], wen: ['fengchi', 'he', 'lieque'], bo: ['quchi', 'he'], hu: ['zusanli'], shui: ['zusanli', 'gongsun', 'neiguan'],
+        quan: ['neiguan', 'taichong', 'zulinqi'], han: ['taixi', 'guanyuan'], tao: ['laogong', 'taixi', 'guanyuan'], qiao: ['fengchi', 'houxi', 'lieque'], fang: ['fengchi', 'houxi'],
+        zhuang: ['shenmen', 'neiguan'], yue: ['chize', 'lieque'], liang: ['zusanli'], biao: ['neiguan', 'taichong'], hai: ['zusanli'],
+        geng: ['taixi', 'guanyuan'], pan: ['fengchi', 'quchi'], liusao: ['zusanli', 'qihai'], cai: ['zusanli'], zhou: ['taichong', 'neiguan'],
+        laogeng: ['fengchi', 'taixi', 'mingmen'], wei: ['chize', 'lieque'], ma: ['chize', 'lieque', 'tanzhong'], lan: ['neiguan', 'zusanli'], niu: ['sanyinjiao'],
+        luo: ['neiguan', 'tanzhong'], tan: ['zusanli', 'gongsun'], bai: ['neiguan', 'shenmen'], zhuang2: ['zusanli'], jiang: ['taichong', 'zusanli'],
+        lu: ['quchi', 'zhaohai'], kong: ['zusanli'], liu6: ['shenmen', 'zhaohai'], biao2: ['fengchi', 'waiguan'], ji: ['taichong', 'zulinqi'],
+        yan: ['zusanli', 'gongsun'], huo: ['taixi', 'mingmen'], lin: ['shenmen', 'zhaohai'], yi: ['zusanli', 'guanyuan'], hui: ['neiguan', 'taichong'], cai2: ['quchi'],
+        c1: ['he', 'quchi'], c2: ['taixi', 'yanglao', 'cuanzhu'], c3: [], c4: ['he', 'zusanli'], c5: ['zusanli', 'yuyao', 'cuanzhu'], c6: ['taixi', 'yanglao'],
+        c8: [], c9: ['he', 'waiguan', 'zulinqi'], c10: ['taichong', 'fengchi'], c11: ['taixi', 'yanglao', 'jingming'],
+        c12: ['jingming', 'cuanzhu', 'sizhukong', 'sibai', 'taiyang', 'laogong', 'fengchi']
+    };
+    const TEACH_NO = {
+        c1: '他的眼睛正紅腫熱痛，又會傳染，不要按眼周，也別讓他用手揉眼。', c3: '他的眼壓正高，不要按眼周。', c4: '針眼正紅腫，不要按眼周，更不要擠。',
+        c8: '他的眼底正在出血，不要按眼周。', c9: '他的眼睛正紅痛，不要按眼周。'
+    };
+    const QI_XUE = ['taiyang', 'yuyao', 'yintang'];
+    const meri = (k) => (S.meri || []).includes(k);
+    const zheng = () => (S.meri || []).filter(k => k !== 'zhou').length;          // 已通幾組正經（小周天不算）
+    const zhouReady = () => (S.gong.qiao || 0) >= ZHOU.qiao && (S.gong.dian || 0) >= ZHOU.dian && zheng() >= ZHOU.zheng && S.peace >= ZHOU.peace;
+    const zhouProg = () => `後瞧 ${Math.min(S.gong.qiao || 0, ZHOU.qiao)}／${ZHOU.qiao}、七顛 ${Math.min(S.gong.dian || 0, ZHOU.dian)}／${ZHOU.dian}、正經 ${Math.min(zheng(), ZHOU.zheng)}／${ZHOU.zheng} 組、修為 ${Math.min(S.peace, ZHOU.peace)}／${ZHOU.peace}`;
+    /* 第二期：學過的穴位與點亮的奇經跨輪記在札記（loadMeta 的 xue、qj）。這一輪學的在 S.xue；能教病人的只有這一輪學的 */
+    const xueKnown = () => { const m = loadMeta().xue || []; return Object.keys(XUE).filter(id => S.xue.includes(id) || m.includes(id)); };
+    const qjLit = () => loadMeta().qj || [];
+    function learnXue(ids, extra) {          // 回傳這次新點亮的奇經。extra：直接點亮的（通小周天時的任督）
+        S.xue = S.xue.concat(ids.filter(id => !S.xue.includes(id)));
+        const m = loadMeta(), had = new Set(m.qj || []);
+        m.xue = [...new Set((m.xue || []).concat(S.xue))];
+        const qj = ids.map(id => XUE[id].jiao).concat(extra || []).filter(q => q && !had.has(q));
+        m.qj = [...had].concat([...new Set(qj)]);
+        saveMeta(m);
+        return [...new Set(qj)];
+    }
+    const meriXue = (k) => Object.keys(XUE).filter(id => MERI[k].jing.includes(XUE[id].j));
+    const xwPic = (id, o) => {          // 部位圖加穴點。o.find：找穴模式，先不放點
+        const x = XUE[id];
+        return `<div class="xue-pic${o && o.find ? ' find' : ''}" data-img="${x.img}"><img src="${ART}xw-${x.img}.webp" alt="${XW_IMG[x.img]}">${o && o.find ? '' : `<i class="xue-dot" style="left:${x.at[0]}%;top:${x.at[1]}%"></i>`}</div>`;
+    };
+    const xueCard = (id) => {
+        const x = XUE[id];
+        return `<div class="xue-card">${xwPic(id)}<div class="xue-txt"><b class="name">${x.n}</b>　<span class="small hint">${JING12[x.j]}${id === 'yintang' || x.j === 'du' || x.j === 'ren' ? '' : '・左右各一'}</span>
+            <div><b>位置</b>　${x.pos}</div><div><b>按法</b>　${x.how}</div><div><b>功用</b>　${x.use}</div>
+            <div class="down small"><b>不要按</b>　${x.no}</div>${x.jiao ? `<div class="small hint">八脈交會穴：它也通${x.jiao}。</div>` : ''}</div></div>`;
+    };
+    /* 練功：選一式 → 練 → 功夫滿了就打通。done(note) 回白天醫館的流程 */
+    function gongPick(done) {
+        V = null; hud();
+        const list = meri('zhou') ? GONG8.concat(BAOYUE) : GONG8;          // 通了小周天，多一式抱月樁
+        const cnt = (g) => (S.gong[g.k] || 0);
+        const did = (g) => (g.k === 'bao' ? false : (MERI[g.grp].later ? meri('zhou') : meri(g.grp)));
+        const stateOf = (g) => {
+            if (g.k === 'bao') return '《眼癒力》的站樁，溫養下丹田。練一次：精力 +5，心神 +4，修為 +1。';
+            const M = MERI[g.grp];
+            if (M.later) return meri('zhou') ? `小周天已通（${MERI.zhou.perk}）。再練仍能養身。` : `功夫 ${cnt(g)}。第四式與第八式通任督，合起來是小周天。要：${zhouProg()}。`;
+            return meri(g.grp) ? `${M.name}已通（${M.perk}）。再練仍能養身。` : `功夫 ${cnt(g)}／${GONG_NEED}，練滿通${M.name}：${M.perk}。`;
+        };
+        teachSoon('gong');
+        panel(`<h3>練功　八段錦 <span>精力 ${S.energy}　心神 ${S.spirit}</span></h3>
+            <div class="small">每天打一套八段錦，著重其中一式。同一式練滿 ${GONG_NEED} 次，就通那一組經絡。</div>
+            <div class="octs gong8">${list.map((g, i) => `<button class="octw${did(g) ? ' did' : ''}" data-d="${i}"><span class="oct"><b>${g.short}</b></span></button>`).join('')}</div>
+            <div class="desc d-info" id="d-info">點一式看要領，再按「確定」。練一次：精力 +5，心神 +1。</div>
+            <div class="foot"><button class="btn go px" id="d-go" disabled>確定</button></div>`);
+        $('#pt-name').textContent = '後院';
+        speak(narr('天剛亮，我到後院打一套八段錦。'));
+        let pick = -1;
+        $$('#panel [data-d]').forEach(b => b.onclick = () => {
+            pick = +b.dataset.d;
+            const g = list[pick];
+            $$('#panel [data-d]').forEach(x => x.classList.toggle('on', x === b));
+            $('#d-info').innerHTML = `<b class="name">${g.name}</b><br>${g.yao}<div class="small hint" style="margin-top:4px">${stateOf(g)}</div>`;
+            $('#d-go').disabled = false;
+            const sc = $('#d-info').closest('.scroll') || $('#panel');
+            if (sc) sc.scrollTop = sc.scrollHeight;
+        });
+        const result = (g, log, foot, label, after) => {
+            panel(`<h3>練功 <span>${g.name}</span></h3><div class="dwrap"><div class="dimg" style="background-image:url('${ART}${g.art}')"></div><div class="see">${log}</div></div>
+                <div class="small hint" style="margin-top:8px">${foot}</div>
+                <div class="foot"><button class="btn go px" id="next">${label}</button></div>`);
+            $('#pt-name').textContent = '後院';
+            speak(narr(log));
+            $('#next').onclick = after;
+        };
+        $('#d-go').onclick = () => {
+            if (pick < 0) return;
+            const g = list[pick];
+            if (g.k === 'bao') {
+                addEnergy(5); addSpirit(4); const pk = addPeace(1);
+                S.gong.bao = cnt(g) + 1; hud();
+                const log = '我站了一炷香的抱月樁。雙臂環抱，氣息沉到小腹，整個人安靜下來。';
+                return result(g, log, '精力 +5　心神 +4　修為 +1', '開門去', () => done(log + '精力 +5，心神 +4，修為 +1。' + (pk ? pk : '')));
+            }
+            const M = MERI[g.grp];
+            addEnergy(5); addSpirit(1);
+            S.gong[g.k] = cnt(g) + 1;
+            const open = M.later ? (!meri('zhou') && zhouReady()) : (!meri(g.grp) && S.gong[g.k] >= GONG_NEED);
+            hud();
+            const log = `我打了一套八段錦，「${g.name}」多練了幾遍。身上暖了起來。`;
+            const after = () => (!open ? done(log + '精力 +5，心神 +1。')
+                : (M.later ? tongZhou(g, () => done(`${log}通了小周天。`)) : tong(g, () => done(`${log}通了${M.name}。`))));
+            result(g, log, `精力 +5　心神 +1　${M.later ? (meri('zhou') ? '小周天已通' : `功夫 ${S.gong[g.k]}`) : (meri(g.grp) && !open ? `${M.name}已通` : `功夫 ${Math.min(S.gong[g.k], GONG_NEED)}／${GONG_NEED}`)}`,
+                open ? '咦……' : '開門去', after);
+        };
+    }
+    /* 打通一組：演一小段 → 找穴（這一組的代表穴）→ 學這一組的穴位（第一次另學奇穴） */
+    function tong(g, done) {
+        const M = MERI[g.grp], first = !zheng();
+        S.meri = (S.meri || []).concat(g.grp);
+        const learn = meriXue(g.grp).concat(first ? QI_XUE : []).filter(id => !S.xue.includes(id));
+        const qj = learnXue(learn);
+        teachSoon('meri');
+        story('經絡', M.name, [
+            narr('這一式我已經練了好些日子。今天練到一半，身上像有一股暖意，順著手腳慢慢走開。'),
+            narr(S.ch === 0 ? '師父在一旁看著，點了點頭：功夫到了，經絡自然通。' : '師父說過：功夫到了，經絡自然通。'),
+            narr(`${M.name}，好像通了。（本事：${M.perk}）`)
+        ], () => xueFind(M.show, () => xueLearn(learn, M.name, done, qj)), g.art);
+    }
+    /* 第三期：通小周天（劇情是 Claude 起草，等佑彥審） */
+    function tongZhou(g, done) {
+        const M = MERI.zhou;
+        S.meri = (S.meri || []).concat('zhou');
+        const pk = addPeace(5); hud();
+        const learn = meriXue('zhou').filter(id => !S.xue.includes(id));
+        const qj = learnXue(learn, ['任脈', '督脈']);
+        teachSoon('zhou');
+        story('經絡', '小周天', [
+            narr('後瞧、七顛練了這些日子。今天收功時，我站著沒動，氣息自己慢了下來。'),
+            narr('一股暖意沉到小腹，繞過尾閭，順著脊背往上走，過了頭頂，又從面前緩緩落回小腹，轉了一圈。'),
+            narr('水往上升，火往下降。師父常說的「既濟」，原來在身上是這個樣子。'),
+            narr(`小周天，通了。（本事：${M.perk}；修為 +5）${pk ? pk : ''}`),
+            narr('想起師父說過：通了就好，不必執著。往後早上可以站一站抱月樁，溫養下丹田。')
+        ], () => xueFind(M.show, () => xueLearn(learn, '任督', done, qj)), g.art);
+    }
+    function xueFind(id, done) {
+        const x = XUE[id];
+        panel(`<h3>找穴 <span>${x.n}</span></h3><div class="xf-row"><div class="xf-txt"><div>${x.pos}</div><div style="margin-top:6px">點一下圖上，你覺得「<b class="name">${x.n}</b>」在哪裡？</div>
+            <div class="small hint" id="xf-msg" style="margin-top:6px">不扣分，只是讓你真的看一眼位置。</div></div>${xwPic(id, { find: true })}</div>
+            <div class="foot"><button class="btn go px" id="next">直接看位置</button></div>`);
+        $('#pt-name').textContent = '後院';
+        speak(narr(`${x.n}在哪裡？我照著師父說的，在自己身上摸了摸。`));
+        const pic = $('#panel .xue-pic'), msg = $('#xf-msg');
+        let done1 = false;
+        const show = (hit) => {
+            pic.classList.remove('find');
+            pic.insertAdjacentHTML('beforeend', `<i class="xue-dot" style="left:${x.at[0]}%;top:${x.at[1]}%"></i>`);
+            msg.innerHTML = hit === true ? '<b class="up">找到了。</b>就是這裡。' : (hit === false ? '差了一點。正確的位置亮起來了。' : '正確的位置亮起來了。');
+            $('#next').textContent = '學這幾個穴';
+            $('#next').onclick = done;
+        };
+        pic.onclick = (e) => {
+            if (done1) return; done1 = true;
+            const r = pic.querySelector('img').getBoundingClientRect();
+            const px = (e.clientX - r.left) / r.width * 100, py = (e.clientY - r.top) / r.height * 100;
+            pic.insertAdjacentHTML('beforeend', `<i class="xue-try" style="left:${px}%;top:${py}%"></i>`);
+            show(Math.hypot(px - x.at[0], py - x.at[1]) <= 7);
+        };
+        $('#next').onclick = () => { done1 = true; show(); };
+    }
+    function xueLearn(ids, title, done, qj) {
+        let cur = ids[0];
+        const draw = () => {
+            panel(`<h3>學穴位 <span>${title}</span></h3>
+                <div class="xue-chips">${ids.map(id => `<button class="btn${id === cur ? ' on' : ''}" data-xw="${id}">${XUE[id].n}</button>`).join('')}</div>
+                ${xueCard(cur)}
+                <div class="small dim">遊戲裡教的只是日常保健的按揉，不能代替就醫。學過的穴位都在選單的「經絡」頁。</div>
+                <div class="foot"><button class="btn go px" id="next">記下了</button></div>`);
+            $('#pt-name').textContent = '後院';
+            $$('#panel [data-xw]').forEach(b => b.onclick = () => { cur = b.dataset.xw; draw(); });
+            $('#next').onclick = () => { setBg(); done(); };
+        };
+        draw();
+        speak([narr(`${title}這一組經上的穴位，我一個一個找過、按過。`)]
+            .concat(qj && qj.length ? [narr(`${ids.filter(id => qj.includes(XUE[id].jiao)).map(id => XUE[id].n).join('、') || '任督相接'}${ids.some(id => qj.includes(XUE[id].jiao)) ? '也是八脈交會穴' : ''}。札記裡的奇經八脈亮了：${qj.join('、')}。`)] : []));
+    }
+    /* 第二期：衛教。藥包好以後問一次（每位病人一次），next(更多的話) 接回原本的流程 */
+    function teachStep(next) {
+        if (V.tutor || V.xueAsked || !S.xue.length) return next([]);
+        V.xueAsked = true;
+        const known = S.xue.slice(), good = TEACH[V.c.id] || [], no = TEACH_NO[V.c.id];
+        const bad = (id) => !!no && XUE_EYE.includes(id);
+        const shut = new Set();
+        let cur = null;
+        teachSoon('xt');
+        const draw = () => {
+            panel(`<h3>衛教 <span>臨走前，要不要教${V.c.name}按一個穴？</span></h3>
+                <div class="small hint">挑一個這一輪學過的穴，教病人回家自己按。教得合適，病人更信你；不教也可以。${isEasy() ? '標「宜」的和他的病相合。' : ''}</div>
+                <div class="xue-chips">${known.map(id => `<button class="btn${id === cur ? ' on' : ''}" data-xt="${id}"${good.includes(id) ? ' data-good="1"' : ''}${shut.has(id) ? ' disabled' : ''}>${XUE[id].n}${isEasy() && good.includes(id) ? ' <small class="up">宜</small>' : ''}</button>`).join('')}</div>
+                ${cur ? xueCard(cur) : '<div class="dim small">點穴名看小卡。</div>'}
+                <div class="foot"><button class="btn" id="next">不教了</button><button class="btn go px" id="xt-go"${cur ? '' : ' disabled'}>教他這一穴</button></div>`);
+            $$('#panel [data-xt]').forEach(b => b.onclick = () => { cur = b.dataset.xt; draw(); });
+            $('#next').onclick = () => next([]);
+            $('#xt-go').onclick = () => {
+                if (!cur) return;
+                const x = XUE[cur];
+                if (bad(cur)) {
+                    shut.add(cur); cur = null; V.xueStop = true; draw();
+                    speak([{ who: V.kind === 'eye' ? EYM : SHM, text: `慢著。${no}` }, narr(`書上的注意事項寫得明白：${NO_EYE}我把${x.n}收了回去。`)]);
+                    return;
+                }
+                V.xueTaught = cur; V.xueOk = good.includes(cur);
+                if (V.xueOk) { addTrust(4); addSpirit(1); hud(); return next([narr(`臨走前，我教他找${x.n}：${x.pos}他照著按了幾下，點點頭記住了。（信任 +4　心神 +1）`)]); }
+                next([narr(`臨走前，我教他找${x.n}。他記下了，只是這一穴和他眼前的病不太相干。`)]);
+            };
+        };
+        draw();
+        speak(narr('藥包好了。臨走前，要不要教他一個回家自己按的穴？'));
+    }
+    const xtRow = () => (V.xueTaught ? `<tr><td>衛教</td><td>教了${XUE[V.xueTaught].n}　${V.xueOk ? '<span class="up">合適</span>' : '<span class="dim">不太相干</span>'}${V.xueStop ? '<br><span class="dim">先前差點教了不該按的穴，被攔了下來。</span>' : ''}</td></tr>`
+        : (V.xueStop ? '<tr><td>衛教</td><td><span class="dim">差點教了不該按的穴，被攔了下來，最後沒有教。</span></td></tr>' : ''));
     function morning(done) {
         S.today = {};
         const back = S.queue.filter(p => p.status === 'waiting').length;
@@ -9352,7 +9693,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
             { a: 'open', name: '開門看診', cur: true, sub: S.queue.length ? `候診的有 ${S.queue.length} 位。直接開門，請病人進來` : '今天沒有病人上門。直接開門' },
             { a: 'cabinet', name: '整理藥櫃', sub: `把藥一格一格清點，篩去碎末。精力 −3。今天方證相應時，纏綿未解的機率減半${unlit.length ? '；本草圖鑑點亮一味還沒用過的藥' : ''}` },
             { a: 'dry', name: '晒藥搗藥', sub: S.ch === 0 ? '幫師父把藥攤到院子裡晒，搗好今天要用的。精力 −6，金錢 +3（師父給的零用）' : '把收來的藥材攤開晒、搗好備用，多的賣給街坊。精力 −6，金錢 +4' },
-            { a: 'drill', name: '晨練', sub: '在院子裡打一套八段錦。精力 +5，心神 +1' }
+            { a: 'drill', name: '練功', sub: `在後院打一套八段錦，著重其中一式。精力 +5，心神 +1。同一式練滿 ${GONG_NEED} 次，通一組經絡${(S.meri || []).length ? `（已通 ${S.meri.length} 組）` : ''}` }
         ];
         if (S.app.on && back) acts.push({ a: 'prep', name: '備藥', sub: `和小滿把今天回診的藥先備好。精力 −2，今天回診的 ${back} 位不耗心神` });
         speak(narr(S.ch === 0 ? '天剛亮。師父還在後院，醫館的門還沒開。' : (S.queue.length ? '天剛亮。門外已經有人在等了。' : '天剛亮。今天門外很安靜。')));
@@ -9364,7 +9705,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
                 if (k) litHerbs([SH.HERBS[k].name]);
                 note = `我把藥櫃清點了一遍，篩去碎末。${k ? `認得了${SH.HERBS[k].name}（本草圖鑑點亮）。` : ''}今天方證相應時，纏綿未解的機率減半。`;
             } else if (a === 'dry') { addEnergy(-6); S.money += S.ch === 0 ? 3 : 4; note = `我把藥攤開晒，搗好了備用。金錢 +${S.ch === 0 ? 3 : 4}。`; }
-            else if (a === 'drill') { addEnergy(5); addSpirit(1); note = '我在院子裡打了一套八段錦，身上暖了起來。精力 +5，心神 +1。'; }
+            else if (a === 'drill') return gongPick(done);          // 2026-11-25 導引與經絡：晨練改成練功，選一式
             else if (a === 'prep') { addEnergy(-2); S.today.prep = true; note = '我和小滿把回診的藥先備好了。今天回診的病人不耗心神。'; }
             hud(); done(note);
         };
@@ -9511,7 +9852,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
     function freeAction(note) {          // note：上街做的那件事（2026-11-22 起探望、施藥搬到上街）
         V = null; hud();
         const waiting = Object.values(P).filter(p => p.status === 'waiting');
-        const eye = S.energy < 30, heart = S.spirit < 30;        // 第一代的肉身警訊：精力低讀不下書，心神低歇不安穩
+        const eye = S.energy < 30, heart = S.spirit < 30 && !meri('htsi');        // 第一代的肉身警訊：精力低讀不下書，心神低歇不安穩（通心・小腸就不減半）
         const book = S.needLearn && !S.learn[S.needLearn] ? LEARN[S.needLearn] : null;     // 白天遇到不會看的病，今晚該讀的書
         const acts = [
             { a: 'rest', name: '休養', sub: heart ? '心悸失眠，歇不安穩。精力 +9，心神 +2' : '早睡，讓身體歇著。精力 +18，心神 +5' },
@@ -9783,7 +10124,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         if (bal) { notes.push(`<span class="${bal.cls}">${bal.text}</span>`); perks.push(bal.perk); }
         if (cost) teachSoon('living');
         if (bal) teachSoon('jiji');
-        addEnergy(8); addSpirit(5);         // 夜裡歇息
+        addEnergy(8 + (meri('spst') ? 3 : 0)); addSpirit(5);         // 夜裡歇息；meri spst：通脾・胃，精力多回 3
         S.study = S.studyNext; S.studyNext = 0;
         if (S.hqBoost > 0) S.hqBoost--;                                   // 藥行買的上等藥材，一天用掉一天
         S.debtDays = S.debt > 0 ? (S.debtDays || 0) + 1 : 0;              // 欠杜掌櫃的帳，欠了幾天
@@ -9794,7 +10135,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         panel(`<h3>${chOf().name}　第 ${S.chDay} 個門診日結束</h3><div>${text}</div>
             ${pk ? `<div style="margin-top:6px"><b class="name">${pk}</b></div>` : ''}
             <div class="small" style="margin-top:6px">${notes.join('<br>')}</div>
-            <div class="small hint" style="margin-top:6px">夜裡歇息，精力 +8，心神 +5。治療中的病人還有 ${open} 位。</div>
+            <div class="small hint" style="margin-top:6px">夜裡歇息，精力 +${8 + (meri('spst') ? 3 : 0)}，心神 +5。治療中的病人還有 ${open} 位。</div>
             <div class="foot"><button class="btn go px" id="next">${broke ? '撐不下去了' : '天亮了'}</button></div>`);
         speak(narr(text));
         $('#next').onclick = () => {
@@ -10027,7 +10368,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
 
     /* ================= 系統選單 =================
        照樣張：左邊是選單列，右邊是內容。狀態、病歷、心法、札記、系統。 */
-    const MENU = ['狀態', '病歷', '心法', '醫典', '本草', '札記', '系統'];
+    const MENU = ['狀態', '病歷', '心法', '醫典', '本草', '經絡', '札記', '系統'];
     let mSel = 0, subSel = 0, armed = false;         // armed：回到標題要點兩次才生效
     function openMenu() { coachHide(); subSel = 0; armed = false; renderMenu(); $('#book').classList.remove('hidden'); }
     function closeMenu() { $('#book').classList.add('hidden'); }
@@ -10042,7 +10383,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
                 ${desc ? `<div class="desc">${desc(arr[subSel])}</div>` : ''}`;
         };
         if (mSel === 0) {
-            const warn = [S.energy < 30 ? '精力不足 30：眼壓飆高，視物模糊，讀不下書。' : '', S.spirit < 30 ? '心神不足 30：心悸失眠，休養的效果減半。' : '',
+            const warn = [S.energy < 30 ? '精力不足 30：眼壓飆高，視物模糊，讀不下書。' : '', S.spirit < 30 ? (meri('htsi') ? '心神不足 30：心悸失眠（心・小腸已通，休養不減半）。' : '心神不足 30：心悸失眠，休養的效果減半。') : '',
                           S.spirit < 20 ? '心神不足 20：每一診能問的少一項。' : '', S.poor ? `已連續 ${S.poor} 天入不敷出，滿 ${POOR_LIMIT} 天便無以為繼。` : ''].filter(Boolean);
             const bal = S.bal === 'jiji' ? '<span class="up">既濟</span>。精力與心神相濟，不偏不倚。'
                 : (S.bal === 'body' ? '<span class="down">未濟</span>。身強而神疲，宜靜坐養神。'
@@ -10094,6 +10435,44 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
                 $('#hb-fx').innerHTML = `<div class="fx small"><b class="name">${F.name}</b>　${Object.keys(SH.SLOT_NAMES).filter(s => F.slots[s] && F.slots[s].length).map(s => `${SH.SLOT_NAMES[s]}：${F.slots[s].map(x => SH.HERBS[x].name).join('、')}`).join('　')}${tongNote([].concat(...Object.values(F.slots)).map(x => SH.HERBS[x].name))}${F.note ? '<br>' + F.note : ''}</div>`;
             });
         } else if (mSel === 5) {
+            /* 經絡（第一期 2026-11-25；第二、三期 2026-11-26）：六組正經、小周天（任督）、經外奇穴、奇經八脈。
+               穴位與奇經跨輪記在札記：前幾輪學過、這一輪還沒學的穴，按鈕顏色淡一點，一樣可以看小卡 */
+            const keys = ['luli', 'spst', 'htsi', 'kibl', 'sjpc', 'lrgb', 'zhou', 'qi', 'qj'];
+            const gOf = (mk) => GONG8.find(g => g.grp === mk);
+            const known = xueKnown(), lit = qjLit();
+            const jiaoOf = (q) => Object.keys(XUE).find(i => XUE[i].jiao === q);
+            const chip = (id) => (known.includes(id) ? `<button class="btn${S.xue.includes(id) ? '' : ' old'}" data-xw="${id}" title="${S.xue.includes(id) ? '' : '前幾輪學過'}">${XUE[id].n}</button>` : '<span class="dim small">　？</span>');
+            const oldNote = (ids) => (ids.some(id => known.includes(id) && !S.xue.includes(id)) ? '<div class="small dim">顏色淡的是前幾輪學過、這一輪還沒學的，還不能教病人。</div>' : '');
+            sub(`經絡 <span class="small hint">已通 ${zheng()}／6 組${meri('zhou') ? '・小周天' : ''}　穴位 ${known.length}／${Object.keys(XUE).length}</span>`, keys.map(mk => ({ mk })),
+                (x) => {
+                    if (x.mk === 'qi') return `經外奇穴<span class="qty${QI_XUE.some(id => known.includes(id)) ? ' up' : ''}">${QI_XUE.filter(id => known.includes(id)).length}／${QI_XUE.length}</span>`;
+                    if (x.mk === 'qj') return `奇經八脈<span class="qty${lit.length ? ' up' : ''}">${lit.length}／${QIJING.length}</span>`;
+                    if (x.mk === 'zhou') return `小周天<span class="qty${meri('zhou') ? ' up' : ''}">${meri('zhou') ? '已通' : `後瞧 ${S.gong.qiao || 0}・七顛 ${S.gong.dian || 0}`}</span>`;
+                    return `${MERI[x.mk].name}<span class="qty${meri(x.mk) ? ' up' : ''}">${meri(x.mk) ? '已通' : `功夫 ${S.gong[gOf(x.mk).k] || 0}／${GONG_NEED}`}</span>`;
+                },
+                (x) => {
+                    if (x.mk === 'qi') return `不屬於十二經的穴位。第一次通任何一組經絡時一起學會。<div class="chips">${QI_XUE.map(chip).join('')}</div>${oldNote(QI_XUE)}<div id="xw-card"></div>`;
+                    if (x.mk === 'qj') {
+                        const ids = QIJING.map(jiaoOf);
+                        return `奇經八脈不用另外練。學到它的「八脈交會穴」就點亮（通了小周天，任督也會亮），記在札記裡，下一輪也還在。
+                            <div style="margin-top:4px">${QIJING.map(q => { const on = lit.includes(q); return `<div class="${on ? 'up' : 'dim'}">${on ? '✔' : '・'} ${q}<span class="small">　交會穴：${on || known.includes(jiaoOf(q)) ? XUE[jiaoOf(q)].n : '？'}</span></div>`; }).join('')}</div>
+                            <div class="chips">${ids.filter(id => known.includes(id)).map(chip).join('')}</div>${oldNote(ids)}<div id="xw-card"></div>`;
+                    }
+                    if (x.mk === 'zhou') {
+                        const ids = meriXue('zhou');
+                        return `督脈、任脈。練「${GONG8[3].name}」與「${GONG8[7].name}」。
+                            <div class="${meri('zhou') ? 'up' : 'dim'}" style="margin-top:4px">${meri('zhou') ? '✔' : '・'} 本事：${MERI.zhou.perk}<span class="small">（${MERI.zhou.why}）</span></div>
+                            ${meri('zhou') ? `<div class="small hint">早上練功多了一式「抱月樁」：${BAOYUE.yao}</div>` : `<div class="small hint">通小周天要：${zhouProg()}。</div>`}
+                            <div class="chips">${ids.map(chip).join('')}</div>${oldNote(ids)}<div id="xw-card"></div>`;
+                    }
+                    const M = MERI[x.mk], g = gOf(x.mk), ids = meriXue(x.mk);
+                    return `${M.jing.map(j => JING12[j]).join('、')}<br>練「${g.name}」：${g.yao}
+                        <div class="${meri(x.mk) ? 'up' : 'dim'}" style="margin-top:4px">${meri(x.mk) ? '✔' : '・'} 本事：${M.perk}<span class="small">（${M.why}）</span></div>
+                        ${meri(x.mk) ? '' : `<div class="small hint">再練 ${Math.max(0, GONG_NEED - (S.gong[g.k] || 0))} 次就通。</div>`}
+                        <div class="chips">${ids.map(chip).join('')}</div>${oldNote(ids)}<div id="xw-card"></div>`;
+                });
+            $$('#m-right [data-xw]').forEach(b => b.onclick = () => { $('#xw-card').innerHTML = xueCard(b.dataset.xw) + '<div class="small dim">只是日常保健的按揉，不能代替就醫。</div>'; });
+        } else if (mSel === 6) {
             R.innerHTML = `<h3>札記</h3>
                 <div class="small"><b class="hint">這一輪的抉擇</b>　${S.dilLog.length ? S.dilLog.join('、') : '<span class="dim">還沒有遇到困境。</span>'}</div>
                 <div class="desc" style="color:#fff">${notesHTML()}</div>`;
@@ -10113,7 +10492,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
             sub('系統', items, (it) => `${it.n}<span class="qty name">${it.v}</span>`, (it) => (it.help ? helpHTML() : (it.tip || '回到標題後，可以從「重溫舊夢」回到今天這個門診日的開頭。')));
             $$('#sub li').forEach(li => li.onclick = () => { const it = items[+li.dataset.s]; subSel = +li.dataset.s; if (it.act) it.act(); else armed = false; if (!$('#book').classList.contains('hidden')) renderMenu(); });
         }
-        if (mSel === 2 || mSel === 3) $$('#sub li').forEach(li => li.onclick = () => { subSel = +li.dataset.s; renderMenu(); });
+        if (mSel === 2 || mSel === 3 || mSel === 5) $$('#sub li').forEach(li => li.onclick = () => { subSel = +li.dataset.s; renderMenu(); });
         $$('#m-list li').forEach(li => li.onclick = () => { mSel = +li.dataset.m; subSel = 0; armed = false; beep(880, 0.03, 0.03, 'sine'); renderMenu(); $('#m-right').scrollTop = 0; });
     }
     $$('.menubtn').forEach(b => { b.onclick = openMenu; });
@@ -10541,8 +10920,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         const newHerb = litHerbs(rxHerbNames(V.lastRx));
         V.results.push(res);
         if ((res.r === 'none' || res.r === 'worse') && V.trust < 40) V.lost = true;     // 信任不足又沒治好的病人，不一定會回來
-        speak([narr(res.ding === false ? '我把藥包好，匆匆交代了幾句。' : '我把藥包好，囑咐了煎服的方法。')].concat(newHerb ? [narr(`抓藥時，我多認得了 ${newHerb} 味藥。本草圖鑑點亮了。`)] : []));
-        leave(`藥方　${res.rx}`);
+        const lines = [narr(res.ding === false ? '我把藥包好，匆匆交代了幾句。' : '我把藥包好，囑咐了煎服的方法。')].concat(newHerb ? [narr(`抓藥時，我多認得了 ${newHerb} 味藥。本草圖鑑點亮了。`)] : []);
+        teachStep((more) => { speak(lines.concat(more)); leave(`藥方　${res.rx}`); });
     }
     const SH_TRUST = { cured: [30, 12], better: [8, 4], none: [-12, -15], worse: [-25, -25] };
     function shRevisit() {
@@ -10613,6 +10992,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
                 ${patRow(SH.PATTERNS, mark)}
                 ${V.results.some(r => r.ding !== undefined) ? `<tr><td>醫囑</td><td>${V.results.filter(r => r.ding !== undefined).map(r => r.ding ? '<span class="up">交代得對</span>' : '<span class="down">交代錯了</span>').join('、')}</td></tr>` : ''}
                 ${rows}
+                ${xtRow()}
                 <tr><td>結案時</td><td>病人信任 ${V.trust}　共看了 ${V.visits} 次，耗去心神 ${V.spiritUsed}</td></tr>
                 ${gainHTML()}
             </table>
@@ -10771,8 +11151,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         else V.pending = o;
         /* 眼病的治法掛著代表用藥（EY.PLANS[k].herbs，2026-11-18 第二批起），開出去就在本草圖鑑點亮 */
         const nh = litHerbs((EY.PLANS[k].herbs || []).filter(h => SH.HERBS[h]).map(h => SH.HERBS[h].name));
-        speak([narr('我把藥包好，囑咐了煎服的方法。')].concat(nh ? [narr(`抓藥時，我多認得了 ${nh} 味藥。本草圖鑑點亮了。`)] : []));
-        leave(`處置　${name}`);
+        const lines = [narr('我把藥包好，囑咐了煎服的方法。')].concat(nh ? [narr(`抓藥時，我多認得了 ${nh} 味藥。本草圖鑑點亮了。`)] : []);
+        teachStep((more) => { speak(lines.concat(more)); leave(`處置　${name}`); });
     }
     function eyReturn() {
         V.log.forEach(l => { l.shown = true; });
@@ -10860,7 +11240,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
                 V.chainDone = true;
                 /* 全對是明顯改善；錯一次（回診兩次以上的病）是好轉；其餘是時好時壞。長期病人的總數算全部的回診 */
                 const tot = c.life ? lifeTotal(c) : n;
-                const rr = V.chainRight >= tot ? 'well' : (tot > 1 && V.chainRight === tot - 1 ? 'better' : 'wobble');
+                let rr = V.chainRight >= tot ? 'well' : (tot > 1 && V.chainRight === tot - 1 ? 'better' : 'wobble');
+                if (rr === 'better' && V.xueOk && !c.life && Math.random() < 0.5) rr = 'well';         // 衛教教對了：他每天自己按，小幅幫助（第二期）
                 const fr = c.life ? c.life.final : rr;            // 長期病人眼睛的結局是病自己決定的，處置好壞只改變這一段話
                 if (c.life) {
                     V.lifeDone = true;
@@ -10904,6 +11285,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
                 <tr><td>我問了</td><td>${V.asked.map(id => EY.QUESTIONS.find(q => q.id === id).q).join('、')}（三個關鍵問題問到 ${V.keyHit} 個）</td></tr>
                 ${patRow(EY.PATTERNS, mark)}
                 ${rows}
+                ${xtRow()}
                 <tr><td>結案時</td><td>病人信任 ${V.trust}　共看了 ${V.visits} 次，耗去心神 ${V.spiritUsed}</td></tr>
                 ${gainHTML()}
             </table>
@@ -11118,7 +11500,7 @@ window.__bot = (function () {
         const ph = $('#night').dataset.phase;
         if (ph === 'morning') {
             if (pol.act !== 'smart') return 'open';
-            if (S.energy < 45) return 'drill';
+            if (S.energy < 45 || (pol.gong && S.energy < 85)) return 'drill';
             if (has('prep')) return 'prep';
             if (S.money < 15 && S.energy > 60) return 'dry';
             return S.energy > 75 ? 'cabinet' : 'open';
@@ -11154,6 +11536,12 @@ window.__bot = (function () {
         if (inHub()) { const c = $('#sc-cmds .octw.cur'); if (!c) return 'stuck:hub'; click(c); return 'hub'; }
         if (/^(全書完|貧病交加|庸醫)/.test(t) && $('#home')) return 'end';
         if (V && V.tutor) { const g = $('.guide'); if (g) { click(g); return 'tutor'; } }
+        if ($('#xt-go')) {           // 衛教：teach 教相合的穴；teach: 'bad' 專挑眼周的穴試攔阻；沒設就不教
+            const eye = ['chengqi', 'sibai', 'jingming', 'cuanzhu', 'sizhukong', 'tongziliao', 'taiyang', 'yuyao'];
+            const g = pol.teach === 'bad' ? $$('#panel [data-xt]:not(:disabled)').find(b => eye.includes(b.dataset.xt)) : (pol.teach ? $('#panel [data-xt][data-good]:not(:disabled)') : null);
+            if (g) { click(g); click($('#xt-go')); st.acts.teach = (st.acts.teach || 0) + 1; return 'teach'; }
+            click($('#next')); return 'teach-skip';
+        }
         if ($('#panel [data-d]')) { const en = $$('#panel [data-d]').filter(b => !b.disabled); click(pol.dil === 'first' ? en[0] : en[Math.floor(Math.random() * en.length)]); if ($('#d-go')) click($('#d-go')); return 'dilemma'; }
         if ($('#panel [data-pick]')) { $$('#panel [data-pick]').slice(0, 3).forEach(b => click($(`#panel [data-pick="${b.dataset.pick}"]`))); click($('#next')); return 'book'; }
         if ($('#panel [data-shop]') && !$('#panel-win').classList.contains('hidden')) {          // 店裡：照順序找第一樣買得起的；都買不了就回街上，今天不再逛
