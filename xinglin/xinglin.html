@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- 試玩階段不給搜尋引擎收錄；內容審定、正式上架時再拿掉這一行 -->
-<meta name="robots" content="noindex">
 <title>水火既濟：杏林問診</title>
 <meta name="description" content="扮演初入杏林的弟子，跟著師父望聞問切、辨證開方。方子開出去，要等病人回診才知道對不對。林佑彥醫師製作的中醫看診遊戲，試玩版。">
 <meta name="theme-color" content="#070a16">
@@ -130,6 +129,7 @@ button { font-family: inherit; font-size: inherit; font-weight: inherit; color: 
 .chain .to b.name { color: var(--name); }
 .ycard { margin-top: 8px; padding: 7px 11px; border: 1px solid rgba(141, 255, 154, 0.45); border-radius: 6px; background: rgba(120, 220, 140, 0.08); }
 .ycard b { display: block; color: var(--up); letter-spacing: 0.15em; }
+.ycard .yx { margin-top: 4px; } .ycard .yx b { display: inline; color: var(--name); letter-spacing: 0; } .ycard .yx .no { display: block; color: var(--down); font-size: 0.86em; }
 .ycard .dim { display: block; margin-top: 2px; font-size: 0.86em; }
 .safe { margin-top: 8px; padding: 6px 11px; border-left: 3px solid #e0a26f; background: rgba(230, 160, 110, 0.08); color: #f0d6c0; }
 /* 電腦版：畫面等比例放大（fitStage）；懷舊螢幕：外面畫一台米色的舊螢幕（#bezel，佑彥 2026-11-23：不要掃描線） */
@@ -8176,7 +8176,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
     }
     /* 醫術：每結一案就長一點，到門檻會讓看診省力。聲望：治好加、治壞減，影響新病人的信任 */
     const askCost = () => (S.skill >= 30 ? 2 : 3);
-    const patCost = () => (S.skill >= 20 ? 3 : 5) - (bookLv('sh') >= 2 ? 1 : 0) - (meri('lrgb') ? 1 : 0);        // meri lrgb：通肝・膽，定證少耗 1
+    const patCost = () => (S.skill >= 20 ? 3 : 5) - (bookLv('sh') >= 2 ? 1 : 0) - (meri('lrgb') ? 1 : 0) - (S.today && S.today.yun ? 1 : 0);        // meri lrgb：通肝・膽，定證少耗 1
     const PERKS = [[10, '往後每一診可以多問一項。'], [20, '往後定證少耗心神 2。'], [30, '往後問診每一項只耗心神 2。']];
     function addSkill(n) {
         const b = S.skill; S.skill += n;
@@ -8231,7 +8231,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
             const ps = {};
             /* 病例後來被移出遊戲（2026-11-20 起眼病只留 c1～c12，其餘留給眼病篇）：舊存檔裡的這些病人略過，排好的門診日也拿掉 */
             const has = (id) => SH.CASES.some(c => c.id === id) || EY.CASES.some(c => c.id === id);
-            Object.keys(d.P).filter(has).forEach(id => { ps[id] = Object.assign(mk(id), d.P[id]); });
+            Object.keys(d.P).filter(has).forEach(id => { ps[id] = Object.assign(mk(id), d.P[id]); if (ps[id].bian) bianOn(ps[id], ps[id].bian.to); });
             Object.keys(P).forEach(k => delete P[k]);
             Object.assign(P, ps);
             Object.assign(S, fresh(), d.S, { queue: [], news: [] });          // 先鋪預設值，舊存檔缺的欄位才不會出錯
@@ -8309,7 +8309,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         const dil = Object.keys(DILEMMAS).map(id => (m.dil.includes(id) ? `<li><b class="name">${DILEMMAS[id].title}</b></li>` : '<li class="dim">？？？</li>')).join('');
         const seen = all.filter(c => m.cases[c.id]).length;
         const withCard = all.filter(c => c.card), gotCard = withCard.filter(c => m.cards.includes(c.id));
-        const cardList = withCard.map(c => (m.cards.includes(c.id) ? `<li><b class="name">${c.name}</b>　${c.card}</li>` : '<li class="dim">？？？</li>')).join('');
+        const cardList = withCard.map(c => (m.cards.includes(c.id) ? `<li><b class="name">${c.name}</b>　${c.card}${cardXue(c, true)}</li>` : '<li class="dim">？？？</li>')).join('');
         const xk = Object.keys(XUE), mx = m.xue || [], mq = m.qj || [];
         const xueSec = `<h2>穴位小卡 <span class="px">${xk.filter(id => mx.includes(id)).length}/${xk.length}</span>　練功打通經絡時學會，「經絡」頁可以翻看</h2><ul class="small notes two">${xk.map(id => (mx.includes(id) ? `<li><b class="name">${XUE[id].n}</b>　${JING12[XUE[id].j]}</li>` : '<li class="dim">？？？</li>')).join('')}</ul>
             <h2>奇經八脈 <span class="px">${mq.length}/${QIJING.length}</span>　學到八脈交會穴就點亮</h2><ul class="small notes two">${QIJING.map(q => (mq.includes(q) ? `<li><b class="name">${q}</b></li>` : '<li class="dim">？？？</li>')).join('')}</ul>`;
@@ -8826,13 +8826,17 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         if (ln) return story(ln.big, ln.sub, ln.lines, dayStart);
         if ((S.flags.thanksQ || []).length) return thanksScene(S.flags.thanksQ.shift());
         if (S.flags.redeemNext) return redeem();                               // 公堂之後，第一位治好的病人
+        if ((S.flags.deathQ || []).length) return deathCourt(S.flags.deathQ.shift());   // 醫死人：病家告官
         if ((S.flags.mal || 0) >= MAL_COURT && !S.flags.court) return court();  // 誤治四筆：病家告官
         if ((S.flags.malQ || []).length) return dispute(S.flags.malQ.shift()); // 病家上門理論
         saveGame();
         S.news = [];
         const back = [];
         Object.values(P).filter(p => p.status === 'waiting' && p.due <= S.day).forEach(p => {
-            if (p.lost) { p.status = 'lost'; p.outcome = '沒有回診'; metaCase(p); S.fame -= 2; if (!S.epi.includes('mortal')) addSpirit(-4); S.news.push(`${p.c.name}沒有回診。那帖藥後來怎麼樣了，我不會知道。`); }
+            if (p.lost && p.kind === 'sh' && GRAVE[p.c.pattern] && S.ch >= 1 && !isAmateur() && (p.results || []).slice(-1).some(r => r.r === 'worse')) {
+                p.status = 'lost'; p.outcome = '沒有回診'; p.malDied = true; metaCase(p); S.flags.mal = (S.flags.mal || 0) + 1;      // 危重的病人吃了藥反而更糟、沒有再來：他沒有好起來
+                (S.flags.deathQ = S.flags.deathQ || []).push(p.id);
+            } else if (p.lost) { p.status = 'lost'; p.outcome = '沒有回診'; metaCase(p); S.fame -= 2; if (!S.epi.includes('mortal')) addSpirit(-4); S.news.push(`${p.c.name}沒有回診。那帖藥後來怎麼樣了，我不會知道。`); }
             else back.push(p);
         });
         const arr = (S.arr[S.chDay] || []).map(id => { P[id] = mk(id); lifeSchedule(P[id]); return P[id]; });
@@ -8937,7 +8941,10 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
            惡化的病家隔天上門理論；累積四筆會被告官。告官之後第一位治好的病人，是重新站起來的時候 */
         const worse = outcome === '惡化' || (outcome === '失明' && !V.c.life);
         if (S.ch >= 1 && !isAmateur() && (worse || outcome === '無效')) S.flags.mal = (S.flags.mal || 0) + 1;     // 業餘不記誤治，不會醫糾、上公堂、成庸醫
-        if (S.ch >= 1 && !isAmateur() && worse) (S.flags.malQ = S.flags.malQ || []).push(V.id);
+        /* 醫死人（2026-11-26，Claude 起草，等佑彥審）：危重的外感證（GRAVE）回診兩次都沒治好、最後惡化（或惡化後沒再來），病人當夜過世，隔天病家告官（deathCourt），不走一般的上門理論 */
+        const dies = S.ch >= 1 && !isAmateur() && V.kind === 'sh' && outcome === '惡化' && V.round >= 2 && !!GRAVE[V.c.pattern];
+        if (dies) { V.malDied = true; (S.flags.deathQ = S.flags.deathQ || []).push(V.id); }
+        else if (S.ch >= 1 && !isAmateur() && worse) (S.flags.malQ = S.flags.malQ || []).push(V.id);
         /* 道謝（2026-11-22）：外感病人治好了，隔天早上帶著謝禮回來，換上病好版立繪 */
         if (V.kind === 'sh' && GOOD3.includes(outcome) && V.c.thanks) (S.flags.thanksQ = S.flags.thanksQ || []).push(V.id);
         if (GOOD3.includes(outcome) && S.flags.court && !S.flags.redeemed) S.flags.redeemNext = V.id;
@@ -9340,6 +9347,35 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
             { text: '（金錢 −20　聲望 −8　心神 −10　醫術 +2）' }
         ], dayStart, MAL_ART.court || undefined);
     }
+    /* 醫死人（2026-11-26，佑彥：照順序做；文字是 Claude 起草）：只有危重的外感證會走到這一步。why 是那一夜的樣子，一句話 */
+    const GRAVE = {
+        shaoyin: '他本是少陰病，手足冰冷、整天只想睡，陽氣已經很弱。我開的藥沒有扶住陽氣，夜裡手腳冷過了膝肘，就沒有再醒來。',
+        jueyin: '他本是厥陰寒厥，手足厥冷。我開的藥沒有溫通血脈，夜裡冷到了心口，人就走了。',
+        shuifan: '他本是少陰陽虛、水氣泛溢。我開的藥沒有溫陽化水，水氣上凌，夜裡喘得躺不下，天亮前走了。',
+        hanshi: '他本是少陰陽虛寒濕。我開的藥沒有溫經散寒，陽氣一天比一天弱，夜裡睡下，就沒有再醒來。',
+        huatuo: '她本是少陰虛寒、下利滑脫。我開的藥沒有溫澀固脫，瀉到後來止不住，人就虛脫了。'
+    };
+    function deathCourt(pid) {
+        V = null;
+        const p = P[pid], name = p ? p.c.name : '一位病人';
+        if (p) p.died = true;
+        S.flags.court = true; S.flags.deathN = (S.flags.deathN || 0) + 1;
+        S.money = Math.max(0, S.money - 30); S.fame -= 12; addSpirit(-15); addSkill(2);
+        S.dilLog.push(`公堂（${name}過世）`);
+        hud();
+        const blamed = (S.flags.blame || 0) > 0;
+        story('公堂', `${name}過世，賠銀三十兩，醫館停業一個月`, [
+            { text: '天還沒亮，有人一下一下拍著醫館的門。' },
+            { text: `${name}的家人站在門外，頭上纏著白布。「人，昨夜走了。」` },
+            { text: GRAVE[p && p.c.pattern] || '我開的藥，沒有把他拉回來。' },
+            { text: '三天後，縣衙的差役送來傳票。' },
+            { text: `公堂上，縣太爺把我的病歷簿翻到${name}那一頁，問我：這幾帖方子，是怎麼開的？` },
+            { text: blamed ? '他又翻到我推說病人不忌口的那幾頁，看了我很久，沒有再問。' : '我一句一句答。答得出來的，都是我錯在哪裡。' },
+            { text: '判下來：賠銀三十兩，醫館停業一個月。堂下有人在哭，我沒有抬頭。' },
+            { text: '那一個月，我每天早上把那一頁病歷再讀一遍。讀到後來，閉上眼也看得見那幾張方子。' },
+            { text: '（金錢 −30　聲望 −12　心神 −15　醫術 +2）' }
+        ], dayStart, MAL_ART.court || undefined);
+    }
     function redeem() {
         const p = P[S.flags.redeemNext];
         S.flags.redeemNext = ''; S.flags.redeemed = true;
@@ -9462,7 +9498,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         yintang: { n: '印堂', j: 'qi', img: 'face', at: [50, 38.3], src: '草', pos: '兩眉頭連線的正中。', how: RUB, use: '安神、頭痛、鼻塞。', no: NO_SKIN },
         // 任督（第三期，通小周天時學會）
         baihui: { n: '百會', j: 'du', img: 'top', at: [50, 40], src: '草', pos: '頭頂正中，兩耳尖往上連線的交點。', how: '用指腹輕輕按揉三十次，或用掌心輕輕拍幾下。', use: '頭痛、頭暈、精神不振。', no: '高血壓的人不要用力拍打頭頂。' + NO_SKIN },
-        mingmen: { n: '命門', j: 'du', img: 'back', at: [50, 56], src: '草', pos: '腰背正中，和肚臍正對的那一節脊椎下方的凹陷。', how: '兩掌搓熱，貼在腰後上下來回搓，搓到腰部發熱。', use: '腰痠、怕冷、手腳冰冷。', no: NO_SKIN },
+        mingmen: { n: '命門', j: 'du', img: 'back', at: [50, 65], src: '草', pos: '腰背正中，和肚臍正對的那一節脊椎下方的凹陷。', how: '兩掌搓熱，貼在腰後上下來回搓，搓到腰部發熱。', use: '腰痠、怕冷、手腳冰冷。', no: NO_SKIN },
         tanzhong: { n: '膻中', j: 'ren', img: 'belly', at: [50, 58], src: '草', pos: '胸口正中，兩乳頭連線的中點。', how: RUB, use: '胸悶、心情鬱悶、呼吸不暢。', no: NO_SKIN },
         qihai: { n: '氣海', j: 'ren', img: 'belly', at: [50, 86], src: '草', pos: '肚臍正下方一寸半，約兩橫指。下丹田所在。', how: BELLY, use: '體虛乏力、腹脹。', no: NO_BELLY },
         guanyuan: { n: '關元', j: 'ren', img: 'belly', at: [50, 89.5], src: '草', pos: '肚臍正下方三寸，約四橫指。下丹田所在。', how: BELLY, use: '手腳冰冷、小便頻、體虛。', no: NO_BELLY }
@@ -9470,6 +9506,13 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
     /* 第三期：通小周天的條件，與通了以後多的一式抱月樁（《眼癒力》的站樁；要領是 Claude 起草，要換成書上的寫法） */
     const ZHOU = { qiao: 3, dian: 3, zheng: 3, peace: 30 };
     const BAOYUE = { k: 'bao', short: '抱月', name: '抱月樁', art: 'bg-g-bao.webp', src: '書', yao: '雙腳與肩同寬，重心平放兩腳掌；膝蓋微彎，不超過腳尖。脊椎挺直但不用力，頭頂懸、收下巴，舌頂上顎。雙手在小腹前環抱，像抱著一顆大西瓜，掌心朝內。靜靜站一炷香。' };
+    /* 護眼導引（2026-11-26，佑彥：照順序做）：《眼癒力》第四章的甩手功與搓手熨目法，要領照書上的步驟。
+       甩手功：通兩組正經後出現；搓手熨目：學會勞宮（掌心）後出現。不屬八段錦，不通經絡 */
+    const SHUAI = { k: 'shuai', short: '甩手', name: '甩手功', art: 'bg-g-shuai.webp', src: '書', gain: '放鬆身體，卸去緊繃',
+        yao: '雙腳與肩同寬，腳掌內側平行，重心放在兩腳掌心，雙膝微蹲，膝蓋不超過腳尖。雙手掌心向下，慢慢抬到肩的高度，自然向前平伸、不必伸直；再卸去力氣，讓雙手像自由落體一樣落下。反覆甩，至少二十分鐘。' };
+    const YUNMU = { k: 'yun', short: '熨目', name: '搓手熨目', art: 'bg-g-yun.webp', src: '書', gain: '使雙眼明亮有神',
+        yao: '雙手搓到手指溫熱，用指節輕輕摩擦眉稜骨十八次；輕閉眼睛三次；再把雙手搓到掌心溫熱，手掌平貼在眼睛上幾秒鐘，反覆數次。' };
+    const EXTRA_GONG = () => [meri('zhou') && BAOYUE, zheng() >= 2 && SHUAI, S.xue.includes('laogong') && YUNMU].filter(Boolean);
     /* 第二期：奇經八脈。學到它的八脈交會穴（XUE 的 jiao）就點亮，跨輪記在札記 */
     const QIJING = ['任脈', '督脈', '衝脈', '帶脈', '陰蹻脈', '陽蹻脈', '陰維脈', '陽維脈'];
     /* 第二期：衛教。看完病、藥包好以後，可以教病人一個學過的穴回家按。
@@ -9524,11 +9567,15 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
     /* 練功：選一式 → 練 → 功夫滿了就打通。done(note) 回白天醫館的流程 */
     function gongPick(done) {
         V = null; hud();
-        const list = meri('zhou') ? GONG8.concat(BAOYUE) : GONG8;          // 通了小周天，多一式抱月樁
+        const extra = EXTRA_GONG(), list = GONG8.concat(extra);          // 通了小周天多抱月樁；另有護眼導引兩式
+        const fresh = extra.filter(g => !(S.flags.gongSeen || []).includes(g.k));
+        S.flags.gongSeen = (S.flags.gongSeen || []).concat(fresh.map(g => g.k));
         const cnt = (g) => (S.gong[g.k] || 0);
-        const did = (g) => (g.k === 'bao' ? false : (MERI[g.grp].later ? meri('zhou') : meri(g.grp)));
+        const did = (g) => (!g.grp ? false : (MERI[g.grp].later ? meri('zhou') : meri(g.grp)));
         const stateOf = (g) => {
             if (g.k === 'bao') return '《眼癒力》的站樁，溫養下丹田。練一次：精力 +5，心神 +4，修為 +1。';
+            if (g.k === 'shuai') return `《眼癒力》的功法，${g.gain}。練一次：精力 +3，心神 +6。`;
+            if (g.k === 'yun') return `《眼癒力》的護眼功法，${g.gain}。練一次：精力 +2，心神 +3，今天定證、辨證少耗心神 1。`;
             const M = MERI[g.grp];
             if (M.later) return meri('zhou') ? `小周天已通（${MERI.zhou.perk}）。再練仍能養身。` : `功夫 ${cnt(g)}。第四式與第八式通任督，合起來是小周天。要：${zhouProg()}。`;
             return meri(g.grp) ? `${M.name}已通（${M.perk}）。再練仍能養身。` : `功夫 ${cnt(g)}／${GONG_NEED}，練滿通${M.name}：${M.perk}。`;
@@ -9540,7 +9587,9 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
             <div class="desc d-info" id="d-info">點一式看要領，再按「確定」。練一次：精力 +5，心神 +1。</div>
             <div class="foot"><button class="btn go px" id="d-go" disabled>確定</button></div>`);
         $('#pt-name').textContent = '後院';
-        speak(narr('天剛亮，我到後院打一套八段錦。'));
+        speak(fresh.length && fresh.some(g => g.k !== 'bao')
+            ? [narr('天剛亮，我到後院打一套八段錦。'), { who: SHM, text: `往後打完八段錦，也可以換練${fresh.filter(g => g.k !== 'bao').map(g => `「${g.name}」`).join('、')}。這是醫館代代傳下來顧眼睛的功夫，教病人也合用。` }]
+            : narr('天剛亮，我到後院打一套八段錦。'));
         let pick = -1;
         $$('#panel [data-d]').forEach(b => b.onclick = () => {
             pick = +b.dataset.d;
@@ -9567,6 +9616,16 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
                 S.gong.bao = cnt(g) + 1; hud();
                 const log = '我站了一炷香的抱月樁。雙臂環抱，氣息沉到小腹，整個人安靜下來。';
                 return result(g, log, '精力 +5　心神 +4　修為 +1', '開門去', () => done(log + '精力 +5，心神 +4，修為 +1。' + (pk ? pk : '')));
+            }
+            if (g.k === 'shuai') {
+                addEnergy(3); addSpirit(6); S.gong.shuai = cnt(g) + 1; hud();
+                const log = '我甩了一炷香的手。雙手抬起，鬆開，落下；肩頸的僵硬一點一點卸掉，指尖麻麻的，背上卻暖了。';
+                return result(g, log, '精力 +3　心神 +6', '開門去', () => done(log + '精力 +3，心神 +6。'));
+            }
+            if (g.k === 'yun') {
+                addEnergy(2); addSpirit(3); S.gong.yun = cnt(g) + 1; S.today.yun = true; hud();
+                const log = '我搓熱雙手，用指節摩過眉稜骨，再把溫熱的掌心覆在眼上。睜開眼，院子亮了一些。';
+                return result(g, log, '精力 +2　心神 +3　今天定證、辨證少耗心神 1', '開門去', () => done(log + '精力 +2，心神 +3。'));
             }
             const M = MERI[g.grp];
             addEnergy(5); addSpirit(1);
@@ -10303,6 +10362,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         parts.push(r >= 0.8 ? `這一生記在簿子上的有 ${n} 位病人，看好了 ${ok} 位。` : (r >= 0.5 ? `這一生記在簿子上的有 ${n} 位病人，看好了 ${ok} 位，一半多一些。` : `這一生記在簿子上的有 ${n} 位病人，看好的只有 ${ok} 位。`));
         if (refN) parts.push(`有 ${refN} 位，我交給了別的大夫。`);
         if (lostN) parts.push(`有 ${lostN} 位再也沒有回來，那幾頁病歷只寫到一半。`);
+        const diedN = list.filter(p => p.malDied).length;
+        if (diedN) parts.push(diedN > 1 ? `有 ${diedN} 位，是在我手上走的。` : '有一位，是在我手上走的。那一頁病歷，我到老都記得。');
         if (promise) parts.push('我曾經答應過一件自己做不到的事。');
         const friend = S.flags.friend || '那位故人';
         if (S.flags.letter) parts.push(`${friend}走之前，託人帶來一句話：多謝大夫說了實話。`);
@@ -10462,7 +10523,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
                         const ids = meriXue('zhou');
                         return `督脈、任脈。練「${GONG8[3].name}」與「${GONG8[7].name}」。
                             <div class="${meri('zhou') ? 'up' : 'dim'}" style="margin-top:4px">${meri('zhou') ? '✔' : '・'} 本事：${MERI.zhou.perk}<span class="small">（${MERI.zhou.why}）</span></div>
-                            ${meri('zhou') ? `<div class="small hint">早上練功多了一式「抱月樁」：${BAOYUE.yao}</div>` : `<div class="small hint">通小周天要：${zhouProg()}。</div>`}
+                            ${zheng() >= 2 ? `<div class="small hint">護眼導引「甩手功」（${SHUAI.gain}）：${SHUAI.yao}</div>` : ''}${S.xue.includes('laogong') ? `<div class="small hint">護眼導引「搓手熨目」（${YUNMU.gain}）：${YUNMU.yao}</div>` : ''}${meri('zhou') ? `<div class="small hint">早上練功多了一式「抱月樁」：${BAOYUE.yao}</div>` : `<div class="small hint">通小周天要：${zhouProg()}。</div>`}
                             <div class="chips">${ids.map(chip).join('')}</div>${oldNote(ids)}<div id="xw-card"></div>`;
                     }
                     const M = MERI[x.mk], g = gOf(x.mk), ids = meriXue(x.mk);
@@ -10548,7 +10609,14 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         if (!isAmateur() || !c.card) return '';
         const m = loadMeta();
         if (!m.cards.includes(c.id)) { m.cards.push(c.id); saveMeta(m); }
-        return `<div class="ycard small"><b>養生小卡</b>${c.card}<span class="dim">已收進杏林札記</span></div>`;
+        return `<div class="ycard small"><b>養生小卡</b>${c.card}${cardXue(c)}<span class="dim">已收進杏林札記</span></div>`;
+    }
+    /* 養生小卡帶一個穴（業餘，2026-11-26）：取衛教對照表 TEACH 的第一穴（佑彥審過），附位置、按法與禁忌 */
+    function cardXue(c, short) {
+        const id = (TEACH[c.id] || [])[0], x = id && XUE[id];
+        if (!x) return '';
+        if (short) return `　回家按一按：${x.n}`;
+        return `<div class="yx">回家按一按：<b class="name">${x.n}</b>　${x.pos}${x.how}${x.no ? `<span class="no">${x.no}</span>` : ''}</div>`;
     }
     const SAFE_SH = '遊戲裡的病人是虛構的，方子只為他一個人開。真實生活中，同樣是著涼，體質不同用藥就不同。身體不舒服請先給醫師看過，不要照著遊戲自己抓藥。';
     const SAFE_EY = '遊戲裡的病人是虛構的。眼睛的病變化快，視力突然變差、眼睛紅痛、看到閃光或黑影變多，請盡快找眼科醫師。';
@@ -10924,13 +10992,36 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         teachStep((more) => { speak(lines.concat(more)); leave(`藥方　${res.rx}`); });
     }
     const SH_TRUST = { cured: [30, 12], better: [8, 4], none: [-12, -15], worse: [-25, -25] };
+    /* 變證（2026-11-26，佑彥：照順序做；對應是 Claude 依《傷寒論》條文起草，等佑彥審）：
+       初診開錯藥、治到惡化，而這個誤治在書上有明文的變證時，病人回診時病已經變了：實際的證換成變證（V.c 換成一份新的，存檔記在 V.bian），
+       要重新辨、開變證的方。引文 BIAN_Q 都核對過 內容/傷寒論/shanghan.json */
+    const BIAN = {
+        'xu+mahuang': 'louhan', 'xiangqiangxu+gegen': 'louhan', 'xiangqiangxu+mahuang': 'louhan',
+        'xu+chengqi': 'xieli', 'xiangqiang+chengqi': 'xieli',
+        'yang+guizhi': 'jinshang', 'yang+mahuang': 'jinshang',
+        'shuiqi+mahuang': 'shuifan',
+        'yin+chengqi': 'shaoyin', 'lianggan+mahuang': 'shaoyin'
+    };
+    const BIAN_Q = {
+        louhan: '太陽病，發汗，遂漏不止，其人惡風，小便難，四肢微急，難以屈伸者，桂枝加附子湯主之。',
+        xieli: '太陽病，桂枝證，醫反下之，利遂不止，脈促者，表未解也。喘而汗出者，葛根黃芩黃連湯主之。',
+        jinshang: '服桂枝湯，大汗出後，大煩渴不解，脈洪大者，白虎加人參湯主之。',
+        shuifan: '太陽病，發汗，汗出不解，其人仍發熱，心下悸，頭眩，身瞤動，振振欲擗地者，真武湯主之。',
+        shaoyin: '少陰病，脈沉者，急溫之，宜四逆湯。'
+    };
+    const bianOn = (p, to) => { p.c = Object.assign({}, p.c, { pattern: to }); };
     function shRevisit() {
         const res = V.results[V.results.length - 1];
+        if (V.round === 1 && res.r === 'worse' && !V.bian && !V.tutor && !isAmateur()) {
+            const to = BIAN[V.c.pattern + '+' + res.cls];
+            if (to && SH.PATTERNS[to]) { V.bian = { from: V.c.pattern, to }; bianOn(V, to); }
+        }
         res.shown = true;
         markWell(res.r);
         const d = SH_TRUST[res.r][V.round - 1];
         addTrust(d); hud();
-        const body = rvFace() + resultHead(res.r, d) + `<div style="margin-top:6px">${res.t}</div><div style="clear:both"></div>`;
+        const body = rvFace() + resultHead(res.r, d) + `<div style="margin-top:6px">${res.t}</div>`
+            + (V.bian && V.round === 1 ? `<div class="small down" style="margin-top:6px">變證：他的病已經不是當初的${SH.PATTERNS[V.bian.from].name}了。要重新辨證。</div>` : '') + '<div style="clear:both"></div>';
         const lines = [{ who: 'patient', text: res.r === 'cured' ? '大夫，我好了。' : (res.r === 'better' ? '大夫，好些了，可是還沒全好。' : (res.r === 'none' ? '大夫，藥吃完了，還是老樣子。' : '大夫，吃了藥反而更難受了。')) }];
         if (res.r === 'cured' || V.round >= 2) {
             panel(`<h3>${V.round >= 2 ? '再次回診' : '回診'}　${V.c.name}</h3>${body}<div class="foot"><button class="btn go px" id="next">寫下醫案</button></div>`);
@@ -10944,7 +11035,8 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
                     <button class="octw" id="redo"><span class="oct"><b>更方</b></span><span class="sub">重新問診、辨證，再開方</span></button>
                     <button class="octw" id="refer"><span class="oct"><b>轉介</b></span><span class="sub">坦承力有未逮，轉介他醫</span></button>
                 </div>`);
-            if (res.fate) lines.push(...tips('方證既然相應，就不要因為一時未癒而動搖。'));
+            if (V.bian) lines.push(narr(`他的樣子和上回不一樣了。誤治之後，病已經變成另一個證。`), ...tips(`書上寫著：${BIAN_Q[V.bian.to]}`));
+            else if (res.fate) lines.push(...tips('方證既然相應，就不要因為一時未癒而動搖。'));
             else if (res.r === 'better') lines.push(...tips('方向沒有錯，是配伍還不周全。想想這張方子少了誰。'));
             else lines.push(...tips('先別急著換藥。回頭想想：當初哪一個線索沒問，或是問了卻沒放在心上？'));
             if ($('#keep')) $('#keep').onclick = () => {
@@ -10968,8 +11060,9 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         speak(lines);
     }
     const patRow = (pats, mark) => (V.pat0 && V.pat0 !== V.pattern
-        ? `<tr><td>初診定的證</td><td>${pats[V.pat0].name}　${mark(V.pat0 === V.c.pattern)}</td></tr><tr><td>複診改定</td><td>${pats[V.pattern].name}　${mark(V.pattern === V.c.pattern)}</td></tr>`
-        : `<tr><td>我定的證</td><td>${pats[V.pattern].name}　${mark(V.pattern === V.c.pattern)}</td></tr>`);
+        ? `<tr><td>初診定的證</td><td>${pats[V.pat0].name}　${mark(V.pat0 === (V.bian ? V.bian.from : V.c.pattern))}</td></tr><tr><td>複診改定</td><td>${pats[V.pattern].name}　${mark(V.pattern === V.c.pattern)}</td></tr>`
+        : (V.bian ? `<tr><td>我定的證</td><td>${pats[V.pattern].name}　${mark(V.pattern === V.bian.from)}　<span class="dim">變證之後沒有重新定證</span></td></tr>`
+        : `<tr><td>我定的證</td><td>${pats[V.pattern].name}　${mark(V.pattern === V.c.pattern)}</td></tr>`));
     function shRecord() {
         const c = V.c, p = SH.PATTERNS[c.pattern];
         const mark = (ok) => (ok ? '<span class="up">相符</span>' : '<span class="down">不符</span>');
@@ -10989,6 +11082,7 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
             <table class="rec small">
                 <tr><td>實際的證</td><td><b class="name">${p.name}</b>（${p.alias}）　治法：${p.law}　主方：${SH.FORMULAS[p.formula].name}</td></tr>
                 <tr><td>我問了</td><td>${V.asked.map(id => SH.QUESTIONS.find(q => q.id === id).q).join('、')}（三個關鍵問題問到 ${keyAsked} 個）</td></tr>
+                ${V.bian ? `<tr><td>變證</td><td>初診時是${SH.PATTERNS[V.bian.from].name}，誤治之後變成<b class="name">${p.name}</b>。<br><span class="dim">${BIAN_Q[V.bian.to] || ''}</span></td></tr>` : ''}
                 ${patRow(SH.PATTERNS, mark)}
                 ${V.results.some(r => r.ding !== undefined) ? `<tr><td>醫囑</td><td>${V.results.filter(r => r.ding !== undefined).map(r => r.ding ? '<span class="up">交代得對</span>' : '<span class="down">交代錯了</span>').join('、')}</td></tr>` : ''}
                 ${rows}
@@ -11472,15 +11566,15 @@ body.crt .stage::after { content: ''; position: absolute; inset: 0; z-index: 90;
         list.forEach((u, i) => setTimeout(() => { const im = new Image(); im.src = u; }, i * 150));
     }, 1200);
 
-    /* 供測試用 */
-    window.__clinic = { JF, loadMeta, saveMeta, ACH, S, P, livingCost, get V() { return V; }, stageChain, SH, EY, classify, saveGame, loadGame, readSave, showTitle, setMuted, DILEMMAS, dilemma, dispute,
+    /* 供測試用：只在本機（127.0.0.1）或網址加 ?test=1 時打開（2026-11-26 正式上架準備） */
+    if (/[?&]test=1/.test(location.search) || location.hostname === '127.0.0.1') window.__clinic = { JF, loadMeta, saveMeta, ACH, S, P, livingCost, get V() { return V; }, stageChain, SH, EY, classify, saveGame, loadGame, readSave, showTitle, setMuted, DILEMMAS, dilemma, dispute,
                         get track() { return wantTrack; }, get muted() { return muted; } };
 })();
 </script>
 <script>
 /* 自動試玩（只供測試）：在瀏覽器主控台執行 __bot.play({ good: true, key: true, act: 'smart' }) 會從新遊戲玩到結局。
    good 每位都看對；key 只問關鍵問診；act 門診後做什麼（smart 依身心狀況）；redo、keep、plan、dil 控制回診與困境的選法。 */
-window.__bot = (function () {
+if (/[?&]test=1/.test(location.search) || location.hostname === '127.0.0.1') window.__bot = (function () {
     const $ = (s) => document.querySelector(s), $$ = (s) => [...document.querySelectorAll(s)];
     const C = () => window.__clinic;
     const click = (el) => { if (!el) return false; if (el.click) el.click(); else el.dispatchEvent(new MouseEvent('click', { bubbles: true })); return true; };
